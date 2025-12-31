@@ -48,7 +48,7 @@ export default function Navbar() {
               );
             })}
              {/* Admin Link (Hidden shortcut for you) */}
-             <Link href="/admin" className="text-xs font-bold tracking-[0.2em] uppercase text-gray-600 hover:text-red-500 transition-colors ml-4 opacity-50 hover:opacity-100">
+             <Link href="/dashboard" className="text-xs font-bold tracking-[0.2em] uppercase text-gray-600 hover:text-red-500 transition-colors ml-4 opacity-50 hover:opacity-100">
                 {/* // ADMIN */}
              </Link>
           </nav>

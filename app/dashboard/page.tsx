@@ -6,11 +6,11 @@ import {
   FaChevronDown, FaChevronRight, FaBriefcase, FaFileContract
 } from "react-icons/fa";
 import { Project, ProfileData, ExperienceCard } from "@/types";
-import Auth from "@/components/admin/Auth";
-import Sidebar from "@/components/admin/Sidebar";
-import Header from "@/components/admin/Header";
-import Overview from "@/components/admin/Overview";
-import ConfirmModal from "@/components/admin/ConfirmModal";
+import Auth from "@/components/dashboard/Auth";
+import Sidebar from "@/components/dashboard/Sidebar";
+import Header from "@/components/dashboard/Header";
+import Overview from "@/components/dashboard/Overview";
+import ConfirmModal from "@/components/dashboard/ConfirmModal";
 import { FaTasks } from "react-icons/fa";
 
 export default function Admin() {

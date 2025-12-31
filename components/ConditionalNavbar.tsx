@@ -6,7 +6,7 @@ export default function ConditionalNavbar() {
   const pathname = usePathname();
 
   // If we are on the admin page, return NOTHING (null)
-  if (pathname.startsWith("/admin")) {
+  if (pathname.startsWith("/dashboard")) {
     return null;
   }
 

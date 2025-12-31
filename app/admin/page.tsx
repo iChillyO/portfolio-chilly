@@ -16,6 +16,7 @@ export default function Admin() {
   // --- REFS ---
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const aboutImageInputRef = useRef<HTMLInputElement>(null);
+  const projectImageInputRef = useRef<HTMLInputElement>(null);
 
   // --- STATE ---
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -114,7 +115,10 @@ export default function Admin() {
     ref.current?.click();
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, imageType: 'avatar' | 'aboutImage') => {
+  const handleFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    onUploadComplete: (url: string) => void
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -124,43 +128,49 @@ export default function Admin() {
       // 1. Get a signature for the upload
       const timestamp = Math.round(new Date().getTime() / 1000);
       const paramsToSign = { timestamp };
-      
-      const signRes = await fetch('/api/sign-image', {
-        method: 'POST',
+
+      const signRes = await fetch("/api/sign-image", {
+        method: "POST",
         body: JSON.stringify({ paramsToSign }),
       });
       const signData = await signRes.json();
-      
+
       if (!signData.success) {
-        throw new Error('Failed to get signature.');
+        throw new Error("Failed to get signature.");
       }
 
       // 2. Prepare FormData for Cloudinary
       const formData = new FormData();
-      formData.append('file', file);
-      formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY!);
-      formData.append('timestamp', String(timestamp));
-      formData.append('signature', signData.signature);
+      formData.append("file", file);
+      formData.append(
+        "api_key",
+        process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY!
+      );
+      formData.append("timestamp", String(timestamp));
+      formData.append("signature", signData.signature);
 
       // 3. Upload directly to Cloudinary
       const uploadUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`;
-      
+
       const uploadRes = await fetch(uploadUrl, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
-      
+
       const uploadData = await uploadRes.json();
 
       if (uploadData.secure_url) {
-        // 4. Update state with the new URL
-        setIdentity(prev => ({ ...prev, [imageType]: uploadData.secure_url }));
+        // 4. Update state with the new URL via callback
+        onUploadComplete(uploadData.secure_url);
         showSyncMessage("UPLOAD COMPLETE", "success");
       } else {
         console.error("Cloudinary upload failed. Response:", uploadData);
-        throw new Error(`Cloudinary upload failed: ${uploadData.error?.message || 'Unknown error'}`);
+        throw new Error(
+          `Cloudinary upload failed: ${
+            uploadData.error?.message || "Unknown error"
+          }`
+        );
       }
-
     } catch (err) {
       console.error("Upload failed:", err);
       showSyncMessage("UPLOAD FAILED", "error");
@@ -281,7 +291,7 @@ export default function Admin() {
       const data = await res.json();
       if (data.success) {
         setProjects([data.data, ...projects]);
-        setFormData({ ...formData, title: "", desc: "", tech: "" });
+        setFormData({ ...formData, title: "", desc: "", tech: "", image: "/images/bg-space.jpg" });
         showSyncMessage("MISSION DEPLOYED", "success");
       } else {
         showSyncMessage("DEPLOYMENT FAILED", "error");
@@ -376,7 +386,7 @@ export default function Admin() {
                    <div className="flex gap-6 items-start">
                       <div className="flex-1 space-y-4">
                          <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Home Page Avatar</label>
-                         <input type="file" ref={avatarInputRef} onChange={(e) => handleFileChange(e, 'avatar')} className="hidden" accept="image/*" />
+                         <input type="file" ref={avatarInputRef} onChange={(e) => handleFileChange(e, (url) => setIdentity(prev => ({ ...prev, avatar: url })))} className="hidden" accept="image/*" />
                          <div className="flex gap-3 h-14">
                            <input value={identity.avatar} onChange={(e) => setIdentity({...identity, avatar: e.target.value})} className="flex-1 bg-transparent border border-cyan-500/30 px-5 text-gray-400 text-xs font-mono focus:border-cyan-400 outline-none transition-colors" />
                            <button onClick={() => handleUploadClick(avatarInputRef)} className="border border-cyan-500/30 px-5 hover:bg-cyan-500/10 text-cyan-400 transition-colors h-full flex items-center justify-center"><FaUpload/></button>
@@ -389,7 +399,7 @@ export default function Admin() {
                    <div className="flex gap-6 items-start">
                       <div className="flex-1 space-y-4">
                          <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">About Page Image</label>
-                         <input type="file" ref={aboutImageInputRef} onChange={(e) => handleFileChange(e, 'aboutImage')} className="hidden" accept="image/*" />
+                         <input type="file" ref={aboutImageInputRef} onChange={(e) => handleFileChange(e, (url) => setIdentity(prev => ({ ...prev, aboutImage: url })))} className="hidden" accept="image/*" />
                          <div className="flex gap-3 h-14">
                            <input value={identity.aboutImage} onChange={(e) => setIdentity({...identity, aboutImage: e.target.value})} className="flex-1 bg-transparent border border-cyan-500/30 px-5 text-gray-400 text-xs font-mono focus:border-cyan-400 outline-none transition-colors" />
                            <button onClick={() => handleUploadClick(aboutImageInputRef)} className="border border-cyan-500/30 px-5 hover:bg-cyan-500/10 text-cyan-400 transition-colors h-full flex items-center justify-center"><FaUpload/></button>
@@ -638,6 +648,36 @@ export default function Admin() {
                         <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Tech Stack</label>
                         <input value={formData.tech} onChange={e => setFormData({...formData, tech: e.target.value})} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none" placeholder="React, Next" />
                       </div>
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Project Image</label>
+                      <input
+                        type="file"
+                        ref={projectImageInputRef}
+                        onChange={(e) => handleFileChange(e, (url) => setFormData(prev => ({ ...prev, image: url })))}
+                        className="hidden"
+                        accept="image/*"
+                      />
+                      <div className="flex gap-3 h-14">
+                        <input
+                          value={formData.image}
+                          onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                          className="flex-1 bg-black/50 border border-cyan-900 rounded p-3 text-white focus:border-cyan-400 outline-none"
+                          placeholder="Image URL"
+                        />
+                        <button
+                          type="button" 
+                          onClick={() => handleUploadClick(projectImageInputRef)}
+                          className="border border-cyan-900 px-5 hover:bg-cyan-500/10 text-cyan-400 transition-colors h-full flex items-center justify-center rounded"
+                        >
+                          <FaUpload />
+                        </button>
+                      </div>
+                      {formData.image && formData.image.startsWith('http') && (
+                        <div className="w-full h-40 bg-black/40 border border-cyan-900/50 rounded mt-4 overflow-hidden relative">
+                          <img src={formData.image} className="w-full h-full object-cover" alt="Project Preview" />
+                        </div>
+                      )}
                     </div>
                     <div>
                         <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Description</label>

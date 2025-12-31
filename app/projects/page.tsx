@@ -121,7 +121,7 @@ const ProjectCard = ({ data }: { data: Project }) => (
       </div>
 
       <div className="flex items-center gap-4 pt-4 border-t border-white/5">
-       <a href={data.links?.demo || "#"} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"><FaGithub /> Code</a>
+       <a href={data.links?.github || "#"} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"><FaGithub /> Code</a>
         <a href={data.links?.demo} className="flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors ml-auto font-bold">Live Demo <FaExternalLinkAlt className="text-xs" /></a>
       </div>
     </div>

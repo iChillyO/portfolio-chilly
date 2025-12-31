@@ -284,16 +284,29 @@ export default function Admin() {
   const handleAddProject = async (e: React.FormEvent) => {
     e.preventDefault();
     const techArray = formData.tech.split(",").map(t => t.trim());
+    
+    const projectData = {
+      title: formData.title,
+      category: formData.category,
+      image: formData.image,
+      desc: formData.desc,
+      tech: techArray,
+      links: {
+        github: formData.github,
+        demo: formData.demo,
+      }
+    };
+
     try {
       const res = await fetch('/api/projects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, tech: techArray }),
+        body: JSON.stringify(projectData),
       });
       const data = await res.json();
       if (data.success) {
         setProjects([data.data, ...projects]);
-        setFormData({ ...formData, title: "", desc: "", tech: "", image: "/images/bg-space.jpg" });
+        setFormData({ title: "", category: "Web Dev", image: "/images/bg-space.jpg", desc: "", tech: "", github: "#", demo: "#" });
         showSyncMessage("MISSION DEPLOYED", "success");
       } else {
         showSyncMessage("DEPLOYMENT FAILED", "error");
@@ -654,6 +667,16 @@ export default function Admin() {
                       <div>
                         <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Tech Stack</label>
                         <input value={formData.tech} onChange={e => setFormData({...formData, tech: e.target.value})} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none" placeholder="React, Next" />
+                      </div>
+                    </div>
+                     <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Github Link</label>
+                        <input value={formData.github} onChange={e => setFormData({...formData, github: e.target.value})} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Demo Link</label>
+                        <input value={formData.demo} onChange={e => setFormData({...formData, demo: e.target.value})} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none" />
                       </div>
                     </div>
                     <div>

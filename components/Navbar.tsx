@@ -11,8 +11,7 @@ export default function Navbar() {
     { name: "Projects", path: "/projects" },
     { name: "Work Queue", path: "/work-queue" },
     { name: "Pricing", path: "/pricing" },
-    { name: "Protocols", path: "/commotions" },
-  ];
+          { name: "Protocols", path: "/protocols" },  ];
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 pt-4 px-4">

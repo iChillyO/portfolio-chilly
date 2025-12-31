@@ -49,8 +49,8 @@ const ProfileSchema = new Schema({
   statusMode: { type: String, default: "OPEN" },
   statusMsg: { type: String, default: "SYSTEM ONLINE" },
 
-  // 5. Commotions Page
-  commotions: {
+  // 5. Protocols Page
+  protocols: {
     title: { type: String, default: "System Protocols" },
     version: { type: String, default: "3.0.0 (Live)" },
     sections: [CommotionsSectionSchema]

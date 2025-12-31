@@ -44,7 +44,7 @@ export default function Sidebar({ activeTab, setActiveTab, alias, setIsAuthentic
                <button onClick={() => setActiveTab('projects')} className={`w-full flex items-center gap-3 px-4 py-3 rounded text-xs font-bold uppercase tracking-wider transition-all border ${activeTab === 'projects' ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(34,211,238,0.3)]' : 'border-transparent text-gray-400 hover:border-cyan-500/30 hover:text-white'}`}>
                 <FaImages /> Portfolio
               </button>
-              <button onClick={() => setActiveTab('commotions')} className={`w-full flex items-center gap-3 px-4 py-3 rounded text-xs font-bold uppercase tracking-wider transition-all border ${activeTab === 'commotions' ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(34,211,238,0.3)]' : 'border-transparent text-gray-400 hover:border-cyan-500/30 hover:text-white'}`}>
+              <button onClick={() => setActiveTab('protocols')} className={`w-full flex items-center gap-3 px-4 py-3 rounded text-xs font-bold uppercase tracking-wider transition-all border ${activeTab === 'protocols' ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(34,211,238,0.3)]' : 'border-transparent text-gray-400 hover:border-cyan-500/30 hover:text-white'}`}>
                 <FaFileContract /> Commotions
               </button>
               <button onClick={() => setActiveTab('pricing')} className={`w-full flex items-center gap-3 px-4 py-3 rounded text-xs font-bold uppercase tracking-wider transition-all border ${activeTab === 'pricing' ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(34,211,238,0.3)]' : 'border-transparent text-gray-400 hover:border-cyan-500/30 hover:text-white'}`}>

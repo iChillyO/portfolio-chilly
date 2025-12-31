@@ -20,7 +20,7 @@ export interface ExperienceCard {
   desc: string;
 }
 
-export interface CommotionSection {
+export interface ProtocolSection {
   title: string;
   content: string;
 }
@@ -51,10 +51,10 @@ export interface ProfileData {
   experienceLog: ExperienceCard[];
   statusMode: string;
   statusMsg: string;
-  commotions: {
+  protocols: {
     title: string;
     version: string;
-    sections: CommotionSection[];
+    sections: ProtocolSection[];
   };
   pricing: PricingPlan[];
   workQueue: WorkQueueItem[];

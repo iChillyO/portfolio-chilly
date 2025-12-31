@@ -40,7 +40,7 @@ export default function Header({ activeTab, saving, handleSaveIdentity, identity
             </button>
           </div>
         );
-      case 'commotions':
+      case 'protocols':
         return (
             <div className="animate-in fade-in slide-in-from-bottom-2 flex justify-between items-end">
               <div>

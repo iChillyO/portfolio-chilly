@@ -2,24 +2,25 @@
 import { useState, useEffect } from "react";
 import { FaFileContract, FaShieldAlt, FaFingerprint, FaExclamationTriangle } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
+import { ProtocolSection } from "@/types";
 
-interface CommotionsData {
+interface ProtocolsData {
   title: string;
   version: string;
-  sections: { title: string; content: string }[];
+  sections: ProtocolSection[];
 }
 
-export default function TermsOfService() {
-  const [commotions, setCommotions] = useState<CommotionsData | null>(null);
+export default function ProtocolsPage() {
+  const [protocols, setProtocols] = useState<ProtocolsData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCommotions = async () => {
+    const fetchProtocols = async () => {
       try {
         const res = await fetch('/api/profile');
         const data = await res.json();
         if (data.success) {
-          setCommotions(data.data.commotions);
+          setProtocols(data.data.protocols);
         }
       } catch (err) {
         console.error(err);
@@ -27,7 +28,7 @@ export default function TermsOfService() {
         setLoading(false);
       }
     };
-    fetchCommotions();
+    fetchProtocols();
   }, []);
 
   if (loading) {
@@ -38,7 +39,7 @@ export default function TermsOfService() {
     );
   }
 
-  if (!commotions) {
+  if (!protocols) {
     return (
       <main className="h-screen w-full bg-deep-bg bg-space-pattern bg-cover bg-center bg-fixed flex items-center justify-center">
         <p className="text-red-500">Failed to load system protocols.</p>
@@ -57,12 +58,12 @@ export default function TermsOfService() {
       <div className="max-w-6xl w-full relative z-20 shrink-0 px-4 md:px-12 mt-24 mb-8 flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
         <div>
           <h1 className="text-5xl md:text-6xl font-black text-white tracking-tighter uppercase italic mb-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-            {commotions.title.split(' ')[0]} <span className="text-cyan-500">{commotions.title.split(' ').slice(1).join(' ')}</span>
+            {protocols.title.split(' ')[0]} <span className="text-cyan-500">{protocols.title.split(' ').slice(1).join(' ')}</span>
           </h1>
           <p className="text-blue-200/60 tracking-widest text-xs font-mono uppercase flex items-center gap-2">
             <FaFileContract /> <span>Terms of Service</span>
             <span className="text-cyan-500"></span>
-            <span>Version {commotions.version}</span>
+            <span>Version {protocols.version}</span>
           </p>
         </div>
         
@@ -83,7 +84,7 @@ export default function TermsOfService() {
               Index
             </h3>
             <ul className="space-y-3 text-sm text-blue-200/70 font-mono">
-              {commotions.sections.map((section, index) => (
+              {protocols.sections.map((section, index) => (
                 <li key={index} className="hover:text-cyan-400 cursor-pointer transition-colors flex items-center gap-2">
                   <span className="text-cyan-500">0{index + 1}.</span> {section.title}
                 </li>
@@ -106,7 +107,7 @@ export default function TermsOfService() {
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-transparent opacity-50"></div>
 
           <div className="space-y-12 max-w-3xl">
-            {commotions.sections.map((section, index) => (
+            {protocols.sections.map((section, index) => (
               <section key={index}>
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
                   <span className="text-cyan-500 text-sm font-mono border border-cyan-500/30 px-2 py-1 rounded">0{index + 1}</span>

@@ -40,7 +40,7 @@ export default function Admin() {
     experienceLog: [],
     statusMode: "OPEN",
     statusMsg: "SYSTEM ONLINE",
-    commotions: {
+    protocols: {
       title: "System Protocols",
       version: "3.0.0 (Live)",
       sections: []
@@ -199,27 +199,27 @@ export default function Admin() {
     setIdentity({ ...identity, experienceLog: newLog });
   };
 
-  // Commotions Card Handlers
-  const addCommotionSection = () => {
+  // Protocol Section Handlers
+  const addProtocolSection = () => {
     setIdentity({
       ...identity,
-      commotions: {
-        ...identity.commotions,
-        sections: [...identity.commotions.sections, { title: "New Section", content: "Section content..." }]
+      protocols: {
+        ...identity.protocols,
+        sections: [...identity.protocols.sections, { title: "New Section", content: "Section content..." }]
       }
     });
   };
 
-  const removeCommotionSection = (index: number) => {
-    const newSections = [...identity.commotions.sections];
+  const removeProtocolSection = (index: number) => {
+    const newSections = [...identity.protocols.sections];
     newSections.splice(index, 1);
-    setIdentity({ ...identity, commotions: { ...identity.commotions, sections: newSections } });
+    setIdentity({ ...identity, protocols: { ...identity.protocols, sections: newSections } });
   };
 
-  const updateCommotionSection = (index: number, field: 'title' | 'content', value: string) => {
-    const newSections = [...identity.commotions.sections];
+  const updateProtocolSection = (index: number, field: 'title' | 'content', value: string) => {
+    const newSections = [...identity.protocols.sections];
     newSections[index] = { ...newSections[index], [field]: value };
-    setIdentity({ ...identity, commotions: { ...identity.commotions, sections: newSections } });
+    setIdentity({ ...identity, protocols: { ...identity.protocols, sections: newSections } });
   };
 
   // Pricing Plan Handlers
@@ -502,8 +502,8 @@ export default function Admin() {
             </div>
           )}
 
-          {/* === 📜 VIEW: COMMOTIONS === */}
-          {activeTab === 'commotions' && (
+          {/* === 📜 VIEW: PROTOCOLS === */}
+          {activeTab === 'protocols' && (
             <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-16 pb-24">
               <section>
                 <div className="flex items-center gap-4 mb-8">
@@ -512,11 +512,11 @@ export default function Admin() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                    <div className="space-y-4">
                       <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Page Title</label>
-                      <input value={identity.commotions.title} onChange={(e) => setIdentity({...identity, commotions: {...identity.commotions, title: e.target.value}})} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none transition-colors" />
+                      <input value={identity.protocols.title} onChange={(e) => setIdentity({...identity, protocols: {...identity.protocols, title: e.target.value}})} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none transition-colors" />
                    </div>
                    <div className="space-y-4">
                       <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Version</label>
-                      <input value={identity.commotions.version} onChange={(e) => setIdentity({...identity, commotions: {...identity.commotions, version: e.target.value}})} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none transition-colors" />
+                      <input value={identity.protocols.version} onChange={(e) => setIdentity({...identity, protocols: {...identity.protocols, version: e.target.value}})} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none transition-colors" />
                    </div>
                 </div>
               </section>
@@ -526,24 +526,24 @@ export default function Admin() {
                   <div className="flex items-center gap-4">
                     <div className="h-[2px] w-6 bg-cyan-500"></div><h3 className="text-white font-bold uppercase tracking-[0.2em] text-lg">Content Sections</h3><div className="h-[1px] flex-1 bg-cyan-500/20"></div>
                   </div>
-                  <button onClick={addCommotionSection} className="text-xs bg-cyan-500/20 hover:bg-cyan-500 text-cyan-400 hover:text-black px-4 py-2 rounded uppercase tracking-widest transition-all font-bold flex gap-2 items-center"><FaPlus/> Add Section</button>
+                  <button onClick={addProtocolSection} className="text-xs bg-cyan-500/20 hover:bg-cyan-500 text-cyan-400 hover:text-black px-4 py-2 rounded uppercase tracking-widest transition-all font-bold flex gap-2 items-center"><FaPlus/> Add Section</button>
                 </div>
                 
                 <div className="space-y-4">
-                  {identity.commotions.sections.map((section, idx) => (
+                  {identity.protocols.sections.map((section, idx) => (
                     <div key={idx} className="bg-black/30 border border-cyan-500/20 p-6 rounded flex gap-6 items-start group hover:border-cyan-500/50 transition-all">
                       <div className="text-2xl text-gray-600 pt-2"><FaFileContract /></div>
                       <div className="flex-1 space-y-4">
                         <div>
                           <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Section Title</label>
-                          <input value={section.title} onChange={(e) => updateCommotionSection(idx, 'title', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none"/>
+                          <input value={section.title} onChange={(e) => updateProtocolSection(idx, 'title', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none"/>
                         </div>
                         <div>
                           <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Content</label>
-                          <textarea value={section.content} onChange={(e) => updateCommotionSection(idx, 'content', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none h-24 leading-relaxed"/>
+                          <textarea value={section.content} onChange={(e) => updateProtocolSection(idx, 'content', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none h-24 leading-relaxed"/>
                         </div>
                       </div>
-                      <button onClick={() => removeCommotionSection(idx)} className="text-red-500/50 hover:text-red-500 pt-2 transition-colors"><FaTrash /></button>
+                      <button onClick={() => removeProtocolSection(idx)} className="text-red-500/50 hover:text-red-500 pt-2 transition-colors"><FaTrash /></button>
                     </div>
                   ))}
                 </div>

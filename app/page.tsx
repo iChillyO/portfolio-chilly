@@ -184,7 +184,7 @@ export default function Home() {
 
       {/* --- BOTTOM RIGHT FOOTER (UPDATED VISIBILITY) --- */}
       <div className="fixed bottom-8 right-8 z-[100] flex flex-col gap-1 text-[10px] md:text-xs font-mono tracking-widest text-gray-400 items-end text-right">
-        <Link href="/commotions" className="hover:text-cyan-400 transition-colors uppercase font-bold">
+        <Link href="/protocols" className="hover:text-cyan-400 transition-colors uppercase font-bold">
           Terms of Use
         </Link>
         <p className="uppercase opacity-80">© 2025 Sharaf SYSTEMS. ALL RIGHTS RESERVED.</p>

@@ -8,6 +8,16 @@ cloudinary.config({
 });
 
 export async function POST(request: Request) {
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+  if (!apiSecret) {
+    console.error("CLOUDINARY_API_SECRET is not set.");
+    return NextResponse.json(
+      { success: false, error: "Server configuration error: Cloudinary API secret is missing." },
+      { status: 500 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { paramsToSign } = body;
@@ -21,7 +31,7 @@ export async function POST(request: Request) {
 
     const signature = cloudinary.utils.api_sign_request(
       paramsToSign,
-      process.env.CLOUDINARY_API_SECRET!
+      apiSecret
     );
     
     return NextResponse.json({ success: true, signature });

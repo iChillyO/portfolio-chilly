@@ -10,6 +10,7 @@ import Auth from "@/components/admin/Auth";
 import Sidebar from "@/components/admin/Sidebar";
 import Header from "@/components/admin/Header";
 import Overview from "@/components/admin/Overview";
+import ConfirmModal from "@/components/admin/ConfirmModal";
 import { FaTasks } from "react-icons/fa";
 
 export default function Admin() {
@@ -24,6 +25,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [syncMessage, setSyncMessage] = useState<{ message: string; type: "success" | "error" | "" }>({ message: "", type: "" });
+  const [modalState, setModalState] = useState({ isOpen: false, message: "", onConfirm: () => {} });
 
   // DATA STATE
   const [projects, setProjects] = useState<Project[]>([]);
@@ -303,15 +305,20 @@ export default function Admin() {
   };
 
   const handleDelete = async (id: string) => {
-    if(!confirm("CONFIRM DELETION?")) return;
-    try {
-      await fetch(`/api/projects?id=${id}`, { method: 'DELETE' });
-      setProjects(projects.filter(p => p._id !== id));
-      showSyncMessage("PROJECT DELETED", "success");
-    } catch (err) { 
-      console.error(err);
-      showSyncMessage("DELETE FAILED", "error");
-    }
+    setModalState({
+      isOpen: true,
+      message: "This action is irreversible. Confirm permanent deletion of this mission?",
+      onConfirm: async () => {
+        try {
+          await fetch(`/api/projects?id=${id}`, { method: 'DELETE' });
+          setProjects(projects.filter(p => p._id !== id));
+          showSyncMessage("PROJECT DELETED", "success");
+        } catch (err) { 
+          console.error(err);
+          showSyncMessage("DELETE FAILED", "error");
+        }
+      }
+    });
   };
 
   // --- 🔒 LOGIN SCREEN ---
@@ -701,6 +708,15 @@ export default function Admin() {
           )}
         </div>
       </main>
+
+      {/* CONFIRMATION MODAL */}
+      <ConfirmModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({ ...modalState, isOpen: false })}
+        onConfirm={modalState.onConfirm}
+        message={modalState.message}
+      />
+
     </div>
   );
 }

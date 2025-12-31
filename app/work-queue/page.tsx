@@ -1,19 +1,30 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaTasks, FaClock, FaCheckCircle, FaSpinner, FaPaperPlane, FaCircle } from "react-icons/fa";
-
-// --- DUMMY QUEUE DATA ---
-// We use "Redacted" names to look cool and professional
-const queueData = [
-  { id: "XJ-9", project: "E-Commerce Engine", status: "Processing", progress: 75, type: "Full Stack" },
-  { id: "B-22", project: "Portfolio V3", status: "Pending", progress: 0, type: "Frontend" },
-  { id: "A-01", project: "SaaS Dashboard", status: "Completed", progress: 100, type: "UI/UX" },
-  { id: "C-14", project: "API Integration", status: "Queued", progress: 0, type: "Backend" },
-];
+import { WorkQueueItem } from "@/types";
 
 export default function WorkQueue() {
+  const [workQueue, setWorkQueue] = useState<WorkQueueItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    async function fetchWorkQueue() {
+      try {
+        const res = await fetch('/api/profile'); // The workQueue is part of the profile
+        const data = await res.json();
+        if (data.success && data.data.workQueue) {
+          setWorkQueue(data.data.workQueue);
+        }
+      } catch (error) {
+        console.error("Failed to load work queue:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchWorkQueue();
+  }, []);
 
   // Fake submission handler
   const handleSubmit = (e: React.FormEvent) => {
@@ -66,7 +77,12 @@ export default function WorkQueue() {
 
             {/* Queue List */}
             <div className="space-y-3">
-              {queueData.map((item) => (
+              {isLoading ? (
+                <div className="flex flex-col items-center justify-center h-40 w-full text-cyan-500 gap-4">
+                  <FaSpinner className="animate-spin text-3xl" />
+                  <span className="font-mono tracking-widest text-xs animate-pulse">LOADING QUEUE...</span>
+                </div>
+              ) : workQueue.map((item) => (
                 <div key={item.id} className="group bg-black/20 border border-white/10 p-4 rounded-xl flex items-center gap-4 hover:border-cyan-500/30 transition-all duration-300">
                   {/* Icon Status */}
                   <div className={`

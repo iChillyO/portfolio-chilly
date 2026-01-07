@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, Orbitron } from "next/font/google";
 import "./globals.css";
-// import Navbar from "@/components/Navbar"; <--- DELETE THIS LINE
-import ConditionalNavbar from "@/components/ConditionalNavbar"; // <--- ADD THIS LINE
+import { Providers } from "@/components/Providers";
+import ConditionalNavbar from "@/components/ConditionalNavbar";
+import ConditionalFooter from "@/components/ConditionalFooter";
+import EdgeBlurs from "@/components/EdgeBlurs";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-orbitron" });
@@ -20,11 +22,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${orbitron.variable} bg-deep-bg text-slate-800`} suppressHydrationWarning={true}>
-        
-        {/* SWAP THIS: Use the Conditional one instead of the fixed one */}
-        <ConditionalNavbar />
-        
-        {children}
+        <Providers>
+          <EdgeBlurs />
+          {/* SWAP THIS: Use the Conditional one instead of the fixed one */}
+          <ConditionalNavbar />
+
+          {children}
+          <ConditionalFooter />
+        </Providers>
       </body>
     </html>
   );

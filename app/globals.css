@@ -9,29 +9,32 @@ body {
     background-color: #020617;
     /* Very dark blue/black to match your theme */
     color: white;
-    overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
+
 /* Width of the scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
 }
 
 /* The background track (invisible) */
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+::-webkit-scrollbar-track {
+    background: #020617;
 }
 
 /* The moving part (The Thumb) */
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(34, 211, 238, 0.3);
-    /* Dim Cyan */
+::-webkit-scrollbar-thumb {
+    background: rgba(34, 211, 238, 0.4);
+    /* Cyan-400 */
     border-radius: 10px;
-    border: 1px solid rgba(34, 211, 238, 0.1);
+    border: 1px solid rgba(34, 211, 238, 0.2);
 }
 
 /* Glow effect when you hover over it */
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(34, 211, 238, 0.8);
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(34, 211, 238, 0.9);
     /* Bright Cyan */
-    box-shadow: 0 0 10px rgba(34, 211, 238, 0.8);
+    box-shadow: 0 0 15px rgba(34, 211, 238, 1);
 }

@@ -4,9 +4,14 @@ export interface Project {
   _id: string;
   title: string;
   category: string;
-  image: string;
+  images: string[];
   desc: string;
   tech: string[];
+  clientName?: string;
+  timeline?: string;
+  roleStack?: string;
+  coreChallenge?: string;
+  technicalSolution?: string;
   links: {
     github: string;
     demo: string;
@@ -58,5 +63,7 @@ export interface ProfileData {
   };
   pricing: PricingPlan[];
   workQueue: WorkQueueItem[];
+  socialLinks?: { platform: string; url: string }[];
+  skillStats?: { label: string; value: string; color: string }[];
   lastSync: string;
 }

@@ -30,21 +30,34 @@ const WorkQueueItemSchema = new Schema({
   type: { type: String, default: "" }
 });
 
+// Sub-schema for Social Links
+const SocialLinkSchema = new Schema({
+  platform: { type: String, default: "" }, // e.g., "Twitter", "GitHub", "LinkedIn"
+  url: { type: String, default: "" }
+});
+
+// Sub-schema for Skill Stats (About Page RPG Bars)
+const SkillStatSchema = new Schema({
+  label: { type: String, default: "" },
+  value: { type: String, default: "0%" },
+  color: { type: String, default: "bg-cyan-400" }
+});
+
 const ProfileSchema = new Schema({
   // 1. Profile Core (Home Page)
   alias: { type: String, default: "Chilly" },
   designation: { type: String, default: "Software Engineer" },
   tagline: { type: String, default: "Building digital artifacts." },
   bioLong: { type: String, default: "" }, // <--- ADDED BACK (Home Page Desc)
-  
+
   // 2. Visual Assets
   avatar: { type: String, default: "" }, // Home Page Image
   aboutImage: { type: String, default: "" }, // About Page Image
-  
+
   // 3. Neural Biography (About Page)
   missionBriefing: { type: String, default: "" }, // About Page Desc
-  experienceLog: [ExperienceSchema], 
-  
+  experienceLog: [ExperienceSchema],
+
   // 4. Operation Status
   statusMode: { type: String, default: "OPEN" },
   statusMsg: { type: String, default: "SYSTEM ONLINE" },
@@ -61,8 +74,14 @@ const ProfileSchema = new Schema({
 
   // 7. Work Queue Page
   workQueue: [WorkQueueItemSchema],
-  
-  // 8. System
+
+  // 8. Social Links
+  socialLinks: [SocialLinkSchema],
+
+  // 9. About Page Stats
+  skillStats: [SkillStatSchema],
+
+  // 10. System
   lastSync: { type: Date, default: Date.now }
 });
 

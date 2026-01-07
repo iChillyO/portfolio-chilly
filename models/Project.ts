@@ -9,9 +9,9 @@ const ProjectSchema = new Schema({
     type: String,
     required: true,
   },
-  image: {
-    type: String,
-    default: '',
+  images: {
+    type: [String],
+    default: [],
   },
   desc: {
     type: String,
@@ -21,6 +21,11 @@ const ProjectSchema = new Schema({
     type: [String],
     default: [],
   },
+  clientName: { type: String, default: '' },
+  timeline: { type: String, default: '' },
+  roleStack: { type: String, default: '' },
+  coreChallenge: { type: String, default: '' },
+  technicalSolution: { type: String, default: '' },
   links: {
     github: { type: String, default: '' },
     demo: { type: String, default: '' },

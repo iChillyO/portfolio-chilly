@@ -7,8 +7,15 @@ export async function GET() {
   await dbConnect();
   try {
     // Sort by 'createdAt' so the newest ones appear first (-1)
-    const projects = await Project.find({}).sort({ createdAt: -1 });
-    return NextResponse.json({ success: true, data: projects });
+    const projects = await Project.find({}).sort({ createdAt: -1 }).lean();
+
+    // Map legacy 'image' to 'images' array if needed
+    const mappedProjects = projects.map((p: any) => ({
+      ...p,
+      images: p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : [])
+    }));
+
+    return NextResponse.json({ success: true, data: mappedProjects });
   } catch (error) {
     return NextResponse.json({ success: false, error: 'Failed to fetch projects' }, { status: 500 });
   }
@@ -27,7 +34,30 @@ export async function POST(req: Request) {
 }
 
 
-// 3. DELETE: Remove a project by ID
+// 3. PUT: Update a project
+export async function PUT(req: Request) {
+  await dbConnect();
+  try {
+    const body = await req.json();
+    const { _id, ...updateData } = body;
+
+    if (!_id) {
+      return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 });
+    }
+
+    const updatedProject = await Project.findByIdAndUpdate(_id, updateData, { new: true });
+
+    if (!updatedProject) {
+      return NextResponse.json({ success: false, error: 'Project not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, data: updatedProject });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Failed to update' }, { status: 500 });
+  }
+}
+
+// 4. DELETE: Remove a project by ID
 export async function DELETE(req: Request) {
   await dbConnect();
   try {

@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Chilly // Portfolio V1
 
-## Getting Started
+![Project Banner](screenshots/home-preview.png)
 
-First, run the development server:
+> **Status:** System Online 🟢
+> **Theme:** Cyberpunk / Deep Space / Glassmorphism
+> **Live Demo:** [https://portfolio-chilly.vercel.app](https://portfolio-chilly.vercel.app)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📄 Mission Briefing
+This is not just a static portfolio. It is a full-stack application built to manage my digital identity. It features a **custom Admin Dashboard** hidden behind a secure authentication system, allowing me to update projects, manage my "Experience Log", and change my bio without touching a single line of code.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Built with performance, security, and visual storytelling in mind.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack & Artifacts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Core | Backend & Data | Styling & UI |
+| :--- | :--- | :--- |
+| ![Next.js](https://img.shields.io/badge/Next.js_14-black?style=flat&logo=next.z) | ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?style=flat&logo=mongodb) | ![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat&logo=tailwind-css) |
+| ![TypeScript](https://img.shields.io/badge/TypeScript-ES6-blue?style=flat&logo=typescript) | **NextAuth.js** (Security) | **Framer Motion** (Animations) |
+| ![React](https://img.shields.io/badge/React-18-blue?style=flat&logo=react) | **Cloudinary** (Media CDN) | **React Icons** |
 
-## Learn More
+## ✨ Key Features
 
-To learn more about Next.js, take a look at the following resources:
+### 🔐 System Locked (Admin Authentication)
+Instead of a generic login page, the admin route (`/admin`) simulates a secure terminal.
+* **Credentials:** Custom credential provider.
+* **Security:** Protected routes via Next.js Middleware.
+* **Visuals:** "Access Denied" / "Access Granted" glitch animations.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![Admin Dashboard](screenshots/admin-preview.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 🎛️ The Dashboard (CMS)
+A fully functional Content Management System built from scratch.
+* **Identity Tab:** Update Bio, Avatar, and Social Links in real-time.
+* **Project Hub:** Add/Delete projects with rich data (Title, Tech Stack, Images).
+* **Experience Log:** Manage work history and skills cards.
 
-## Deploy on Vercel
+### 🎨 Visual Engineering
+* **Glassmorphism:** Custom blur effects using Tailwind utilities.
+* **Vignette Overlay:** Custom CSS gradients for a "deep space" feel.
+* **Responsive:** Fully mobile-optimized "App-like" navigation.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ⚙️ Local Installation (Run it yourself)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/YOUR_USERNAME/portfolio-chilly.git](https://github.com/YOUR_USERNAME/portfolio-chilly.git)
+   cd portfolio-chilly

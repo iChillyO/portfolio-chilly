@@ -98,7 +98,7 @@ export default function BookingModal({ isOpen, onClose, plan }: BookingModalProp
                         </h2>
                         <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs tracking-widest uppercase">
                             <span>{plan.name}</span>
-                            <span className="text-white/30">//</span>
+                            <span className="text-white/30"></span>
                             <span>{plan.level}</span>
                         </div>
                     </div>

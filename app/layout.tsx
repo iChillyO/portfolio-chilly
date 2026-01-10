@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className={`${inter.variable} ${orbitron.variable} bg-deep-bg text-slate-800`}>
+      <body className={`${inter.variable} ${orbitron.variable} bg-deep-bg text-slate-800`} suppressHydrationWarning={true}>
         <Providers>
           <EdgeBlurs />
           {/* SWAP THIS: Use the Conditional one instead of the fixed one */}

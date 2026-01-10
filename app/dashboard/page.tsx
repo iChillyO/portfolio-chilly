@@ -438,7 +438,7 @@ export default function () {
   // --- Conditional Rendering for Auth ---
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#050b14] font-mono text-cyan-400">
+      <div className="flex items-center justify-center min-h-screen bg-[#050b14] font-mono text-cyan-400" suppressHydrationWarning={true}>
         <FaSpinner className="animate-spin text-5xl text-cyan-500" />
         <p className="ml-4 text-white uppercase tracking-widest">LOADING SYSTEM DATA...</p>
       </div>
@@ -451,7 +451,7 @@ export default function () {
 
   // --- 🖥️ DASHBOARD LAYOUT ---
   return (
-    <div className="flex h-screen bg-[#050b14] font-mono text-cyan-400 selection:bg-cyan-500 selection:text-black overflow-hidden relative">
+    <div className="flex h-screen bg-[#050b14] font-mono text-cyan-400 selection:bg-cyan-500 selection:text-black overflow-hidden relative" suppressHydrationWarning={true}>
 
       <Sidebar
         activeTab={activeTab}

@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} ${orbitron.variable} bg-deep-bg text-slate-800`} suppressHydrationWarning={true}>
+    <html lang="en" suppressHydrationWarning={true}>
+      <body className={`${inter.variable} ${orbitron.variable} bg-deep-bg text-slate-800`}>
         <Providers>
           <EdgeBlurs />
           {/* SWAP THIS: Use the Conditional one instead of the fixed one */}

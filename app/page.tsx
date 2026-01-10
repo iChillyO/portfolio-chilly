@@ -86,8 +86,8 @@ export default function Home() {
 
   if (loading) {
     return (
-      <main className="h-[100dvh] w-full bg-deep-bg flex items-center justify-center">
-        <div className="text-cyan-400 font-mono text-xl">Loading...</div>
+      <main className="h-[100dvh] w-full bg-deep-bg flex items-center justify-center" suppressHydrationWarning={true}>
+        <div className="text-cyan-400 font-mono text-xl" suppressHydrationWarning={true}>Loading...</div>
       </main>
     );
   }
@@ -101,7 +101,7 @@ export default function Home() {
   }
 
   return (
-    <main className="h-[100dvh] w-full bg-deep-bg flex items-center justify-center p-4 md:p-8 font-sans select-none overflow-hidden relative">
+    <main className="h-[100dvh] w-full bg-deep-bg flex items-center justify-center p-4 md:p-8 font-sans select-none overflow-hidden relative" suppressHydrationWarning={true}>
 
       {/* THE MAIN CARD */}
       <div className="relative w-full max-w-7xl min-h-[70vh] lg:h-[80vh] lg:max-h-[800px] flex bg-[#0a1128]/70 backdrop-blur-xl rounded-[20px] md:rounded-[40px] shadow-[0_0_80px_rgba(34,211,238,0.2)] z-20">

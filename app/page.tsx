@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FaDiscord, FaTwitter, FaGoogle, FaInstagram } from "react-icons/fa";
+import { FaDiscord, FaTwitter, FaGoogle, FaInstagram, FaGithub, FaLinkedin, FaYoutube, FaTwitch, FaExternalLinkAlt } from "react-icons/fa";
 import { ProfileData } from "@/types";
 
 // --- 1. DEFINITIONS ---
@@ -196,7 +196,11 @@ export default function Home() {
                         if (lower.includes("twitter") || lower.includes("x")) return <FaTwitter size={18} />;
                         if (lower.includes("instagram")) return <FaInstagram size={18} />;
                         if (lower.includes("google") || lower.includes("mail")) return <FaGoogle size={16} />;
-                        return <div className="text-[10px] font-bold">{p.substring(0, 2)}</div>;
+                        if (lower.includes("github")) return <FaGithub size={18} />;
+                        if (lower.includes("linkedin")) return <FaLinkedin size={18} />;
+                        if (lower.includes("youtube")) return <FaYoutube size={18} />;
+                        if (lower.includes("twitch")) return <FaTwitch size={18} />;
+                        return <FaExternalLinkAlt size={16} />;
                       };
 
                       return (

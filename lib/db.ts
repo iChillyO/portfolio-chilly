@@ -2,10 +2,6 @@ import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
-}
-
 // 👇 1. DEFINE THE TYPE (Tells TS what the cache looks like)
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -24,6 +20,10 @@ if (!cached) {
 }
 
 async function dbConnect() {
+  if (!MONGODB_URI) {
+    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+  }
+
   if (cached!.conn) {
     return cached!.conn;
   }
@@ -37,7 +37,7 @@ async function dbConnect() {
       return mongoose;
     });
   }
-  
+
   try {
     cached!.conn = await cached!.promise;
   } catch (e) {

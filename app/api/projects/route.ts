@@ -17,8 +17,13 @@ export async function GET() {
 
     return NextResponse.json({ success: true, data: mappedProjects });
   } catch (error) {
-    console.error("GET projects error:", error);
-    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+    console.error("GET projects error (falling back to empty list):", error);
+    // Return empty list instead of 500 during outage
+    return NextResponse.json({ 
+      success: true, 
+      data: [], 
+      error: "Regional database outage. Projects temporarily unavailable." 
+    });
   }
 }
 

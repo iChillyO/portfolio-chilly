@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Profile from '@/models/Profile';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // GET: Load your identity
 export async function GET() {
   const defaultProfile = {

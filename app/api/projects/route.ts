@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Project from '@/models/Project';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // 1. GET: Fetch all projects from the database
 export async function GET() {
   try {

@@ -24,7 +24,12 @@ export async function GET() {
     
     // If no profile exists yet in the DB, create/use default
     if (!profile) {
-      profile = await Profile.create(defaultProfile);
+      try {
+        profile = await Profile.create(defaultProfile);
+      } catch (createError) {
+        console.error("Failed to create initial profile, using static:", createError);
+        profile = defaultProfile;
+      }
     }
     
     return NextResponse.json({ success: true, data: profile });
@@ -32,13 +37,16 @@ export async function GET() {
     // REGIONAL OUTAGE FALLBACK:
     // If DB connection fails (e.g. AWS Middle East outage), 
     // return the default static profile so the website still loads.
-    console.error("Database connection failed, using static fallback:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("Database connection failed, using static fallback. Error:", errorMessage);
+    
     return NextResponse.json({ 
       success: true, 
       data: defaultProfile,
       isFallback: true,
-      error: "Regional database outage detected. Using local cache." 
-    });
+      error: errorMessage,
+      info: "Regional database outage detected. Using local cache." 
+    }, { status: 200 }); // Explicitly return 200 to avoid console noise
   }
 }
 
@@ -52,13 +60,13 @@ export async function PUT(req: Request) {
     const updatedProfile = await Profile.findOneAndUpdate(
       {}, 
       { ...body, lastSync: new Date() }, 
-      { new: true, upsert: true }
+      { new: true, upsert: true, runValidators: true }
     );
     
     return NextResponse.json({ success: true, data: updatedProfile });
   } catch (error) {
-    // A more specific error log
-    console.error("Error in PUT /api/profile:", error);
-    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("Error in PUT /api/profile:", errorMessage);
+    return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
   }
 }

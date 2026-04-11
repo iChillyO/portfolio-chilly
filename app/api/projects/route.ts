@@ -4,8 +4,8 @@ import Project from '@/models/Project';
 
 // 1. GET: Fetch all projects from the database
 export async function GET() {
-  await dbConnect();
   try {
+    await dbConnect();
     // Sort by 'createdAt' so the newest ones appear first (-1)
     const projects = await Project.find({}).sort({ createdAt: -1 }).lean();
 
@@ -17,27 +17,29 @@ export async function GET() {
 
     return NextResponse.json({ success: true, data: mappedProjects });
   } catch (error) {
-    return NextResponse.json({ success: false, error: 'Failed to fetch projects' }, { status: 500 });
+    console.error("GET projects error:", error);
+    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
   }
 }
 
 // 2. POST: Add a new project to the database
 export async function POST(req: Request) {
-  await dbConnect();
   try {
+    await dbConnect();
     const body = await req.json();
     const project = await Project.create(body);
     return NextResponse.json({ success: true, data: project }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ success: false, error: 'Failed to create project' }, { status: 400 });
+    console.error("POST projects error:", error);
+    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
   }
 }
 
 
 // 3. PUT: Update a project
 export async function PUT(req: Request) {
-  await dbConnect();
   try {
+    await dbConnect();
     const body = await req.json();
     const { _id, ...updateData } = body;
 
@@ -53,14 +55,15 @@ export async function PUT(req: Request) {
 
     return NextResponse.json({ success: true, data: updatedProject });
   } catch (error) {
-    return NextResponse.json({ success: false, error: 'Failed to update' }, { status: 500 });
+    console.error("PUT projects error:", error);
+    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
   }
 }
 
 // 4. DELETE: Remove a project by ID
 export async function DELETE(req: Request) {
-  await dbConnect();
   try {
+    await dbConnect();
     // Get the ID from the URL (e.g., /api/projects?id=12345)
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
@@ -74,6 +77,7 @@ export async function DELETE(req: Request) {
 
     return NextResponse.json({ success: true, message: 'Project deleted' });
   } catch (error) {
-    return NextResponse.json({ success: false, error: 'Failed to delete' }, { status: 500 });
+    console.error("DELETE projects error:", error);
+    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
   }
 }

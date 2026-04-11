@@ -11,9 +11,18 @@ export default function WorkQueue() {
     async function fetchWorkQueue() {
       try {
         const res = await fetch('/api/profile'); // The workQueue is part of the profile
+        const contentType = res.headers.get("content-type");
+        
+        if (!res.ok || !contentType || !contentType.includes("application/json")) {
+          const errorText = await res.text();
+          throw new Error(`Fetch failed with status ${res.status}: ${errorText.substring(0, 100)}`);
+        }
+        
         const data = await res.json();
         if (data.success && data.data.workQueue) {
           setWorkQueue(data.data.workQueue);
+        } else {
+          console.error("Work Queue fetch failure:", data.error);
         }
       } catch (error) {
         console.error("Failed to load work queue:", error);

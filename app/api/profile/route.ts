@@ -4,8 +4,8 @@ import Profile from '@/models/Profile';
 
 // GET: Load your identity
 export async function GET() {
-  await dbConnect();
   try {
+    await dbConnect();
     let profile = await Profile.findOne({});
     
     // If no profile exists yet, create a default one with the original static data
@@ -36,8 +36,8 @@ export async function GET() {
 
 // PUT: Update your identity
 export async function PUT(req: Request) {
-  await dbConnect();
   try {
+    await dbConnect();
     const body = await req.json();
     
     // Update the ONE profile that exists (upsert: true creates it if missing)

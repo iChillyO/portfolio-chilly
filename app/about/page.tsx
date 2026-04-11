@@ -12,12 +12,21 @@ export default function About() {
     async function fetchProfile() {
       try {
         const res = await fetch('/api/profile');
+        const contentType = res.headers.get("content-type");
+        
+        if (!res.ok || !contentType || !contentType.includes("application/json")) {
+          const errorText = await res.text();
+          throw new Error(`Fetch failed with status ${res.status}: ${errorText.substring(0, 100)}`);
+        }
+        
         const data = await res.json();
         if (data.success) {
           setProfile(data.data);
+        } else {
+          console.error("Profile API returned failure:", data.error);
         }
       } catch (error) {
-        console.error("Failed to fetch profile", error);
+        console.error("Failed to fetch profile:", error);
       } finally {
         setLoading(false);
       }

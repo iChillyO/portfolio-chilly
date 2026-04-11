@@ -39,12 +39,21 @@ export default function Pricing() {
     const fetchPricing = async () => {
       try {
         const res = await fetch('/api/profile');
+        const contentType = res.headers.get("content-type");
+        
+        if (!res.ok || !contentType || !contentType.includes("application/json")) {
+          const errorText = await res.text();
+          throw new Error(`Fetch failed with status ${res.status}: ${errorText.substring(0, 100)}`);
+        }
+        
         const data = await res.json();
         if (data.success) {
           setPlans(data.data.pricing);
+        } else {
+          console.error("Pricing fetch failure:", data.error);
         }
       } catch (err) {
-        console.error(err);
+        console.error("Failed to fetch pricing:", err);
       } finally {
         setLoading(false);
       }

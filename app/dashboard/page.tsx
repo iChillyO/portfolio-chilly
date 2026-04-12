@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import {
   FaTrash, FaPlus, FaDatabase, FaSpinner, FaUserEdit, FaTags, FaListUl,
   FaImages, FaSave, FaUpload, FaCaretDown, FaTerminal,
-  FaChevronDown, FaChevronRight, FaBriefcase, FaFileContract
+  FaChevronDown, FaChevronRight, FaBriefcase, FaFileContract, FaShieldAlt
 } from "react-icons/fa";
 import { Project, ProfileData, ExperienceCard } from "@/types";
 import Auth from "@/components/dashboard/Auth";
@@ -12,7 +12,6 @@ import Header from "@/components/dashboard/Header";
 import Overview from "@/components/dashboard/Overview";
 import ConfirmModal from "@/components/dashboard/ConfirmModal";
 import { FaTasks } from "react-icons/fa";
-import SocialLinksPage from "@/app/dashboard/social-links/page";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -58,6 +57,7 @@ export default function () {
     },
     pricing: [],
     workQueue: [],
+    socialLinks: [],
     skillStats: [],
     lastSync: new Date().toISOString()
   });
@@ -105,7 +105,8 @@ export default function () {
         const safeData = {
           ...data.data,
           experienceLog: data.data.experienceLog || [],
-          skillStats: data.data.skillStats || []
+          skillStats: data.data.skillStats || [],
+          socialLinks: data.data.socialLinks || []
         };
         setIdentity(safeData);
       }
@@ -359,6 +360,26 @@ export default function () {
     const newStats = [...(identity.skillStats || [])];
     newStats[index] = { ...newStats[index], [field]: value };
     setIdentity({ ...identity, skillStats: newStats });
+  };
+
+  // Social Link Handlers
+  const addSocialLink = () => {
+    setIdentity({
+      ...identity,
+      socialLinks: [...(identity.socialLinks || []), { platform: "New Platform", url: "https://" }]
+    });
+  };
+
+  const removeSocialLink = (index: number) => {
+    const newLinks = [...(identity.socialLinks || [])];
+    newLinks.splice(index, 1);
+    setIdentity({ ...identity, socialLinks: newLinks });
+  };
+
+  const updateSocialLink = (index: number, field: 'platform' | 'url', value: string) => {
+    const newLinks = [...(identity.socialLinks || [])];
+    newLinks[index] = { ...newLinks[index], [field]: value };
+    setIdentity({ ...identity, socialLinks: newLinks });
   };
 
   // Project Handlers
@@ -700,8 +721,57 @@ export default function () {
 
             {/* === 🔗 VIEW: SOCIAL LINKS === */}
             {activeTab === 'social-links' && (
-              <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <SocialLinksPage />
+              <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-12">
+                <section>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
+                    <div className="flex items-center gap-4 w-full">
+                      <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
+                      <h3 className="text-white font-bold uppercase tracking-[0.2em] text-sm shrink-0">Social Uplinks</h3>
+                      <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
+                    </div>
+                    <button 
+                      onClick={addSocialLink} 
+                      className="text-[10px] bg-cyan-500/20 hover:bg-cyan-500 text-cyan-400 hover:text-black px-4 py-2 rounded uppercase tracking-widest transition-all font-bold flex gap-2 items-center shrink-0"
+                    >
+                      <FaPlus /> Initialize Uplink
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {(identity.socialLinks || []).map((link, idx) => (
+                      <div key={idx} className="bg-black/30 border border-cyan-500/20 p-6 rounded flex flex-col md:flex-row gap-6 items-start group hover:border-cyan-500/50 transition-all">
+                        <div className="text-2xl text-gray-600 pt-1 shrink-0"><FaShieldAlt /></div>
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                          <div>
+                            <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Platform Name</label>
+                            <input 
+                              value={link.platform} 
+                              onChange={(e) => updateSocialLink(idx, 'platform', e.target.value)} 
+                              className="w-full bg-black/50 border border-white/10 p-3 text-white text-xs rounded focus:border-cyan-500 outline-none" 
+                              placeholder="e.g. Twitter"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">URL Endpoint</label>
+                            <input 
+                              value={link.url} 
+                              onChange={(e) => updateSocialLink(idx, 'url', e.target.value)} 
+                              className="w-full bg-black/50 border border-white/10 p-3 text-cyan-400 text-xs rounded focus:border-cyan-500 outline-none font-mono" 
+                              placeholder="https://..."
+                            />
+                          </div>
+                        </div>
+                        <button onClick={() => removeSocialLink(idx)} className="text-red-500/50 hover:text-red-500 pt-1 transition-colors self-end md:self-start"><FaTrash /></button>
+                      </div>
+                    ))}
+
+                    {(identity.socialLinks || []).length === 0 && (
+                      <div className="text-center py-20 border border-dashed border-cyan-500/10 rounded-xl opacity-30">
+                        <p className="text-xs uppercase tracking-[0.3em]">No active uplinks detected</p>
+                      </div>
+                    )}
+                  </div>
+                </section>
               </div>
             )}
 

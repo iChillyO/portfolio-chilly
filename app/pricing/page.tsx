@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FaCheck, FaRocket, FaGem, FaCrown, FaSpinner } from "react-icons/fa";
+import { FaCheck, FaRocket, FaGem, FaCrown, FaStar } from "react-icons/fa";
 import BookingModal from "@/components/BookingModal";
 
 interface Plan {
@@ -10,22 +10,26 @@ interface Plan {
   features: string[];
 }
 
-const planStyles: { [key: string]: { icon: React.ReactNode; color: string; btnColor: string } } = {
+const planStyles: { [key: string]: { icon: React.ReactNode; accent: string; btnClass: string; borderClass: string; popular?: boolean } } = {
   Scout: {
-    icon: <FaRocket />,
-    color: "border-gray-500 text-gray-300",
-    btnColor: "bg-gray-700 hover:bg-gray-600"
+    icon: <FaRocket className="text-sky-400" />,
+    accent: "text-sky-400",
+    btnClass: "bg-white/5 hover:bg-white/10 border border-white/[0.08] text-white",
+    borderClass: "border-white/[0.08] hover:border-sky-500/30",
   },
   Vanguard: {
-    icon: <FaGem />,
-    color: "border-cyan-500 text-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.15)]",
-    btnColor: "bg-cyan-600 hover:bg-cyan-500"
+    icon: <FaGem className="text-violet-400" />,
+    accent: "text-violet-400",
+    btnClass: "bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/20",
+    borderClass: "border-violet-500/30 shadow-[0_0_40px_rgba(139,92,246,0.1)]",
+    popular: true,
   },
   Titan: {
-    icon: <FaCrown />,
-    color: "border-yellow-500 text-yellow-400",
-    btnColor: "bg-yellow-600 hover:bg-yellow-500"
-  }
+    icon: <FaCrown className="text-amber-400" />,
+    accent: "text-amber-400",
+    btnClass: "bg-amber-500 hover:bg-amber-400 text-black shadow-lg shadow-amber-500/20",
+    borderClass: "border-amber-500/20 hover:border-amber-500/40",
+  },
 };
 
 export default function Pricing() {
@@ -33,24 +37,20 @@ export default function Pricing() {
   const [loading, setLoading] = useState(true);
   const [activePlan, setActivePlan] = useState<Plan | null>(null);
 
-  const handleCloseModal = () => setActivePlan(null);
-
   useEffect(() => {
     const fetchPricing = async () => {
       try {
         const res = await fetch('/api/profile');
         const contentType = res.headers.get("content-type");
-        
+
         if (!res.ok || !contentType || !contentType.includes("application/json")) {
           const errorText = await res.text();
           throw new Error(`Fetch failed with status ${res.status}: ${errorText.substring(0, 100)}`);
         }
-        
+
         const data = await res.json();
         if (data.success) {
           setPlans(data.data.pricing);
-        } else {
-          console.error("Pricing fetch failure:", data.error);
         }
       } catch (err) {
         console.error("Failed to fetch pricing:", err);
@@ -64,69 +64,90 @@ export default function Pricing() {
   if (loading) {
     return (
       <main className="min-h-screen w-full bg-deep-bg flex items-center justify-center">
-        <FaSpinner className="text-cyan-400 text-6xl animate-spin" />
+        <div className="w-12 h-12 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen w-full bg-deep-bg font-sans select-none flex flex-col items-center overflow-x-hidden relative text-white pt-24 md:pt-32 pb-20 px-4">
+    <main className="min-h-screen w-full bg-deep-bg font-sans select-none overflow-x-hidden relative text-white pt-28 md:pt-36 pb-16">
 
-      {/* Header */}
-      <div className="text-center mb-12 md:mb-16">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white uppercase italic tracking-tighter mb-4 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-          Service <span className="text-cyan-500">Modules</span>
-        </h1>
-        <p className="text-blue-200/60 font-mono tracking-widest text-[10px] md:text-sm uppercase">
-          Select your deployment package
-        </p>
-      </div>
+      {/* Background */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-violet-600/5 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Pricing Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl w-full">
-        {plans.map((plan, i) => {
-          const style = planStyles[plan.name] || planStyles.Scout;
-          return (
-            <div key={i} className={`relative bg-[#0a1128]/80 backdrop-blur-md border rounded-[2rem] p-6 md:p-8 flex flex-col transition-all duration-300 md:hover:-translate-y-2 hover:shadow-2xl ${style.color}`}>
+      <div className="max-w-6xl mx-auto section-padding relative z-10">
 
-              {/* Icon & Name */}
-              <div className="mb-6 flex items-center justify-between">
-                <div className="text-2xl md:text-3xl">{style.icon}</div>
-                <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full">
-                  {plan.level}
-                </span>
-              </div>
+        {/* Header */}
+        <div className="text-center mb-14">
+          <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3">Pricing</p>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white mb-4">
+            Service <span className="text-gradient-primary">Plans</span>
+          </h1>
+          <p className="text-slate-400 text-lg max-w-xl mx-auto">
+            Choose a plan that fits your project scope and budget.
+          </p>
+        </div>
 
-              <h3 className="text-2xl md:text-3xl font-black uppercase italic mb-2">{plan.name}</h3>
-              <div className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 text-cyan-400">{plan.price}</div>
-
-              {/* Features */}
-              <ul className="space-y-3 md:space-y-4 mb-8 flex-1">
-                {plan.features.map((feat, idx) => (
-                  <li key={idx} className="flex items-center gap-3 text-xs md:text-sm text-gray-300">
-                    <FaCheck size={12} className="text-green-400 shrink-0" /> {feat}
-                  </li>
-                ))}
-              </ul>
-
-              {/* Button */}
-              <button
-                onClick={() => setActivePlan(plan)}
-                className={`w-full py-4 rounded-xl font-bold uppercase tracking-widest text-white transition-all shadow-lg text-xs md:text-sm ${style.btnColor}`}
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {plans.map((plan, i) => {
+            const style = planStyles[plan.name] || planStyles.Scout;
+            return (
+              <div
+                key={i}
+                className={`relative glass-card p-6 md:p-8 flex flex-col transition-all duration-500 hover:-translate-y-1 ${style.borderClass}`}
               >
-                Initiate
-              </button>
-            </div>
-          );
-        })}
+                {/* Popular Badge */}
+                {style.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <div className="flex items-center gap-1.5 px-4 py-1.5 bg-violet-600 text-white text-[10px] font-bold uppercase tracking-widest rounded-full shadow-lg shadow-violet-500/30">
+                      <FaStar size={8} /> Most Popular
+                    </div>
+                  </div>
+                )}
+
+                {/* Icon & Level */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="text-2xl">{style.icon}</div>
+                  <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 bg-white/5 px-3 py-1 rounded-full border border-white/[0.06]">
+                    {plan.level}
+                  </span>
+                </div>
+
+                {/* Plan Name & Price */}
+                <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
+                <div className={`text-3xl md:text-4xl font-black mb-8 ${style.accent}`}>
+                  {plan.price}
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-3 mb-8 flex-1">
+                  {plan.features.map((feat, idx) => (
+                    <li key={idx} className="flex items-start gap-3 text-sm text-slate-300">
+                      <FaCheck size={12} className="text-green-400 shrink-0 mt-0.5" />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Button */}
+                <button
+                  onClick={() => setActivePlan(plan)}
+                  className={`w-full py-3.5 rounded-xl font-semibold transition-all duration-300 text-sm ${style.btnClass}`}
+                >
+                  Get Started
+                </button>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <BookingModal
         isOpen={activePlan !== null}
-        onClose={handleCloseModal}
+        onClose={() => setActivePlan(null)}
         plan={activePlan}
       />
-
     </main>
   );
 }

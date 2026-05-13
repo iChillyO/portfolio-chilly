@@ -1,4 +1,4 @@
-import { FaShieldAlt, FaDatabase, FaMicrochip, FaGlobe, FaExternalLinkAlt, FaSpinner } from "react-icons/fa";
+import { FaShieldAlt, FaDatabase, FaGlobe, FaExternalLinkAlt, FaImages, FaTags, FaListUl, FaCogs } from "react-icons/fa";
 import { ProfileData } from "@/types";
 
 interface OverviewProps {
@@ -7,65 +7,105 @@ interface OverviewProps {
 }
 
 export default function Overview({ identity, setActiveTab }: OverviewProps) {
-  
   if (!identity) {
     return (
-      <div className="flex items-center justify-center h-64 w-full text-cyan-500 gap-4">
-        <FaSpinner className="animate-spin text-4xl" />
-        <span className="font-mono tracking-widest text-sm animate-pulse">LOADING SYSTEM DATA...</span>
+      <div className="flex items-center justify-center h-64">
+        <div className="w-10 h-10 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
       </div>
     );
   }
 
+  const stats = [
+    { label: "Status", value: "Online", icon: <FaShieldAlt />, color: "text-green-400" },
+    { label: "Database", value: "Connected", icon: <FaDatabase />, color: "text-violet-400" },
+    { label: "Public Site", value: "Live", icon: <FaGlobe />, color: "text-sky-400" },
+    { label: "Projects", value: `${identity.workQueue?.length || 0} active`, icon: <FaListUl />, color: "text-amber-400" },
+  ];
+
+  const quickLinks = [
+    { label: "Projects", tab: "projects", icon: <FaImages /> },
+    { label: "Identity", tab: "identity", icon: <FaShieldAlt /> },
+    { label: "Skills", tab: "skills", icon: <FaCogs /> },
+    { label: "Pricing", tab: "pricing", icon: <FaTags /> },
+    { label: "Work Queue", tab: "workQueue", icon: <FaListUl /> },
+  ];
+
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {[
-           { icon: <FaShieldAlt />, label: "System Status", val: "OPERATIONAL", sub: identity.statusMode ? identity.statusMode.split(' ')[0] : 'N/A' },
-           { icon: <FaDatabase />, label: "Database Link", val: "STABLE", sub: "Connected" },
-           { icon: <FaMicrochip />, label: "Neural Core", val: "ACTIVE", sub: "v2.4.0" },
-           { icon: <FaGlobe />, label: "Public Traffic", val: "ONLINE", sub: "Port 3000" }
-        ].map((card, i) => (
-          <div key={i} className="bg-black/40 backdrop-blur border border-cyan-500/10 p-8 rounded hover:border-cyan-500/40 transition-all group relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 text-[10px] text-gray-700 font-bold opacity-30">0{i+1}</div>
-            <div className="text-3xl mb-6 text-cyan-400 group-hover:scale-110 transition-transform">{card.icon}</div>
-            <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-2">{card.label}</div>
-            <div className="text-2xl font-bold text-white uppercase tracking-wider">{card.val}</div>
-            <div className="text-xs font-mono text-gray-500">{card.sub}</div>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {stats.map((stat, i) => (
+          <div key={i} className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 hover:border-violet-500/20 transition-all">
+            <div className={`text-lg mb-3 ${stat.color}`}>{stat.icon}</div>
+            <div className="text-[10px] text-slate-500 uppercase tracking-widest mb-1">{stat.label}</div>
+            <div className="text-sm font-semibold text-white">{stat.value}</div>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-black/40 backdrop-blur border border-cyan-500/10 p-10 rounded">
-          <div className="flex items-center gap-4 mb-8 border-b border-white/5 pb-4">
-             <h3 className="text-white font-bold uppercase tracking-widest text-lg">System Quick Links</h3>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <button onClick={() => setActiveTab('projects')} className="bg-transparent border border-cyan-500/20 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-gray-300 hover:text-white py-6 px-6 rounded text-xs font-bold uppercase tracking-wider text-left flex justify-between items-center group transition-all">
-              Edit Portfolio <FaExternalLinkAlt className="opacity-0 group-hover:opacity-100 transition-opacity text-cyan-500"/>
+      {/* Quick Links */}
+      <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6">
+        <h3 className="text-sm font-semibold text-white mb-4">Quick Actions</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+          {quickLinks.map((link, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveTab(link.tab)}
+              className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/[0.02] border border-white/[0.04] hover:border-violet-500/30 hover:bg-violet-500/5 text-slate-400 hover:text-violet-400 transition-all group"
+            >
+              <span className="text-lg">{link.icon}</span>
+              <span className="text-[10px] font-medium tracking-wide">{link.label}</span>
             </button>
-            <button onClick={() => setActiveTab('identity')} className="bg-transparent border border-cyan-500/20 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-gray-300 hover:text-white py-6 px-6 rounded text-xs font-bold uppercase tracking-wider text-left flex justify-between items-center group transition-all">
-              Update Identity <FaExternalLinkAlt className="opacity-0 group-hover:opacity-100 transition-opacity text-cyan-500"/>
-            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Info */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6">
+          <h3 className="text-sm font-semibold text-white mb-4">Profile Summary</h3>
+          <div className="space-y-3 text-xs">
+            <div className="flex justify-between">
+              <span className="text-slate-500">Alias</span>
+              <span className="text-white font-medium">{identity.alias}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-500">Designation</span>
+              <span className="text-white font-medium">{identity.designation}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-500">Status Mode</span>
+              <span className="text-violet-400 font-medium">{identity.statusMode}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-500">Last Sync</span>
+              <span className="text-slate-300 font-mono text-[10px]">{identity.lastSync ? new Date(identity.lastSync).toLocaleString() : 'Never'}</span>
+            </div>
           </div>
         </div>
-        <div className="bg-black/40 backdrop-blur border border-cyan-500/10 p-10 rounded">
-           <div className="flex items-center gap-4 mb-8 border-b border-white/5 pb-4">
-             <h3 className="text-white font-bold uppercase tracking-widest text-lg">Database Telemetry</h3>
+
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6">
+          <h3 className="text-sm font-semibold text-white mb-4">System Info</h3>
+          <div className="space-y-3 text-xs">
+            <div className="flex justify-between">
+              <span className="text-slate-500">Framework</span>
+              <span className="text-white font-medium">Next.js 16</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-500">Database</span>
+              <span className="text-white font-medium">MongoDB (Mongoose 9)</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-500">Auth</span>
+              <span className="text-white font-medium">NextAuth v4</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-500">CDN</span>
+              <span className="text-white font-medium">Cloudinary</span>
+            </div>
           </div>
-           <div className="space-y-5 text-xs font-mono">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-500 tracking-widest">DB_VERSION</span>
-                <span className="text-green-400 font-bold tracking-widest">MDB_9.0.2_STABLE</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-500 tracking-widest">LAST_SYNC</span>
-                <span className="text-cyan-400 font-bold tracking-widest">{identity.lastSync ? new Date(identity.lastSync).toLocaleTimeString() : 'N/A'}</span>
-              </div>
-           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

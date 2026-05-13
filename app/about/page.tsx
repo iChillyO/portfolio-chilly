@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { FaServer, FaTerminal } from "react-icons/fa";
-import { ProfileData, ExperienceCard } from "@/types";
+import { FaBriefcase, FaGraduationCap, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
+import { ProfileData } from "@/types";
 
 export default function About() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
@@ -13,12 +13,12 @@ export default function About() {
       try {
         const res = await fetch('/api/profile');
         const contentType = res.headers.get("content-type");
-        
+
         if (!res.ok || !contentType || !contentType.includes("application/json")) {
           const errorText = await res.text();
           throw new Error(`Fetch failed with status ${res.status}: ${errorText.substring(0, 100)}`);
         }
-        
+
         const data = await res.json();
         if (data.success) {
           setProfile(data.data);
@@ -36,119 +36,130 @@ export default function About() {
 
   if (loading) {
     return (
-      <main className="h-screen w-full bg-deep-bg flex items-center justify-center">
-        <div className="text-cyan-400 font-mono text-xl">Loading...</div>
+      <main className="min-h-screen w-full bg-deep-bg flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
+          <p className="text-violet-400 font-mono text-sm tracking-widest">Loading...</p>
+        </div>
       </main>
     );
   }
 
   if (!profile) {
     return (
-      <main className="h-screen w-full bg-deep-bg flex items-center justify-center">
-        <div className="text-red-500 font-mono text-xl">Failed to load profile data.</div>
+      <main className="min-h-screen w-full bg-deep-bg flex items-center justify-center">
+        <div className="text-red-400 font-mono text-lg">Failed to load profile data.</div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen w-full bg-deep-bg flex items-center justify-center p-4 md:p-8 font-sans select-none overflow-x-hidden relative pt-24 pb-12">
+    <main className="min-h-screen w-full bg-deep-bg font-sans select-none overflow-x-hidden relative pt-28 md:pt-36 pb-16">
 
+      {/* Background decorations */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-violet-600/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
-      {/* MAIN DATA CARD */}
-      <div className="relative w-full max-w-6xl min-h-[85vh] md:h-[85vh] bg-[#0a1128]/80 backdrop-blur-xl border border-cyan-500/30 rounded-[20px] md:rounded-[30px] shadow-[0_0_50px_rgba(34,211,238,0.15)] overflow-hidden flex flex-col md:flex-row z-20 mt-12 md:mt-0">
+      <div className="max-w-6xl mx-auto section-padding relative z-10">
 
-        {/* Decorative Header Line */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50"></div>
+        {/* Header */}
+        <div className="text-center mb-16">
+          <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3">Get to know me</p>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white mb-4">
+            About <span className="text-gradient-primary">Me</span>
+          </h1>
+          <p className="text-slate-400 text-lg max-w-xl mx-auto">
+            A brief story of who I am, what drives me, and what I bring to the table.
+          </p>
+        </div>
 
-        {/* --- LEFT COLUMN: ID CARD / STATS --- */}
-        <div className="w-full md:w-[35%] bg-black/20 border-b md:border-b-0 md:border-r border-cyan-500/20 p-6 md:p-8 flex flex-col relative">
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-10 lg:gap-16">
 
-          {/* Avatar Box */}
-          <div className="relative w-full aspect-square mb-6 rounded-2xl overflow-hidden border-2 border-cyan-500/30 shadow-[0_0_20px_rgba(34,211,238,0.2)] group">
-            <div className="absolute inset-0 bg-cyan-500/10 mix-blend-overlay z-10"></div>
-            {/* Scanline Effect */}
-            <div className="absolute inset-0 bg-[linear-gradient(transparent_2px,#000_3px)] bg-[length:100%_4px] opacity-20 pointer-events-none z-20"></div>
+          {/* Left Column - Photo & Quick Info */}
+          <div className="flex flex-col items-center lg:items-start gap-6">
 
-            <Image
-              src={profile.aboutImage || "/images/lucial-avatar1.png"}
-              alt="Profile"
-              fill
-              className="object-cover object-top transition-transform duration-500 group-hover:scale-110"
-            />
-          </div>
-
-          {/* ID Info */}
-          <div className="space-y-1 mb-6 md:mb-8 text-center md:text-left">
-            <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic">
-              {profile.alias}
-            </h2>
-            <div className="flex items-center justify-center md:justify-start gap-2 text-cyan-400 font-mono text-[10px] md:text-sm">
-              <span className="animate-pulse">●</span>
-              <span>{profile.designation}</span>
+            {/* Avatar */}
+            <div className="relative w-72 h-72 lg:w-full lg:h-80 rounded-2xl overflow-hidden border border-white/[0.08] shadow-xl group">
+              <Image
+                src={profile.aboutImage || "/images/about avatar.png"}
+                alt="Profile"
+                fill
+                className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+              />
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-deep-bg/80 via-transparent to-transparent" />
             </div>
-          </div>
 
-          {/* Stats Bars (RPG Style) */}
-          <div className="space-y-4 font-mono text-[10px] md:text-xs tracking-widest text-blue-200">
-            {profile.skillStats && profile.skillStats.length > 0 ? (
-              profile.skillStats.map((stat, idx) => (
-                <StatBar key={idx} label={stat.label} percentage={stat.value} color={stat.color} />
-              ))
-            ) : (
-              <>
-                <StatBar label="Frontend" percentage="95%" color="bg-blue-500" />
-                <StatBar label="Backend" percentage="85%" color="bg-indigo-500" />
-                <StatBar label="Creativity" percentage="100%" color="bg-pink-500" />
-                <StatBar label="Caffeine" percentage="110%" color="bg-yellow-400" />
-              </>
+            {/* Quick Info Card */}
+            <div className="w-full glass-card p-6 space-y-4">
+              <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Quick Info</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-sm">
+                  <FaMapMarkerAlt className="text-violet-400 shrink-0" />
+                  <span className="text-slate-300">Earth-616</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <FaBriefcase className="text-amber-400 shrink-0" />
+                  <span className="text-slate-300">{profile.designation}</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <FaCalendarAlt className="text-sky-400 shrink-0" />
+                  <span className="text-slate-300">Available for work</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Skill Bars */}
+            {profile.skillStats && profile.skillStats.length > 0 && (
+              <div className="w-full glass-card p-6 space-y-4">
+                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Stats</h3>
+                <div className="space-y-4">
+                  {profile.skillStats.map((stat, idx) => (
+                    <SkillBar key={idx} label={stat.label} percentage={stat.value} />
+                  ))}
+                </div>
+              </div>
             )}
           </div>
 
-          {/* Bottom Details */}
-          <div className="mt-8 md:mt-auto pt-4 md:pt-8 flex justify-center md:justify-start gap-4 text-[8px] md:text-xs text-gray-500 font-mono uppercase">
-            <div>ID: 8492-XJ</div>
-            <div>LOC: EARTH-616</div>
+          {/* Right Column - Bio & Experience */}
+          <div className="space-y-10">
+
+            {/* Bio Section */}
+            <section>
+              <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                <span className="w-8 h-[2px] bg-gradient-to-r from-violet-500 to-transparent" />
+                My Story
+              </h2>
+              <div className="glass-card p-6 md:p-8">
+                <p
+                  className="text-base md:text-lg text-slate-300 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: profile.missionBriefing.replace(/\n/g, '<br />') }}
+                />
+              </div>
+            </section>
+
+            {/* Experience Section */}
+            <section>
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span className="w-8 h-[2px] bg-gradient-to-r from-amber-500 to-transparent" />
+                Experience
+              </h2>
+              <div className="space-y-4">
+                {profile.experienceLog.map((exp, index) => (
+                  <ExperienceCard
+                    key={index}
+                    title={exp.title}
+                    type={exp.type}
+                    desc={exp.desc}
+                    index={index}
+                  />
+                ))}
+              </div>
+            </section>
           </div>
         </div>
-
-        {/* --- RIGHT COLUMN: BIO & TIMELINE --- */}
-        <div className="flex-1 p-6 md:p-12 overflow-y-auto custom-scrollbar">
-
-          {/* Section Title */}
-          <div className="flex items-center gap-4 mb-6 md:mb-8">
-            <FaTerminal className="text-2xl md:text-3xl text-cyan-500" />
-            <h1 className="text-xl md:text-3xl font-bold text-white tracking-widest uppercase">
-              Mission Briefing
-            </h1>
-          </div>
-
-          {/* Bio Text */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 md:p-6 mb-8 md:mb-10 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-cyan-500"></div>
-            <p className="text-base md:text-lg text-blue-100/90 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: profile.missionBriefing.replace(/\n/g, '<br />') }}
-            >
-            </p>
-          </div>
-
-          {/* Experience Grid */}
-          <h3 className="text-lg md:text-xl text-cyan-400 font-bold mb-6 tracking-widest uppercase flex items-center gap-2">
-            <FaServer /> Experience Log
-          </h3>
-
-          <div className="grid grid-cols-1 gap-4">
-            {profile.experienceLog.map((exp, index) => (
-              <ExpCard
-                key={index}
-                role={exp.title}
-                company={exp.type}
-                desc={exp.desc}
-              />
-            ))}
-          </div>
-
-        </div>
-
       </div>
     </main>
   );
@@ -156,31 +167,34 @@ export default function About() {
 
 // --- HELPER COMPONENTS ---
 
-// 1. Stat Bar Component
-const StatBar = ({ label, percentage, color }: { label: string, percentage: string, color: string }) => {
-  // Derive the text color class from the bg class for the shadow glow (e.g. bg-red-500 -> text-red-500)
-  const textClass = color.replace("bg-", "text-");
+const SkillBar = ({ label, percentage }: { label: string; percentage: string }) => {
+  const numericValue = parseInt(percentage) || 0;
+  const clampedValue = Math.min(numericValue, 100);
 
   return (
     <div className="w-full">
-      <div className="flex justify-between mb-1">
-        <span>{label}</span>
-        <span>{percentage}</span>
+      <div className="flex justify-between mb-1.5 text-xs">
+        <span className="text-slate-300 font-medium">{label}</span>
+        <span className="text-violet-400 font-mono">{percentage}</span>
       </div>
-      <div className="w-full h-2 bg-black/40 rounded-full overflow-hidden border border-white/5">
-        <div className={`h-full ${color} ${textClass} shadow-[0_0_10px_currentColor]`} style={{ width: percentage }}></div>
+      <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-violet-600 to-violet-400 rounded-full transition-all duration-1000 ease-out"
+          style={{ width: `${clampedValue}%` }}
+        />
       </div>
     </div>
   );
 };
 
-// 2. Experience Card Component
-const ExpCard = ({ role, company, desc }: { role: string, company: string, desc: string }) => (
-  <div className="group relative p-4 bg-black/20 hover:bg-cyan-900/10 border border-white/5 hover:border-cyan-500/30 rounded-xl transition-all duration-300">
-    <div className="flex justify-between items-start mb-1">
-      <h4 className="text-white font-bold text-lg group-hover:text-cyan-400 transition-colors">{role}</h4>
-      <span className="text-xs font-mono text-cyan-500/70 border border-cyan-500/20 px-2 py-1 rounded bg-cyan-950/30">{company}</span>
+const ExperienceCard = ({ title, type, desc, index }: { title: string; type: string; desc: string; index: number }) => (
+  <div className="group glass-card-hover p-5 md:p-6">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+      <h4 className="text-white font-bold text-base group-hover:text-violet-400 transition-colors">{title}</h4>
+      <span className="text-xs font-medium text-violet-400 bg-violet-500/10 border border-violet-500/20 px-3 py-1 rounded-full w-fit">
+        {type}
+      </span>
     </div>
-    <p className="text-sm text-gray-400">{desc}</p>
+    <p className="text-sm text-slate-400 leading-relaxed">{desc}</p>
   </div>
 );

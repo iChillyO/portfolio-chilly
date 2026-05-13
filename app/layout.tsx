@@ -11,20 +11,13 @@ const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-orbitron" });
 
 export const metadata: Metadata = {
   title: "Chilly | Creative Developer Portfolio",
-  description: "Full-stack developer crafting modern digital experiences with code and design.",
+  description: "Full-stack developer crafting modern digital experiences.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body
-        className={`${inter.variable} ${orbitron.variable} font-sans bg-deep-bg text-slate-200 antialiased`}
-        suppressHydrationWarning={true}
-      >
+      <body className={`${inter.variable} ${orbitron.variable} font-sans bg-deep-bg text-pearl antialiased`} suppressHydrationWarning={true}>
         <Providers>
           <EdgeBlurs />
           <ConditionalNavbar />

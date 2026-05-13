@@ -17,32 +17,28 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, message }: Co
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 animate-in fade-in duration-300">
-      <div className="bg-[#0a1128] border border-cyan-500/30 rounded-xl shadow-2xl shadow-cyan-500/10 w-full max-w-md m-4 animate-in zoom-in-95 slide-in-from-bottom-8 duration-500">
-        <div className="p-8 text-center">
-          <div className="flex justify-center mb-6">
-            <div className="h-16 w-16 border-4 border-yellow-500/50 rounded-full flex items-center justify-center bg-yellow-500/10">
-              <FaExclamationTriangle className="text-yellow-400 text-4xl" />
-            </div>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-surface border border-white/[0.08] rounded-2xl shadow-2xl w-full max-w-md m-4 p-8 text-center">
+        <div className="flex justify-center mb-5">
+          <div className="h-14 w-14 border-2 border-amber-500/30 rounded-full flex items-center justify-center bg-amber-500/10">
+            <FaExclamationTriangle className="text-amber-400 text-2xl" />
           </div>
-          <h2 className="text-xl font-bold text-white uppercase tracking-widest mb-4">Confirmation Required</h2>
-          <p className="text-cyan-200/80 font-mono text-base mb-8">{message}</p>
-          <div className="flex justify-center gap-4">
-            <button 
-              onClick={onClose}
-              className="px-8 py-3 bg-black/40 border border-white/10 text-white rounded-md uppercase tracking-widest font-bold hover:bg-white/10 hover:border-white/20 transition-all flex items-center gap-2"
-            >
-              <FaTimes />
-              Cancel
-            </button>
-            <button 
-              onClick={handleConfirm}
-              className="px-8 py-3 bg-red-600/80 border border-red-500 text-white rounded-md uppercase tracking-widest font-bold hover:bg-red-600 transition-all flex items-center gap-2"
-            >
-              <FaCheck />
-              Confirm
-            </button>
-          </div>
+        </div>
+        <h2 className="text-lg font-bold text-white mb-2">Are you sure?</h2>
+        <p className="text-sm text-slate-400 mb-8 leading-relaxed">{message}</p>
+        <div className="flex justify-center gap-3">
+          <button
+            onClick={onClose}
+            className="px-6 py-2.5 bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:text-white rounded-lg text-sm font-medium transition-all hover:bg-white/[0.08] flex items-center gap-2"
+          >
+            <FaTimes size={12} /> Cancel
+          </button>
+          <button
+            onClick={handleConfirm}
+            className="px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-medium transition-all shadow-md shadow-red-600/20 flex items-center gap-2"
+          >
+            <FaCheck size={12} /> Confirm Delete
+          </button>
         </div>
       </div>
     </div>

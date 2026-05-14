@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { FaShieldAlt, FaLock, FaKey, FaExclamationTriangle, FaSpinner } from "react-icons/fa";
 import Link from "next/link";
@@ -12,77 +11,34 @@ export default function Auth() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/dashboard");
-    }
-  }, [status, router]);
+  useEffect(() => { if (status === "authenticated") router.push("/dashboard"); }, [status, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const result = await signIn("credentials", {
-      redirect: false,
-      username,
-      password,
-    });
-
-    if (result?.error) {
-      setError("ACCESS DENIED: Invalid Credentials");
-    } else if (result?.ok) {
-      router.push("/dashboard");
-    }
+    e.preventDefault(); setLoading(true); setError(null);
+    const result = await signIn("credentials", { redirect: false, username, password });
+    if (result?.error) setError("Invalid credentials.");
+    else if (result?.ok) router.push("/dashboard");
     setLoading(false);
   };
 
-  if (status === "loading") {
-    return (
-      <main className="h-screen w-full bg-[#050b14] bg-space-pattern bg-cover flex flex-col items-center justify-center p-4 text-cyan-400 font-mono">
-        <FaSpinner className="animate-spin text-5xl text-cyan-500" />
-        <p className="mt-4 text-white uppercase tracking-widest">Verifying Session...</p>
-      </main>
-    );
-  }
+  if (status === "loading") return <main className="h-screen bg-deep-bg flex items-center justify-center"><div className="w-10 h-10 border-2 border-cerulean/30 border-t-cerulean rounded-full animate-spin" /></main>;
 
   return (
-    <main className="h-screen w-full bg-[#050b14] bg-space-pattern bg-cover flex flex-col items-center justify-center p-4 text-cyan-400 font-mono">
-      <div className="border border-cyan-500/30 p-8 rounded-2xl max-w-md w-full bg-[#0a1128]/90 backdrop-blur-xl shadow-[0_0_50px_rgba(34,211,238,0.15)] relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></div>
-        <div className="flex justify-center mb-6 text-6xl text-cyan-500 animate-pulse"><FaShieldAlt /></div>
-        <h1 className="text-2xl font-bold text-center mb-2 uppercase tracking-[0.3em] text-white">System Locked</h1>
-        <form onSubmit={handleLogin} className="space-y-4 mt-8">
-          <div className="relative group">
-            <FaLock className="absolute top-4 left-4 text-gray-500 group-focus-within:text-cyan-400 transition-colors"/>
-            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="USERNAME" className="w-full bg-black/50 border border-cyan-900 rounded-lg py-3 pl-12 text-white focus:border-cyan-400 outline-none transition-colors tracking-widest uppercase" autoFocus disabled={loading} />
-          </div>
-          <div className="relative group">
-            <FaKey className="absolute top-4 left-4 text-gray-500 group-focus-within:text-cyan-400 transition-colors"/>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="PASSWORD" className="w-full bg-black/50 border border-cyan-900 rounded-lg py-3 pl-12 text-white focus:border-cyan-400 outline-none transition-colors tracking-widest" disabled={loading} />
-          </div>
-
-          {/* Error Message */}
-          <div className="h-6 mt-2 text-center">
-            {error && (
-              <div className="text-red-500 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 animate-in fade-in">
-                <FaExclamationTriangle /> {error}
-              </div>
-            )}
-          </div>
-          
-          <button type="submit" className="w-full bg-cyan-500/20 border border-cyan-500/50 hover:bg-cyan-500 hover:text-black py-3 rounded-lg font-bold uppercase tracking-widest transition-all duration-300" disabled={loading}>
-            {loading ? <FaSpinner className="animate-spin" /> : "Initialize Session"}
-          </button>
+    <main className="h-screen bg-deep-bg flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="absolute top-[-150px] right-[-150px] w-[400px] h-[400px] bg-galaxy/40 rounded-full blur-[80px] pointer-events-none" />
+      <div className="relative w-full max-w-sm bg-surface border border-white/[0.06] rounded-2xl p-7 shadow-2xl">
+        <div className="flex justify-center mb-5"><div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cerulean to-lilac flex items-center justify-center shadow-lg shadow-cerulean/20"><FaShieldAlt className="text-white text-lg" /></div></div>
+        <h1 className="text-lg font-bold text-center text-pearl mb-0.5">Welcome Back</h1>
+        <p className="text-[11px] text-pearl/40 text-center mb-6">Sign in to your dashboard</p>
+        <form onSubmit={handleLogin} className="space-y-3.5">
+          <div className="relative"><FaLock className="absolute top-3 left-3.5 text-pearl/20" size={11} /><input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" className="input-field pl-9" autoFocus disabled={loading} /></div>
+          <div className="relative"><FaKey className="absolute top-3 left-3.5 text-pearl/20" size={11} /><input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" className="input-field pl-9" disabled={loading} /></div>
+          {error && <div className="flex items-center gap-1.5 text-[11px] text-red-400 bg-red-500/10 border border-red-500/15 rounded-lg px-3 py-2"><FaExclamationTriangle size={10} /> {error}</div>}
+          <button type="submit" disabled={loading} className="w-full py-2.5 bg-cerulean hover:bg-cerulean/90 disabled:bg-cerulean/50 text-white text-sm font-medium rounded-lg transition-all shadow-md shadow-cerulean/20 flex items-center justify-center gap-2">{loading ? <FaSpinner className="animate-spin" size={13} /> : "Sign In"}</button>
         </form>
-
-        <div className="mt-4 text-center">
-          <Link href="/" className="inline-block w-full">
-            <button className="w-full bg-transparent border border-gray-500/50 hover:bg-gray-700/50 text-gray-400 hover:text-white py-3 rounded-lg font-bold uppercase tracking-widest transition-all duration-300" disabled={loading}>Return to Home</button>
-          </Link>
-        </div>
+        <Link href="/" className="block mt-3 w-full py-2 text-center text-[11px] text-pearl/40 hover:text-pearl border border-white/[0.05] rounded-lg transition-all">Return Home</Link>
       </div>
     </main>
   );

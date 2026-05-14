@@ -1,6 +1,6 @@
 # 🚀 Chilly // Portfolio V1
 
-![Project Banner]()
+![Project Banner](screenshots/home-preview.png)
 
 > **Status:** System Online 🟢
 > **Theme:** Cyberpunk / Deep Space / Glassmorphism
@@ -30,7 +30,7 @@ Instead of a generic login page, the admin route (`/admin`) simulates a secure t
 - **Security:** Protected routes via Next.js Middleware.
 - **Visuals:** "Access Denied" / "Access Granted" glitch animations.
 
-![Admin Dashboard]()
+![Admin Dashboard](screenshots/admin-preview.png)
 
 ### 🎛️ The Dashboard (CMS)
 

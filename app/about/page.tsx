@@ -31,12 +31,11 @@ export default function About() {
 
       <div className="max-w-5xl mx-auto section-padding relative z-10">
         {/* Header */}
-        <div className="text-center mb-10">
-          <p className="text-[11px] font-medium text-cerulean uppercase tracking-widest mb-2">Get to know me</p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-pearl">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-pearl">
             About <span className="text-gradient-primary">Me</span>
           </h1>
-          <p className="text-pearl/40 text-sm mt-3 max-w-md mx-auto">A brief story of who I am, what drives me, and what I bring to the table.</p>
+          <p className="text-pearl/40 text-xs mt-1.5 max-w-sm mx-auto">A brief story of who I am and what I bring to the table.</p>
         </div>
 
         {/* Grid */}

@@ -111,6 +111,6 @@ html, body {
   }
 
   .page-top {
-    @apply pt-20 md:pt-24;
+    @apply pt-16 md:pt-20;
   }
 }

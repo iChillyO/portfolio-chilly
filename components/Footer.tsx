@@ -4,7 +4,17 @@ import { FaGithub, FaLinkedin, FaTwitter, FaDiscord, FaHeart } from "react-icons
 
 export default function Footer() {
   const year = new Date().getFullYear();
-  const links = [{ name: "Home", path: "/" }, { name: "About", path: "/about" }, { name: "Projects", path: "/projects" }, { name: "Pricing", path: "/pricing" }];
+
+  // Same links as the Navbar so everything is consistent
+  const links = [
+    { name: "Home", path: "/" },
+    { name: "About", path: "/about" },
+    { name: "Projects", path: "/projects" },
+    { name: "Skills", path: "/skills" },
+    { name: "Pricing", path: "/pricing" },
+    { name: "Contact", path: "/protocols" },
+    { name: "Work Queue", path: "/work-queue" },
+  ];
 
   return (
     <footer className="relative w-full border-t border-white/[0.04] bg-deep-bg/90">
@@ -19,7 +29,7 @@ export default function Footer() {
             <p className="text-xs text-pearl/30 leading-relaxed max-w-xs">Creative developer crafting digital experiences.</p>
           </div>
           <div className="space-y-3">
-            <h4 className="text-[10px] font-medium text-pearl/30 uppercase tracking-widest">Navigation</h4>
+            <h4 className="text-[10px] font-medium text-pearl/30 uppercase tracking-widest">Pages</h4>
             <div className="grid grid-cols-2 gap-1.5">
               {links.map(l => <Link key={l.path} href={l.path} className="text-xs text-pearl/40 hover:text-cerulean transition-colors">{l.name}</Link>)}
             </div>

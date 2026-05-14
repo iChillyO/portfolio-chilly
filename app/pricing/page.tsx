@@ -29,10 +29,9 @@ export default function Pricing() {
     <main className="min-h-screen bg-deep-bg font-sans select-none overflow-x-hidden relative text-pearl page-top pb-12">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-galaxy/30 rounded-full blur-[100px] pointer-events-none" />
       <div className="max-w-5xl mx-auto section-padding relative z-10">
-        <div className="text-center mb-10">
-          <p className="text-[11px] font-medium text-cerulean uppercase tracking-widest mb-2">Pricing</p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-pearl">Service <span className="text-gradient-primary">Plans</span></h1>
-          <p className="text-pearl/40 text-sm mt-3 max-w-md mx-auto">Choose a plan that fits your project.</p>
+        <div className="text-center mb-6">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-pearl">Service <span className="text-gradient-primary">Plans</span></h1>
+          <p className="text-pearl/40 text-xs mt-1.5 max-w-sm mx-auto">Choose a plan that fits your project.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

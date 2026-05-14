@@ -34,13 +34,12 @@ export default function Projects() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-galaxy/30 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto section-padding relative z-10">
-        <div className="text-center mb-10">
-          <p className="text-[11px] font-medium text-cerulean uppercase tracking-widest mb-2">Portfolio</p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-pearl">My <span className="text-gradient-primary">Projects</span></h1>
-          <p className="text-pearl/40 text-sm mt-3 max-w-md mx-auto">A showcase of things I&apos;ve built, designed, and shipped.</p>
+        <div className="text-center mb-6">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-pearl">My <span className="text-gradient-primary">Projects</span></h1>
+          <p className="text-pearl/40 text-xs mt-1.5 max-w-sm mx-auto">A showcase of things I&apos;ve built and shipped.</p>
         </div>
 
-        <div className="flex flex-wrap gap-2 justify-center mb-10">
+        <div className="flex flex-wrap gap-2 justify-center mb-8">
           {categories.map((cat) => (
             <button key={cat.name} onClick={() => setActiveCategory(cat.name)} className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium transition-all ${activeCategory === cat.name ? "bg-cerulean text-white shadow-md shadow-cerulean/20" : "bg-white/[0.04] text-pearl/50 border border-white/[0.06] hover:text-pearl hover:bg-white/[0.07]"}`}>
               {cat.icon} {cat.name}

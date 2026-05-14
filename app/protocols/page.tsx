@@ -20,11 +20,10 @@ export default function ProtocolsPage() {
     <main className="min-h-screen bg-deep-bg font-sans select-none overflow-x-hidden relative pb-12 text-pearl page-top">
       <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-galaxy/30 rounded-full blur-[80px] pointer-events-none" />
       <div className="max-w-4xl mx-auto section-padding relative z-10">
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-8">
           <div>
-            <p className="text-[11px] font-medium text-cerulean uppercase tracking-widest mb-2">Legal</p>
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-pearl">{protocols.title.split(' ')[0]} <span className="text-gradient-primary">{protocols.title.split(' ').slice(1).join(' ')}</span></h1>
-            <div className="flex items-center gap-2 text-xs text-pearl/40 mt-2"><FaFileContract className="text-cerulean" /><span>v{protocols.version}</span></div>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-pearl">{protocols.title.split(' ')[0]} <span className="text-gradient-primary">{protocols.title.split(' ').slice(1).join(' ')}</span></h1>
+            <div className="flex items-center gap-2 text-xs text-pearl/40 mt-1"><FaFileContract className="text-cerulean" /><span>v{protocols.version}</span></div>
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-medium"><div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" /> Active</div>
         </div>

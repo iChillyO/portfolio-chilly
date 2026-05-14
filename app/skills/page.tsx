@@ -54,13 +54,12 @@ export default function Skills() {
     <main className="min-h-screen bg-deep-bg font-sans select-none overflow-x-hidden relative text-pearl page-top pb-12">
       <div className="absolute top-16 left-[-150px] w-[400px] h-[400px] bg-galaxy/30 rounded-full blur-[100px] pointer-events-none" />
       <div className="max-w-5xl mx-auto section-padding relative z-10">
-        <div className="text-center mb-10">
-          <p className="text-[11px] font-medium text-cerulean uppercase tracking-widest mb-2">What I work with</p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-pearl">Skills & <span className="text-gradient-primary">Tech</span></h1>
-          <p className="text-pearl/40 text-sm mt-3 max-w-md mx-auto">Tools and technologies I use to bring ideas to life.</p>
+        <div className="text-center mb-6">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-pearl">Skills & <span className="text-gradient-primary">Tech</span></h1>
+          <p className="text-pearl/40 text-xs mt-1.5 max-w-sm mx-auto">Tools and technologies I use to bring ideas to life.</p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
           <button onClick={() => setActive("all")} className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${active === "all" ? "bg-cerulean text-white shadow-md shadow-cerulean/20" : "bg-white/[0.04] text-pearl/50 border border-white/[0.06] hover:text-pearl"}`}>All</button>
           {skillCategories.map(c => (
             <button key={c.title} onClick={() => setActive(c.title.toLowerCase())} className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${active === c.title.toLowerCase() ? "bg-cerulean text-white shadow-md shadow-cerulean/20" : "bg-white/[0.04] text-pearl/50 border border-white/[0.06] hover:text-pearl"}`}>{c.title}</button>

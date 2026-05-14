@@ -24,11 +24,10 @@ export default function WorkQueue() {
     <main className="min-h-screen bg-deep-bg font-sans select-none overflow-x-hidden relative text-pearl page-top pb-12">
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-galaxy/30 rounded-full blur-[100px] pointer-events-none" />
       <div className="max-w-4xl mx-auto section-padding relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-10">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
           <div>
-            <p className="text-[11px] font-medium text-cerulean uppercase tracking-widest mb-2">Status Board</p>
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-pearl">Work <span className="text-gradient-primary">Queue</span></h1>
-            <div className="flex items-center gap-2 text-xs text-pearl/40 mt-2"><span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" /> Online</div>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-pearl">Work <span className="text-gradient-primary">Queue</span></h1>
+            <div className="flex items-center gap-2 text-xs text-pearl/40 mt-1"><span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" /> Online</div>
           </div>
           <div className="glass-card px-4 py-2.5 flex items-center gap-2.5">
             <div><div className="text-[10px] text-pearl/40">Availability</div><div className="text-cerulean font-medium text-xs">Open for Commissions</div></div>

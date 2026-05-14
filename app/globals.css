@@ -2,39 +2,115 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- CYBER SCROLLBAR (Glowing Cyan) --- */
-/* --- THE FIX: FORCE DARK BACKGROUND --- */
-html,
-body {
-    background-color: #020617;
-    /* Very dark blue/black to match your theme */
-    color: white;
-    margin: 0;
-    padding: 0;
+/* --- ROOT VARIABLES --- */
+:root {
+  --color-indigo: 42 27 129;
+  --color-deep: 21 10 51;
+  --color-pearl: 242 244 247;
+  --color-cerulean: 74 140 255;
+  --color-gold: 203 161 69;
+  --color-lilac: 182 126 229;
+  --color-silver: 234 234 234;
 }
 
-/* Width of the scrollbar */
+/* --- BASE STYLES --- */
+html, body {
+  background-color: #150A33;
+  color: #F2F4F7;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+/* --- SELECTION --- */
+::selection {
+  background-color: rgba(74, 140, 255, 0.3);
+  color: #F2F4F7;
+}
+
+/* --- SCROLLBAR --- */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
-/* The background track (invisible) */
 ::-webkit-scrollbar-track {
-    background: #020617;
+  background: #150A33;
 }
 
-/* The moving part (The Thumb) */
 ::-webkit-scrollbar-thumb {
-    background: rgba(34, 211, 238, 0.4);
-    /* Cyan-400 */
-    border-radius: 10px;
-    border: 1px solid rgba(34, 211, 238, 0.2);
+  background: rgba(74, 140, 255, 0.3);
+  border-radius: 10px;
 }
 
-/* Glow effect when you hover over it */
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(34, 211, 238, 0.9);
-    /* Bright Cyan */
-    box-shadow: 0 0 15px rgba(34, 211, 238, 1);
+  background: rgba(74, 140, 255, 0.6);
+}
+
+/* --- COMPONENT CLASSES (no @apply with custom color opacity) --- */
+.text-gradient-primary {
+  background: linear-gradient(to right, #4A8CFF, #B67EE5, #4A8CFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(to right, #CBA145, #fde047, #CBA145);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-card {
+  background: rgba(42, 27, 129, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
+}
+
+.glass-card-hover {
+  background: rgba(42, 27, 129, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.glass-card-hover:hover {
+  border-color: rgba(74, 140, 255, 0.3);
+  background: rgba(42, 27, 129, 0.6);
+}
+
+.input-field {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  color: #F2F4F7;
+  transition: border-color 0.2s ease;
+}
+
+.input-field::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.input-field:focus {
+  border-color: rgba(74, 140, 255, 0.5);
+  outline: none;
+}
+
+/* --- UTILITY CLASSES --- */
+@layer utilities {
+  .section-padding {
+    @apply px-4 sm:px-6 md:px-10 lg:px-14;
+  }
+
+  .page-top {
+    @apply pt-16 md:pt-20;
+  }
 }

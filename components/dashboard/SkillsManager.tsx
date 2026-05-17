@@ -199,7 +199,7 @@ export default function SkillsManager() {
           <h3 className="text-pearl font-semibold text-sm">Skill Categories</h3>
           <span className="text-[10px] text-pearl/30 bg-white/[0.04] px-2 py-0.5 rounded-full">{categories.length} categories</span>
         </div>
-        <button onClick={addCategory} className="text-xs bg-cerulean hover:bg-cerulean/90 text-white px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all">
+        <button onClick={addCategory} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all">
           <FaPlus size={10} /> Add Category
         </button>
       </div>
@@ -340,7 +340,7 @@ export default function SkillsManager() {
         {categories.length === 0 && (
           <div className="text-center py-16 border border-dashed border-white/[0.06] rounded-xl">
             <p className="text-sm text-pearl/30 mb-3">No skill categories yet.</p>
-            <button onClick={addCategory} className="text-xs bg-cerulean hover:bg-cerulean/90 text-white px-4 py-2 rounded-lg font-medium">
+            <button onClick={addCategory} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium">
               Create First Category
             </button>
           </div>

@@ -490,7 +490,7 @@ export default function () {
                 {/* MISSION OPERATOR IDENTITY (About Page) */}
                 <section>
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
                     <h3 className="text-pearl font-semibold text-sm tracking-wide">Profile Identity</h3>
                     <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
@@ -528,7 +528,7 @@ export default function () {
                 {/* PUBLIC UPLINK CONFIGURATION (Home Page) */}
                 <section>
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
                     <h3 className="text-pearl font-semibold text-sm tracking-wide">Home Page Configuration</h3>
                     <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
@@ -566,7 +566,7 @@ export default function () {
                 {/* BIOGRAPHY */}
                 <section>
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
                     <h3 className="text-pearl font-semibold text-sm tracking-wide">Biography & Experience</h3>
                     <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
@@ -579,7 +579,7 @@ export default function () {
                   <div className="space-y-4">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                       <label className="text-xs text-pearl/40 font-medium ml-1">Experience Cards</label>
-                      <button onClick={addExperience} className="text-xs bg-cerulean hover:bg-cerulean/90 text-pearl px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Card</button>
+                      <button onClick={addExperience} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Card</button>
                     </div>
 
                     <div className="grid grid-cols-1 gap-4">
@@ -610,7 +610,7 @@ export default function () {
                 {/* OPERATION STATUS */}
                 <section>
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
                     <h3 className="text-pearl font-semibold text-sm tracking-wide">Availability Status</h3>
                     <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
@@ -643,13 +643,13 @@ export default function () {
                 <section>
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
                     <div className="flex items-center gap-4 w-full">
-                      <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
                       <h3 className="text-pearl font-semibold text-sm tracking-wide shrink-0">Social Links</h3>
                       <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                     </div>
                     <button 
                       onClick={addSocialLink} 
-                      className="text-xs bg-cerulean hover:bg-cerulean/90 text-pearl px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"
+                      className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"
                     >
                       <FaPlus /> Add Link
                     </button>
@@ -706,7 +706,7 @@ export default function () {
               <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-16">
                 <section>
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
                     <h3 className="text-pearl font-semibold text-sm tracking-wide">Page Settings</h3>
                     <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
@@ -725,11 +725,11 @@ export default function () {
                 <section>
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
                     <div className="flex items-center gap-4 w-full">
-                      <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
                       <h3 className="text-pearl font-semibold text-sm tracking-wide shrink-0">Content Sections</h3>
                       <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                     </div>
-                    <button onClick={addProtocolSection} className="text-xs bg-cerulean hover:bg-cerulean/90 text-pearl px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Section</button>
+                    <button onClick={addProtocolSection} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Section</button>
                   </div>
 
                   <div className="space-y-4">
@@ -760,11 +760,11 @@ export default function () {
                 <section>
                   <div className="flex justify-between items-center mb-8">
                     <div className="flex items-center gap-4 w-full">
-                      <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
                       <h3 className="text-pearl font-semibold text-sm tracking-wide">Pricing Tiers</h3>
                       <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                     </div>
-                    <button onClick={addPricingPlan} className="text-xs bg-cerulean hover:bg-cerulean/90 text-pearl px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Plan</button>
+                    <button onClick={addPricingPlan} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Plan</button>
                   </div>
 
                   <div className="space-y-8">
@@ -814,11 +814,11 @@ export default function () {
                 <section>
                   <div className="flex justify-between items-center mb-8">
                     <div className="flex items-center gap-4 w-full">
-                      <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
                       <h3 className="text-pearl font-semibold text-sm tracking-wide">Work Queue Items</h3>
                       <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                     </div>
-                    <button onClick={addWorkQueueItem} className="text-xs bg-cerulean hover:bg-cerulean/90 text-pearl px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Item</button>
+                    <button onClick={addWorkQueueItem} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Item</button>
                   </div>
 
                   <div className="space-y-4">
@@ -869,7 +869,7 @@ export default function () {
               <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <div className="bg-white/[0.02] border border-white/[0.06] p-6 sm:p-8 rounded-xl h-fit" id="project-form">
                   <div className="flex items-center gap-4 mb-8 text-pearl">
-                    <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
                     <h2 className="text-pearl font-semibold text-sm tracking-wide flex items-center gap-3">
                       {editProjectId ? <><FaUserEdit className="text-yellow-500" /> Update Project</> : <><FaPlus className="text-cerulean" /> New Project</>}
                     </h2>
@@ -970,7 +970,7 @@ export default function () {
                       <label className="text-xs text-pearl/40 font-medium mb-2 block">Technical Solution</label>
                       <textarea value={formData.technicalSolution} onChange={e => setFormData({ ...formData, technicalSolution: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors h-20" />
                     </div>
-                    <button type="submit" className={`w-full font-semibold py-3 rounded-lg transition-all ${editProjectId ? "bg-yellow-600 hover:bg-yellow-500 text-black" : "bg-cerulean hover:bg-cerulean/90 text-pearl"}`}>
+                    <button type="submit" className={`w-full font-semibold py-3 rounded-lg transition-all ${editProjectId ? "bg-yellow-600 hover:bg-yellow-500 text-black" : "bg-cerulean hover:bg-cerulean/90 text-deep-bg"}`}>
                       {editProjectId ? "Update Project" : "Create Project"}
                     </button>
                   </form>
@@ -978,7 +978,7 @@ export default function () {
 
                 <div className="bg-white/[0.02] border border-white/[0.06] p-6 sm:p-8 rounded-xl h-[600px] overflow-y-auto">
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
                     <h2 className="text-pearl font-semibold text-sm tracking-wide flex items-center gap-3">
                       <FaDatabase className="text-cerulean" /> Existing Projects
                     </h2>

@@ -63,7 +63,7 @@ export default function BookingModal({ isOpen, onClose, plan }: BookingModalProp
         <div className="p-5 border-t border-white/[0.05] shrink-0">
           {status === "error" && <p className="text-red-400 text-[11px] text-center mb-2">{errorMessage}</p>}
           {status === "success" && <p className="text-green-400 text-[11px] text-center mb-2">Sent successfully!</p>}
-          <button type="submit" form="booking-form" disabled={status === "sending" || status === "success"} className={`w-full py-2.5 font-medium rounded-lg text-sm flex items-center justify-center gap-2 transition-all ${status === "success" ? "bg-green-600 text-white" : status === "sending" ? "bg-cerulean/50 text-white/70 cursor-not-allowed" : "bg-cerulean hover:bg-cerulean/90 text-white shadow-md shadow-cerulean/20"}`}>
+          <button type="submit" form="booking-form" disabled={status === "sending" || status === "success"} className={`w-full py-2.5 font-medium rounded-lg text-sm flex items-center justify-center gap-2 transition-all ${status === "success" ? "bg-green-600 text-white" : status === "sending" ? "bg-cerulean/50 text-white/70 cursor-not-allowed" : "bg-cerulean hover:bg-cerulean/90 text-deep-bg shadow-md shadow-cerulean/20"}`}>
             {status === "sending" ? <><div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Sending...</> : status === "success" ? "Sent!" : "Submit Request"}
           </button>
         </div>

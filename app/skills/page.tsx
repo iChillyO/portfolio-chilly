@@ -95,7 +95,7 @@ export default function Skills() {
             onClick={() => setActive("all")}
             className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
               active === "all"
-                ? "bg-cerulean text-white shadow-md shadow-cerulean/20"
+                ? "bg-cerulean text-deep-bg shadow-md shadow-cerulean/20"
                 : "bg-white/[0.04] text-pearl/50 border border-white/[0.06] hover:text-pearl"
             }`}
           >
@@ -107,7 +107,7 @@ export default function Skills() {
               onClick={() => setActive(c.title.toLowerCase())}
               className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
                 active === c.title.toLowerCase()
-                  ? "bg-cerulean text-white shadow-md shadow-cerulean/20"
+                  ? "bg-cerulean text-deep-bg shadow-md shadow-cerulean/20"
                   : "bg-white/[0.04] text-pearl/50 border border-white/[0.06] hover:text-pearl"
               }`}
             >

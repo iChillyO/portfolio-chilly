@@ -91,7 +91,7 @@ export default function Home() {
 
               {/* CTAs */}
               <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start opacity-0 animate-reveal" style={{ animationDelay: '0.55s' }}>
-                <Link href="/projects" className="group inline-flex items-center gap-2 px-5 py-2.5 bg-cerulean hover:bg-cerulean/90 text-white text-sm font-medium rounded-lg transition-all shadow-lg shadow-cerulean/20 hover:-translate-y-0.5">
+                <Link href="/projects" className="group inline-flex items-center gap-2 px-5 py-2.5 bg-cerulean hover:bg-cerulean/90 text-deep-bg text-sm font-medium rounded-lg transition-all shadow-lg shadow-cerulean/20 hover:-translate-y-0.5">
                   View Projects <FaArrowRight className="text-[10px] group-hover:translate-x-0.5 transition-transform" />
                 </Link>
                 <Link href="/about" className="px-5 py-2.5 text-sm font-medium text-pearl/70 hover:text-pearl bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.06] rounded-lg transition-all hover:-translate-y-0.5">

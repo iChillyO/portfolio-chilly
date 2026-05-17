@@ -83,7 +83,7 @@ export default function SocialLinksPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-1.5 px-4 py-2 bg-cerulean hover:bg-cerulean/90 disabled:bg-cerulean/50 text-white text-xs font-medium rounded-lg transition-all shadow-sm shadow-cerulean/20"
+            className="flex items-center gap-1.5 px-4 py-2 bg-cerulean hover:bg-cerulean/90 disabled:bg-cerulean/50 text-deep-bg text-xs font-medium rounded-lg transition-all shadow-sm shadow-cerulean/20"
           >
             {saving ? <FaSpinner className="animate-spin" size={11} /> : <FaSave size={11} />}
             {saving ? "Saving..." : "Save Changes"}

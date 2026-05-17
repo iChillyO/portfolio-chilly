@@ -10,7 +10,7 @@ export default function NotFound() {
         <h1 className="text-7xl md:text-8xl font-black text-gradient-primary tracking-tighter">404</h1>
         <h2 className="text-xl font-bold text-pearl">Page Not Found</h2>
         <p className="text-pearl/40 text-sm max-w-sm mx-auto">The page you&apos;re looking for doesn&apos;t exist.</p>
-        <Link href="/" className="inline-flex items-center gap-2 px-5 py-2.5 bg-cerulean text-white text-sm font-medium rounded-lg shadow-md shadow-cerulean/20 hover:-translate-y-0.5 transition-all">
+        <Link href="/" className="inline-flex items-center gap-2 px-5 py-2.5 bg-cerulean text-deep-bg text-sm font-medium rounded-lg shadow-md shadow-cerulean/20 hover:-translate-y-0.5 transition-all">
           <FaHome size={12} /> Back to Home
         </Link>
       </div>

@@ -41,7 +41,7 @@ export default function Projects() {
 
         <div className="flex flex-wrap gap-2 justify-center mb-8">
           {categories.map((cat) => (
-            <button key={cat.name} onClick={() => setActiveCategory(cat.name)} className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium transition-all ${activeCategory === cat.name ? "bg-cerulean text-white shadow-md shadow-cerulean/20" : "bg-white/[0.04] text-pearl/50 border border-white/[0.06] hover:text-pearl hover:bg-white/[0.07]"}`}>
+            <button key={cat.name} onClick={() => setActiveCategory(cat.name)} className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium transition-all ${activeCategory === cat.name ? "bg-cerulean text-deep-bg shadow-md shadow-cerulean/20" : "bg-white/[0.04] text-pearl/50 border border-white/[0.06] hover:text-pearl hover:bg-white/[0.07]"}`}>
               {cat.icon} {cat.name}
             </button>
           ))}
@@ -66,7 +66,7 @@ export default function Projects() {
                   </div>
                   <div className="flex items-center justify-between pt-3 border-t border-white/[0.04]">
                     <span className="text-[11px] text-pearl/40">View details</span>
-                    <div className="w-6 h-6 flex items-center justify-center rounded-full bg-cerulean/10 text-cerulean group-hover:bg-cerulean group-hover:text-white transition-all"><FaChevronRight size={8} /></div>
+                    <div className="w-6 h-6 flex items-center justify-center rounded-full bg-cerulean/10 text-cerulean group-hover:bg-cerulean group-hover:text-deep-bg transition-all"><FaChevronRight size={8} /></div>
                   </div>
                 </div>
               </div>
@@ -97,7 +97,7 @@ export default function Projects() {
               <div className="flex flex-wrap gap-1.5">{(selectedProject.tech || []).map((t, i) => <span key={i} className="text-[10px] text-cerulean bg-cerulean/10 px-2.5 py-1 rounded-md border border-cerulean/15">{t}</span>)}</div>
               <div className="flex gap-3">
                 <a href={selectedProject.links?.github} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 bg-white/[0.04] border border-white/[0.06] text-pearl text-xs font-medium py-2.5 rounded-lg hover:bg-white/[0.08] transition-all"><FaGithub size={13} /> Repo</a>
-                <a href={selectedProject.links?.demo} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 bg-cerulean text-white text-xs font-medium py-2.5 rounded-lg shadow-md shadow-cerulean/20 hover:bg-cerulean/90 transition-all"><FaExternalLinkAlt size={11} /> Demo</a>
+                <a href={selectedProject.links?.demo} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 bg-cerulean text-deep-bg text-xs font-medium py-2.5 rounded-lg shadow-md shadow-cerulean/20 hover:bg-cerulean/90 transition-all"><FaExternalLinkAlt size={11} /> Demo</a>
               </div>
             </div>
           </div>

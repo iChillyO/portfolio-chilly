@@ -19,7 +19,7 @@ export default function Header({ activeTab, saving, handleSaveIdentity, identity
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-pearl/25 font-mono"><span className="w-1.5 h-1.5 bg-green-500 rounded-full" />{identity.lastSync ? new Date(identity.lastSync).toLocaleTimeString() : "—"}</div>
           {activeTab !== 'overview' && activeTab !== 'projects' && (
-            <button onClick={handleSaveIdentity} disabled={saving} className="flex items-center gap-1.5 px-4 py-2 bg-cerulean hover:bg-cerulean/90 disabled:bg-cerulean/50 text-white text-xs font-medium rounded-lg transition-all shadow-sm shadow-cerulean/20 disabled:cursor-not-allowed">
+            <button onClick={handleSaveIdentity} disabled={saving} className="flex items-center gap-1.5 px-4 py-2 bg-cerulean hover:bg-cerulean/90 disabled:bg-cerulean/50 text-deep-bg text-xs font-medium rounded-lg transition-all shadow-sm shadow-cerulean/20 disabled:cursor-not-allowed">
               {saving ? <FaSpinner className="animate-spin" size={11} /> : <FaSave size={11} />}{saving ? "Saving..." : "Save"}
             </button>
           )}

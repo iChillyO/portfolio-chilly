@@ -11,6 +11,7 @@ import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import Overview from "@/components/dashboard/Overview";
 import ConfirmModal from "@/components/dashboard/ConfirmModal";
+import SkillsManager from "@/components/dashboard/SkillsManager";
 import { FaTasks } from "react-icons/fa";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -694,85 +695,8 @@ export default function () {
 
             {/* === VIEW: SKILLS === */}
             {activeTab === 'skills' && (
-              <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-12">
-                <section>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
-                    <div className="flex items-center gap-4 w-full">
-                      <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
-                      <h3 className="text-pearl font-semibold text-sm tracking-wide shrink-0">Skill Stats</h3>
-                      <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
-                    </div>
-                    <button onClick={addSkillStat} className="text-xs bg-cerulean hover:bg-cerulean/90 text-pearl px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Skill</button>
-                  </div>
-
-                  <p className="text-sm text-pearl/30 mb-6">Manage the skill bars displayed on the /skills page. Each skill shows a label, percentage value, and color.</p>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {(identity.skillStats || []).map((stat, idx) => (
-                      <div key={idx} className="bg-white/[0.02] border border-white/[0.06] p-5 rounded-xl hover:border-cerulean/20 transition-all flex gap-4 items-center group">
-                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          <div>
-                            <label className="text-[10px] text-pearl/30 block mb-1">Skill Name</label>
-                            <input value={stat.label} onChange={(e) => updateSkillStat(idx, 'label', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" placeholder="Frontend" />
-                          </div>
-                          <div>
-                            <label className="text-[10px] text-pearl/30 block mb-1">Percent (%)</label>
-                            <input value={stat.value} onChange={(e) => updateSkillStat(idx, 'value', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" placeholder="95%" />
-                          </div>
-                          <div>
-                            <label className="text-[10px] text-pearl/30 block mb-1">Bar Color</label>
-                            <div className="relative">
-                              <select value={stat.color} onChange={(e) => updateSkillStat(idx, 'color', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl focus:border-cerulean/50 focus:outline-none transition-colors appearance-none cursor-pointer">
-                                <optgroup label="Monochrome">
-                                  <option value="bg-gray-500">Gray 500</option>
-                                  <option value="bg-slate-500">Slate 500</option>
-                                  <option value="bg-zinc-500">Zinc 500</option>
-                                </optgroup>
-                                <optgroup label="Warm Colors">
-                                  <option value="bg-red-500">Red 500</option>
-                                  <option value="bg-orange-500">Orange 500</option>
-                                  <option value="bg-amber-500">Amber 500</option>
-                                  <option value="bg-yellow-400">Yellow 400</option>
-                                  <option value="bg-yellow-500">Yellow 500</option>
-                                </optgroup>
-                                <optgroup label="Nature Colors">
-                                  <option value="bg-lime-500">Lime 500</option>
-                                  <option value="bg-green-500">Green 500</option>
-                                  <option value="bg-emerald-500">Emerald 500</option>
-                                  <option value="bg-teal-500">Teal 500</option>
-                                </optgroup>
-                                <optgroup label="Cool Colors">
-                                  <option value="bg-cyan-400">Cyan 400</option>
-                                  <option value="bg-cyan-500">Cyan 500</option>
-                                  <option value="bg-sky-500">Sky 500</option>
-                                  <option value="bg-blue-500">Blue 500</option>
-                                  <option value="bg-blue-600">Blue 600</option>
-                                  <option value="bg-blue-700">Blue 700</option>
-                                  <option value="bg-indigo-500">Indigo 500</option>
-                                </optgroup>
-                                <optgroup label="Mystic Colors">
-                                  <option value="bg-violet-500">Violet 500 (Default)</option>
-                                  <option value="bg-purple-500">Purple 500</option>
-                                  <option value="bg-fuchsia-500">Fuchsia 500</option>
-                                  <option value="bg-pink-500">Pink 500</option>
-                                  <option value="bg-rose-500">Rose 500</option>
-                                </optgroup>
-                              </select>
-                              <FaCaretDown className="absolute right-3 top-4 text-pearl/30 pointer-events-none text-xs" />
-                            </div>
-                          </div>
-                        </div>
-                        <button onClick={() => removeSkillStat(idx)} className="text-red-500/50 hover:text-red-400 transition-colors shrink-0"><FaTrash /></button>
-                      </div>
-                    ))}
-                  </div>
-
-                  {(identity.skillStats || []).length === 0 && (
-                    <div className="text-center py-20 border border-dashed border-white/[0.06] rounded-xl opacity-40">
-                      <p className="text-sm text-pearl/30">No skills added yet. Add your first skill above.</p>
-                    </div>
-                  )}
-                </section>
+              <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                <SkillsManager />
               </div>
             )}
 

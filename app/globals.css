@@ -104,6 +104,32 @@ html, body {
   outline: none;
 }
 
+/* --- THEMED SELECT DROPDOWNS --- */
+/* Native select uses OS-level option styling, so we make the visible select match theme */
+select.input-field,
+select {
+  color: #F2F4F7;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Options can't be fully styled cross-browser, but we can darken them on supporting browsers */
+select option,
+select optgroup {
+  background-color: #1E1245;
+  color: #F2F4F7;
+}
+
+select optgroup {
+  color: rgba(74, 140, 255, 0.8);
+  font-weight: 600;
+}
+
+select option:checked,
+select option:hover {
+  background-color: #4A8CFF;
+  color: #ffffff;
+}
+
 /* --- UTILITY CLASSES --- */
 @layer utilities {
   .section-padding {

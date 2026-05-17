@@ -72,15 +72,6 @@ export default function Home() {
 
             {/* LEFT */}
             <div className="space-y-6 text-center lg:text-left">
-              {/* Status */}
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] opacity-0 animate-reveal" style={{ animationDelay: '0.1s' }}>
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
-                </span>
-                <span className="text-[11px] text-pearl/70">{profile.statusMsg || "Available for work"}</span>
-              </div>
-
               {/* Name */}
               <div className="space-y-2 opacity-0 animate-reveal" style={{ animationDelay: '0.25s' }}>
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1]">

@@ -67,3 +67,27 @@ export interface ProfileData {
   skillStats?: { label: string; value: string; color: string }[];
   lastSync: string;
 }
+
+
+// --- SKILL CATEGORIES (Dynamic /skills page) ---
+export interface SkillItem {
+  _id?: string;
+  name: string;
+  icon: string;
+  level: "Expert" | "Advanced" | "Intermediate" | "Learning";
+  color: string;
+  order: number;
+}
+
+export interface SkillCategoryData {
+  _id?: string;
+  title: string;
+  icon: string;
+  iconColor: string;
+  description: string;
+  skills: SkillItem[];
+  order: number;
+  visible: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}

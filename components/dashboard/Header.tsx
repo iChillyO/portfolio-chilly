@@ -8,7 +8,7 @@ export default function Header({ activeTab, saving, handleSaveIdentity, identity
     overview: { title: "Overview", sub: "Dashboard summary" }, identity: { title: "Profile", sub: "Your identity info" },
     protocols: { title: "Protocols", sub: "Terms & legal" }, projects: { title: "Projects", sub: "Manage portfolio" },
     pricing: { title: "Pricing", sub: "Service plans" }, workQueue: { title: "Work Queue", sub: "Active tasks" },
-    skills: { title: "Skills", sub: "Tech stack display" }, "social-links": { title: "Socials", sub: "Public links" },
+    skills: { title: "Skills", sub: "Manage categories & skills on /skills page" }, "social-links": { title: "Socials", sub: "Public links" },
   };
   const { title, sub } = info[activeTab] || { title: "Dashboard", sub: "" };
 

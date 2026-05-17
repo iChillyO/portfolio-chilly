@@ -1,8 +1,28 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { FaBriefcase, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
+import {
+  FaBriefcase, FaMapMarkerAlt, FaCalendarAlt, FaEnvelope, FaPhone, FaGlobe,
+  FaUser, FaBirthdayCake, FaGraduationCap, FaLanguage, FaCode, FaHeart,
+  FaStar, FaShieldAlt, FaRocket, FaClock, FaLink, FaUniversity
+} from "react-icons/fa";
 import { ProfileData } from "@/types";
+
+// Icon map for the Quick Info box (must match dashboard editor options)
+const quickInfoIconMap: Record<string, React.ReactNode> = {
+  FaMapMarkerAlt: <FaMapMarkerAlt size={11} />, FaBriefcase: <FaBriefcase size={11} />,
+  FaCalendarAlt: <FaCalendarAlt size={11} />, FaEnvelope: <FaEnvelope size={11} />,
+  FaPhone: <FaPhone size={11} />, FaGlobe: <FaGlobe size={11} />,
+  FaUser: <FaUser size={11} />, FaBirthdayCake: <FaBirthdayCake size={11} />,
+  FaGraduationCap: <FaGraduationCap size={11} />, FaLanguage: <FaLanguage size={11} />,
+  FaCode: <FaCode size={11} />, FaHeart: <FaHeart size={11} />,
+  FaStar: <FaStar size={11} />, FaShieldAlt: <FaShieldAlt size={11} />,
+  FaRocket: <FaRocket size={11} />, FaClock: <FaClock size={11} />,
+  FaLink: <FaLink size={11} />, FaUniversity: <FaUniversity size={11} />,
+};
+
+const getQuickIcon = (name: string): React.ReactNode =>
+  quickInfoIconMap[name] || <FaMapMarkerAlt size={11} />;
 
 export default function About() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
@@ -24,6 +44,16 @@ export default function About() {
 
   if (loading) return <main className="min-h-screen bg-deep-bg flex items-center justify-center"><div className="w-10 h-10 border-2 border-cerulean/30 border-t-cerulean rounded-full animate-spin" /></main>;
   if (!profile) return <main className="min-h-screen bg-deep-bg flex items-center justify-center"><div className="text-red-400 text-sm">Failed to load profile.</div></main>;
+
+  // Default Quick Info if user hasn't configured any yet
+  const defaultQuickInfo = [
+    { icon: "FaMapMarkerAlt", iconColor: "text-cerulean", text: "Earth-616", order: 0 },
+    { icon: "FaBriefcase", iconColor: "text-gold", text: profile.designation, order: 1 },
+    { icon: "FaCalendarAlt", iconColor: "text-lilac", text: "Available for work", order: 2 },
+  ];
+  const quickInfoItems = (profile.quickInfo && profile.quickInfo.length > 0)
+    ? [...profile.quickInfo].sort((a, b) => (a.order || 0) - (b.order || 0))
+    : defaultQuickInfo;
 
   return (
     <main className="min-h-screen bg-deep-bg font-sans select-none overflow-x-hidden relative page-top pb-12">
@@ -50,9 +80,12 @@ export default function About() {
             <div className="w-full glass-card p-4 space-y-3">
               <h3 className="text-[10px] font-medium text-pearl/40 uppercase tracking-widest">Quick Info</h3>
               <div className="space-y-2.5">
-                <div className="flex items-center gap-2.5 text-xs"><FaMapMarkerAlt className="text-cerulean shrink-0" size={11} /><span className="text-pearl/70">Earth-616</span></div>
-                <div className="flex items-center gap-2.5 text-xs"><FaBriefcase className="text-gold shrink-0" size={11} /><span className="text-pearl/70">{profile.designation}</span></div>
-                <div className="flex items-center gap-2.5 text-xs"><FaCalendarAlt className="text-lilac shrink-0" size={11} /><span className="text-pearl/70">Available for work</span></div>
+                {quickInfoItems.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2.5 text-xs">
+                    <span className={`shrink-0 ${item.iconColor || "text-cerulean"}`}>{getQuickIcon(item.icon)}</span>
+                    <span className="text-pearl/70">{item.text}</span>
+                  </div>
+                ))}
               </div>
             </div>
 

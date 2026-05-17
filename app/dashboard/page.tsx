@@ -55,6 +55,7 @@ export default function () {
     workQueue: [],
     socialLinks: [],
     skillStats: [],
+    quickInfo: [],
     lastSync: new Date().toISOString()
   });
 
@@ -102,7 +103,8 @@ export default function () {
           ...data.data,
           experienceLog: data.data.experienceLog || [],
           skillStats: data.data.skillStats || [],
-          socialLinks: data.data.socialLinks || []
+          socialLinks: data.data.socialLinks || [],
+          quickInfo: data.data.quickInfo || []
         };
         setIdentity(safeData);
       }
@@ -366,6 +368,26 @@ export default function () {
     setIdentity({ ...identity, socialLinks: newLinks });
   };
 
+  // Quick Info Handlers (About Page)
+  const addQuickInfo = () => {
+    setIdentity({
+      ...identity,
+      quickInfo: [...(identity.quickInfo || []), { icon: "FaMapMarkerAlt", iconColor: "text-cerulean", text: "New info", order: (identity.quickInfo || []).length }]
+    });
+  };
+
+  const removeQuickInfo = (index: number) => {
+    const newItems = [...(identity.quickInfo || [])];
+    newItems.splice(index, 1);
+    setIdentity({ ...identity, quickInfo: newItems });
+  };
+
+  const updateQuickInfo = (index: number, field: 'icon' | 'iconColor' | 'text', value: string) => {
+    const newItems = [...(identity.quickInfo || [])];
+    newItems[index] = { ...newItems[index], [field]: value };
+    setIdentity({ ...identity, quickInfo: newItems });
+  };
+
   // Project Handlers
   const handleAddProject = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -604,6 +626,77 @@ export default function () {
                         </div>
                       ))}
                     </div>
+                  </div>
+                </section>
+
+                {/* QUICK INFO BOX (About Page) */}
+                <section>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div className="flex items-center gap-4 w-full">
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                      <h3 className="text-pearl font-semibold text-sm tracking-wide shrink-0">Quick Info Box</h3>
+                      <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
+                    </div>
+                    <button onClick={addQuickInfo} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Item</button>
+                  </div>
+                  <p className="text-xs text-pearl/30 mb-4">Items shown in the &quot;Quick Info&quot; box on your About page. Each item has an icon, color, and text.</p>
+
+                  <div className="space-y-3">
+                    {(identity.quickInfo || []).map((item, idx) => (
+                      <div key={idx} className="bg-white/[0.02] border border-white/[0.06] p-4 rounded-xl hover:border-cerulean/20 transition-all flex flex-col sm:flex-row gap-3 items-start group">
+                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Icon</label>
+                            <select value={item.icon} onChange={(e) => updateQuickInfo(idx, 'icon', e.target.value)} className="input-field text-xs appearance-none">
+                              <option value="FaMapMarkerAlt">FaMapMarkerAlt (location)</option>
+                              <option value="FaBriefcase">FaBriefcase (work)</option>
+                              <option value="FaCalendarAlt">FaCalendarAlt (calendar)</option>
+                              <option value="FaEnvelope">FaEnvelope (email)</option>
+                              <option value="FaPhone">FaPhone (phone)</option>
+                              <option value="FaGlobe">FaGlobe (web)</option>
+                              <option value="FaUser">FaUser (person)</option>
+                              <option value="FaBirthdayCake">FaBirthdayCake (age)</option>
+                              <option value="FaGraduationCap">FaGraduationCap (education)</option>
+                              <option value="FaLanguage">FaLanguage (language)</option>
+                              <option value="FaCode">FaCode (code)</option>
+                              <option value="FaHeart">FaHeart (interests)</option>
+                              <option value="FaStar">FaStar (highlight)</option>
+                              <option value="FaShieldAlt">FaShieldAlt (status)</option>
+                              <option value="FaRocket">FaRocket (rocket)</option>
+                              <option value="FaClock">FaClock (clock)</option>
+                              <option value="FaLink">FaLink (link)</option>
+                              <option value="FaUniversity">FaUniversity (university)</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Icon Color</label>
+                            <select value={item.iconColor} onChange={(e) => updateQuickInfo(idx, 'iconColor', e.target.value)} className="input-field text-xs appearance-none">
+                              <option value="text-cerulean">Mint</option>
+                              <option value="text-gold">Gold</option>
+                              <option value="text-lilac">Royal Blue</option>
+                              <option value="text-pearl">Pearl</option>
+                              <option value="text-green-400">Green</option>
+                              <option value="text-red-400">Red</option>
+                              <option value="text-amber-400">Amber</option>
+                              <option value="text-pink-400">Pink</option>
+                              <option value="text-sky-400">Sky</option>
+                              <option value="text-purple-400">Purple</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Text</label>
+                            <input value={item.text} onChange={(e) => updateQuickInfo(idx, 'text', e.target.value)} className="input-field text-xs" placeholder="e.g. Earth-616" />
+                          </div>
+                        </div>
+                        <button onClick={() => removeQuickInfo(idx)} className="text-red-500/50 hover:text-red-400 pt-1 transition-colors self-end sm:self-start shrink-0"><FaTrash /></button>
+                      </div>
+                    ))}
+
+                    {(identity.quickInfo || []).length === 0 && (
+                      <div className="text-center py-10 border border-dashed border-white/[0.06] rounded-xl">
+                        <p className="text-xs text-pearl/30">No items configured. The About page will show default location, role, and availability.</p>
+                      </div>
+                    )}
                   </div>
                 </section>
 

@@ -9,20 +9,30 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Primary
-        "deep-bg": "#150A33",
-        "galaxy": "#2A1B81",
-        "pearl": "#F2F4F7",
-        "surface": "#1E1245",
-        "surface-light": "#2D1F5E",
+        // === NEW PALETTE: Mint / Royal Blue / Slate ===
+        // Backgrounds (Deep Slate)
+        "deep-bg": "#161C2C",
+        "surface": "#1E2538",
+        "surface-light": "#262E45",
 
-        // Secondary
-        "cerulean": "#4A8CFF",
-        "porcelain": "#FDF0ED",
+        // Royal Blue (kept under "galaxy" name so existing classes still work)
+        "galaxy": "#1E3B8C",
+        "royal": "#1E3B8C",
 
-        // Accents
-        "gold": "#CBA145",
-        "lilac": "#B67EE5",
+        // Text (Soft Pearl)
+        "pearl": "#F4F6F8",
+
+        // Primary accent — Vibrant Mint (kept under "cerulean" name)
+        "cerulean": "#5CFF9B",
+        "mint": "#5CFF9B",
+
+        // Secondary accent — Antique Gold
+        "gold": "#D4B679",
+
+        // Tertiary accent — kept "lilac" pointing to royal blue for any leftover usage
+        "lilac": "#1E3B8C",
+
+        "porcelain": "#F4F6F8",
         "silver": "#EAEAEA",
       },
       fontFamily: {
@@ -31,7 +41,7 @@ const config: Config = {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'grid-pattern': 'linear-gradient(rgba(74,140,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(74,140,255,0.04) 1px, transparent 1px)',
+        'grid-pattern': 'linear-gradient(rgba(92,255,155,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(92,255,155,0.04) 1px, transparent 1px)',
       },
       backgroundSize: {
         'grid': '48px 48px',

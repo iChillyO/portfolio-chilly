@@ -1,9 +1,41 @@
 "use client";
 import Link from "next/link";
-import { FaGithub, FaLinkedin, FaTwitter, FaDiscord, FaHeart } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import {
+  FaGithub, FaLinkedin, FaTwitter, FaDiscord, FaInstagram, FaYoutube,
+  FaTwitch, FaGoogle, FaExternalLinkAlt
+} from "react-icons/fa";
+
+interface SocialLink { platform: string; url: string; }
+
+const getIcon = (platform: string) => {
+  const p = platform.toLowerCase();
+  if (p.includes("discord")) return <FaDiscord size={14} />;
+  if (p.includes("twitter") || p.includes("x")) return <FaTwitter size={14} />;
+  if (p.includes("instagram")) return <FaInstagram size={14} />;
+  if (p.includes("google") || p.includes("mail")) return <FaGoogle size={13} />;
+  if (p.includes("github")) return <FaGithub size={14} />;
+  if (p.includes("linkedin")) return <FaLinkedin size={14} />;
+  if (p.includes("youtube")) return <FaYoutube size={14} />;
+  if (p.includes("twitch")) return <FaTwitch size={14} />;
+  return <FaExternalLinkAlt size={12} />;
+};
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
+
+  // Fetch dynamic social links from the same source the dashboard manages
+  useEffect(() => {
+    fetch('/api/profile')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data?.socialLinks) {
+          setSocialLinks(data.data.socialLinks);
+        }
+      })
+      .catch(() => {/* silent fail - footer just shows nothing */});
+  }, []);
 
   // Same links as the Navbar so everything is consistent
   const links = [
@@ -36,16 +68,28 @@ export default function Footer() {
           </div>
           <div className="space-y-3">
             <h4 className="text-[10px] font-medium text-pearl/30 uppercase tracking-widest">Social</h4>
-            <div className="flex gap-2">
-              {[<FaGithub size={14} />, <FaLinkedin size={14} />, <FaTwitter size={14} />, <FaDiscord size={14} />].map((icon, i) => (
-                <a key={i} href="#" className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.03] border border-white/[0.05] text-pearl/40 hover:text-cerulean hover:border-cerulean/30 transition-all">{icon}</a>
-              ))}
+            <div className="flex gap-2 flex-wrap">
+              {socialLinks.length > 0 ? (
+                socialLinks.map((link, i) => (
+                  <a
+                    key={i}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={link.platform}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.03] border border-white/[0.05] text-pearl/40 hover:text-cerulean hover:border-cerulean/30 transition-all"
+                  >
+                    {getIcon(link.platform)}
+                  </a>
+                ))
+              ) : (
+                <span className="text-[11px] text-pearl/25">No links configured.</span>
+              )}
             </div>
           </div>
         </div>
-        <div className="mt-8 pt-6 border-t border-white/[0.03] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-[10px] text-pearl/25">&copy; {year} Sharaf Systems. All rights reserved.</p>
-          <p className="text-[10px] text-pearl/25 flex items-center gap-1">Built with <FaHeart className="text-cerulean text-[8px]" /> and caffeine</p>
+        <div className="mt-8 pt-6 border-t border-white/[0.03]">
+          <p className="text-[10px] text-pearl/25 text-center sm:text-left">&copy; {year} Sharaf Systems. All rights reserved.</p>
         </div>
       </div>
     </footer>

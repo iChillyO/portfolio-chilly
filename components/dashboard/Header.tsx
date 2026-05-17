@@ -8,7 +8,7 @@ export default function Header({ activeTab, saving, handleSaveIdentity, identity
     overview: { title: "Overview", sub: "Dashboard summary" }, identity: { title: "Profile", sub: "Your identity info" },
     protocols: { title: "Protocols", sub: "Terms & legal" }, projects: { title: "Projects", sub: "Manage portfolio" },
     pricing: { title: "Pricing", sub: "Service plans" }, workQueue: { title: "Work Queue", sub: "Active tasks" },
-    skills: { title: "Skills", sub: "Tech stack display" }, "social-links": { title: "Socials", sub: "Public links" },
+    skills: { title: "Skills", sub: "Manage categories & skills on /skills page" }, "social-links": { title: "Socials", sub: "Public links" },
   };
   const { title, sub } = info[activeTab] || { title: "Dashboard", sub: "" };
 
@@ -19,7 +19,7 @@ export default function Header({ activeTab, saving, handleSaveIdentity, identity
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-pearl/25 font-mono"><span className="w-1.5 h-1.5 bg-green-500 rounded-full" />{identity.lastSync ? new Date(identity.lastSync).toLocaleTimeString() : "—"}</div>
           {activeTab !== 'overview' && activeTab !== 'projects' && (
-            <button onClick={handleSaveIdentity} disabled={saving} className="flex items-center gap-1.5 px-4 py-2 bg-cerulean hover:bg-cerulean/90 disabled:bg-cerulean/50 text-white text-xs font-medium rounded-lg transition-all shadow-sm shadow-cerulean/20 disabled:cursor-not-allowed">
+            <button onClick={handleSaveIdentity} disabled={saving} className="flex items-center gap-1.5 px-4 py-2 bg-cerulean hover:bg-cerulean/90 disabled:bg-cerulean/50 text-deep-bg text-xs font-medium rounded-lg transition-all shadow-sm shadow-cerulean/20 disabled:cursor-not-allowed">
               {saving ? <FaSpinner className="animate-spin" size={11} /> : <FaSave size={11} />}{saving ? "Saving..." : "Save"}
             </button>
           )}

@@ -36,7 +36,7 @@ export default function Auth() {
           <div className="relative"><FaLock className="absolute top-3 left-3.5 text-pearl/20" size={11} /><input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" className="input-field pl-9" autoFocus disabled={loading} /></div>
           <div className="relative"><FaKey className="absolute top-3 left-3.5 text-pearl/20" size={11} /><input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" className="input-field pl-9" disabled={loading} /></div>
           {error && <div className="flex items-center gap-1.5 text-[11px] text-red-400 bg-red-500/10 border border-red-500/15 rounded-lg px-3 py-2"><FaExclamationTriangle size={10} /> {error}</div>}
-          <button type="submit" disabled={loading} className="w-full py-2.5 bg-cerulean hover:bg-cerulean/90 disabled:bg-cerulean/50 text-white text-sm font-medium rounded-lg transition-all shadow-md shadow-cerulean/20 flex items-center justify-center gap-2">{loading ? <FaSpinner className="animate-spin" size={13} /> : "Sign In"}</button>
+          <button type="submit" disabled={loading} className="w-full py-2.5 bg-cerulean hover:bg-cerulean/90 disabled:bg-cerulean/50 text-deep-bg text-sm font-medium rounded-lg transition-all shadow-md shadow-cerulean/20 flex items-center justify-center gap-2">{loading ? <FaSpinner className="animate-spin" size={13} /> : "Sign In"}</button>
         </form>
         <Link href="/" className="block mt-3 w-full py-2 text-center text-[11px] text-pearl/40 hover:text-pearl border border-white/[0.05] rounded-lg transition-all">Return Home</Link>
       </div>

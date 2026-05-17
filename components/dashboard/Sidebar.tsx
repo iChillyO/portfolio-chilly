@@ -9,12 +9,12 @@ export default function Sidebar({ activeTab, setActiveTab, alias, setIsAuthentic
   const click = (tab: string) => { setActiveTab(tab); setIsOpen(false); };
 
   const Btn = ({ tab, icon, label }: { tab: string; icon: React.ReactNode; label: string }) => (
-    <button onClick={() => click(tab)} className={`w-full flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-xs font-medium transition-all ${activeTab === tab ? 'bg-cerulean text-white shadow-sm shadow-cerulean/30' : 'text-pearl/50 hover:text-pearl hover:bg-white/[0.04]'}`}>{icon} {label}</button>
+    <button onClick={() => click(tab)} className={`w-full flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-xs font-medium transition-all ${activeTab === tab ? 'bg-cerulean text-deep-bg shadow-sm shadow-cerulean/30' : 'text-pearl/50 hover:text-pearl hover:bg-white/[0.04]'}`}>{icon} {label}</button>
   );
 
   return (
     <>
-      <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden fixed top-4 right-4 z-[60] bg-cerulean text-white p-2.5 rounded-lg shadow-lg shadow-cerulean/30"><FaBars size={14} /></button>
+      <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden fixed top-4 right-4 z-[60] bg-cerulean text-deep-bg p-2.5 rounded-lg shadow-lg shadow-cerulean/30"><FaBars size={14} /></button>
       {isOpen && <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[45] lg:hidden" onClick={() => setIsOpen(false)} />}
       <aside className={`fixed lg:static inset-y-0 left-0 w-56 bg-surface border-r border-white/[0.04] flex flex-col h-full z-50 transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         <div className="p-4 border-b border-white/[0.04] shrink-0">

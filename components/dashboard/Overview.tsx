@@ -7,10 +7,10 @@ export default function Overview({ identity, setActiveTab }: OverviewProps) {
   if (!identity) return <div className="flex items-center justify-center h-48"><div className="w-10 h-10 border-2 border-cerulean/30 border-t-cerulean rounded-full animate-spin" /></div>;
 
   const stats = [
-    { label: "Status", value: "Online", color: "text-green-400" },
     { label: "Database", value: "Connected", color: "text-cerulean" },
     { label: "Site", value: "Live", color: "text-lilac" },
     { label: "Queue", value: `${identity.workQueue?.length || 0} items`, color: "text-gold" },
+    { label: "Projects", value: `${identity.experienceLog?.length || 0}`, color: "text-pearl" },
   ];
 
   const links = [

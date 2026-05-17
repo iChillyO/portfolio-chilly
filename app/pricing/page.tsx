@@ -7,7 +7,7 @@ interface Plan { name: string; price: string; level: string; features: string[];
 
 const planStyles: { [key: string]: { icon: React.ReactNode; accent: string; btnClass: string; borderClass: string; popular?: boolean } } = {
   Scout: { icon: <FaRocket className="text-cerulean" />, accent: "text-cerulean", btnClass: "bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-pearl", borderClass: "border-white/[0.06] hover:border-cerulean/30" },
-  Vanguard: { icon: <FaGem className="text-lilac" />, accent: "text-lilac", btnClass: "bg-cerulean hover:bg-cerulean/90 text-white shadow-lg shadow-cerulean/20", borderClass: "border-cerulean/30 shadow-[0_0_30px_rgba(74,140,255,0.08)]", popular: true },
+  Vanguard: { icon: <FaGem className="text-lilac" />, accent: "text-lilac", btnClass: "bg-cerulean hover:bg-cerulean/90 text-deep-bg shadow-lg shadow-cerulean/20", borderClass: "border-cerulean/30 shadow-[0_0_30px_rgba(92,255,155,0.15)]", popular: true },
   Titan: { icon: <FaCrown className="text-gold" />, accent: "text-gold", btnClass: "bg-gold hover:bg-gold/90 text-deep-bg shadow-lg shadow-gold/20", borderClass: "border-gold/20 hover:border-gold/40" },
 };
 
@@ -39,7 +39,7 @@ export default function Pricing() {
             const style = planStyles[plan.name] || planStyles.Scout;
             return (
               <div key={i} className={`relative glass-card p-6 flex flex-col transition-all duration-400 hover:-translate-y-1 ${style.borderClass}`}>
-                {style.popular && <div className="absolute -top-2.5 left-1/2 -translate-x-1/2"><div className="flex items-center gap-1 px-3 py-1 bg-cerulean text-white text-[9px] font-bold uppercase tracking-wider rounded-full shadow-md shadow-cerulean/30"><FaStar size={7} /> Popular</div></div>}
+                {style.popular && <div className="absolute -top-2.5 left-1/2 -translate-x-1/2"><div className="flex items-center gap-1 px-3 py-1 bg-cerulean text-deep-bg text-[9px] font-bold uppercase tracking-wider rounded-full shadow-md shadow-cerulean/30"><FaStar size={7} /> Popular</div></div>}
                 <div className="flex items-center justify-between mb-5"><div className="text-xl">{style.icon}</div><span className="text-[10px] font-medium text-pearl/40 bg-white/[0.04] px-2.5 py-1 rounded-full border border-white/[0.05]">{plan.level}</span></div>
                 <h3 className="text-lg font-bold text-pearl mb-1">{plan.name}</h3>
                 <div className={`text-2xl font-black mb-6 ${style.accent}`}>{plan.price}</div>

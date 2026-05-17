@@ -65,7 +65,17 @@ export interface ProfileData {
   workQueue: WorkQueueItem[];
   socialLinks?: { platform: string; url: string }[];
   skillStats?: { label: string; value: string; color: string }[];
+  quickInfo?: QuickInfoItem[];
   lastSync: string;
+}
+
+// --- QUICK INFO (About page info box) ---
+export interface QuickInfoItem {
+  _id?: string;
+  icon: string;       // Icon component name e.g. "FaMapMarkerAlt"
+  iconColor: string;  // Tailwind color class e.g. "text-cerulean"
+  text: string;
+  order: number;
 }
 
 

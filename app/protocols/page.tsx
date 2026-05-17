@@ -25,7 +25,6 @@ export default function ProtocolsPage() {
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-pearl">{protocols.title.split(' ')[0]} <span className="text-gradient-primary">{protocols.title.split(' ').slice(1).join(' ')}</span></h1>
             <div className="flex items-center gap-2 text-xs text-pearl/40 mt-1"><FaFileContract className="text-cerulean" /><span>v{protocols.version}</span></div>
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-medium"><div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" /> Active</div>
         </div>
 
         <div className="glass-card p-5 md:p-8 lg:p-10 space-y-8">

@@ -27,7 +27,6 @@ export default function WorkQueue() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
           <div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-pearl">Work <span className="text-gradient-primary">Queue</span></h1>
-            <div className="flex items-center gap-2 text-xs text-pearl/40 mt-1"><span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" /> Online</div>
           </div>
           <div className="glass-card px-4 py-2.5 flex items-center gap-2.5">
             <div><div className="text-[10px] text-pearl/40">Availability</div><div className="text-cerulean font-medium text-xs">Open for Commissions</div></div>

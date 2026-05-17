@@ -3,125 +3,130 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FaUserPlus, FaLock, FaUser } from "react-icons/fa";
+import { FaUserPlus, FaLock, FaUser, FaSpinner, FaExclamationTriangle } from "react-icons/fa";
 
 export default function Register() {
-    const [formData, setFormData] = useState({ username: "", password: "", confirmPassword: "" });
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
+  const [formData, setFormData] = useState({ username: "", password: "", confirmPassword: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError("");
-        setLoading(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-        if (formData.password !== formData.confirmPassword) {
-            setError("Passwords do not match");
-            setLoading(false);
-            return;
-        }
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
 
-        try {
-            const res = await fetch("/api/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    username: formData.username,
-                    password: formData.password
-                }),
-            });
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: formData.username, password: formData.password }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        router.push("/login?registered=true");
+      } else {
+        setError(data.message || "Registration failed");
+      }
+    } catch {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            const data = await res.json();
+  return (
+    <main className="min-h-screen bg-deep-bg flex items-center justify-center p-4 relative overflow-hidden font-sans">
+      <div className="absolute top-[-150px] right-[-150px] w-[400px] h-[400px] bg-galaxy/40 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute bottom-[-150px] left-[-150px] w-[300px] h-[300px] bg-lilac/10 rounded-full blur-[80px] pointer-events-none" />
 
-            if (res.ok) {
-                router.push("/login?registered=true");
-            } else {
-                setError(data.message || "Registration failed");
-            }
-        } catch (err) {
-            setError("An error occurred. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-    };
+      <div className="relative w-full max-w-sm bg-surface border border-white/[0.06] rounded-2xl p-7 shadow-2xl">
+        <div className="flex justify-center mb-5">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cerulean to-lilac flex items-center justify-center shadow-lg shadow-cerulean/20">
+            <FaUserPlus className="text-white text-lg" />
+          </div>
+        </div>
 
-    return (
-        <main className="min-h-screen w-full bg-deep-bg flex items-center justify-center p-4 font-sans overflow-hidden relative select-none">
-            <div className="w-full max-w-md bg-black/60 backdrop-blur-md border border-cyan-500/30 p-8 rounded-xl shadow-[0_0_50px_rgba(6,182,212,0.15)] relative overflow-hidden group">
+        <h1 className="text-lg font-bold text-center text-pearl mb-0.5">Create Account</h1>
+        <p className="text-[11px] text-pearl/40 text-center mb-6">Sign up to get started</p>
 
-                {/* Decorative corner accents */}
-                <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-cyan-500/50 rounded-tl-xl"></div>
-                <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-cyan-500/50 rounded-br-xl"></div>
-
-                <div className="text-center mb-8 relative z-10">
-                    <div className="flex justify-center mb-4">
-                        <div className="p-4 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
-                            <FaUserPlus size={24} />
-                        </div>
-                    </div>
-                    <h1 className="text-2xl font-bold text-white uppercase tracking-[0.2em] mb-2">Initialize User</h1>
-                    <p className="text-cyan-500/60 text-xs tracking-widest">ESTABLISH NEW NEURAL LINK</p>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-                    {error && (
-                        <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded text-center text-xs tracking-wide">
-                            ⚠ {error}
-                        </div>
-                    )}
-
-                    <div className="relative group/input">
-                        <FaUser className="absolute top-4 left-4 text-cyan-500/50 group-focus-within/input:text-cyan-400 transition-colors" />
-                        <input
-                            type="text"
-                            placeholder="IDENTIFIER (USERNAME)"
-                            value={formData.username}
-                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                            className="w-full bg-black/40 border border-cyan-900 rounded p-3 pl-12 text-white placeholder-cyan-900 focus:border-cyan-400 outline-none transition-all text-sm tracking-wider"
-                            required
-                        />
-                    </div>
-
-                    <div className="relative group/input">
-                        <FaLock className="absolute top-4 left-4 text-cyan-500/50 group-focus-within/input:text-cyan-400 transition-colors" />
-                        <input
-                            type="password"
-                            placeholder="ACCESS KEY (PASSWORD)"
-                            value={formData.password}
-                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            className="w-full bg-black/40 border border-cyan-900 rounded p-3 pl-12 text-white placeholder-cyan-900 focus:border-cyan-400 outline-none transition-all text-sm tracking-wider"
-                            required
-                        />
-                    </div>
-
-                    <div className="relative group/input">
-                        <FaLock className="absolute top-4 left-4 text-cyan-500/50 group-focus-within/input:text-cyan-400 transition-colors" />
-                        <input
-                            type="password"
-                            placeholder="VERIFY KEY (CONFIRM)"
-                            value={formData.confirmPassword}
-                            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                            className="w-full bg-black/40 border border-cyan-900 rounded p-3 pl-12 text-white placeholder-cyan-900 focus:border-cyan-400 outline-none transition-all text-sm tracking-wider"
-                            required
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-cyan-600/20 hover:bg-cyan-600 border border-cyan-500/50 text-cyan-500 hover:text-black font-bold py-3 rounded uppercase tracking-[0.2em] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group-hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]"
-                    >
-                        {loading ? "INITIALIZING..." : "CREATE IDENTITY"}
-                    </button>
-
-                    <div className="text-center mt-6">
-                        <Link href="/login" className="text-xs text-cyan-500/60 hover:text-cyan-400 underline decoration-dashed underline-offset-4 tracking-widest transition-colors">
-              // RETURN TO LOGIN SEQUENCE
-                        </Link>
-                    </div>
-                </form>
+        <form onSubmit={handleSubmit} className="space-y-3.5">
+          <div>
+            <label className="text-[10px] text-pearl/40 font-medium mb-1.5 block">Username</label>
+            <div className="relative">
+              <FaUser className="absolute top-3 left-3.5 text-pearl/20" size={11} />
+              <input
+                type="text"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                placeholder="Choose a username"
+                className="input-field pl-9"
+                autoFocus
+                disabled={loading}
+                required
+              />
             </div>
-        </main>
-    );
+          </div>
+
+          <div>
+            <label className="text-[10px] text-pearl/40 font-medium mb-1.5 block">Password</label>
+            <div className="relative">
+              <FaLock className="absolute top-3 left-3.5 text-pearl/20" size={11} />
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                placeholder="Choose a password"
+                className="input-field pl-9"
+                disabled={loading}
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[10px] text-pearl/40 font-medium mb-1.5 block">Confirm Password</label>
+            <div className="relative">
+              <FaLock className="absolute top-3 left-3.5 text-pearl/20" size={11} />
+              <input
+                type="password"
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                placeholder="Confirm password"
+                className="input-field pl-9"
+                disabled={loading}
+                required
+              />
+            </div>
+          </div>
+
+          {error && (
+            <div className="flex items-center gap-1.5 text-[11px] text-red-400 bg-red-500/10 border border-red-500/15 rounded-lg px-3 py-2">
+              <FaExclamationTriangle size={10} /> {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2.5 bg-cerulean hover:bg-cerulean/90 disabled:bg-cerulean/50 text-white text-sm font-medium rounded-lg transition-all shadow-md shadow-cerulean/20 flex items-center justify-center gap-2"
+          >
+            {loading ? <FaSpinner className="animate-spin" size={13} /> : "Create Account"}
+          </button>
+        </form>
+
+        <div className="text-center mt-4">
+          <Link href="/login" className="text-[11px] text-pearl/40 hover:text-cerulean transition-colors">
+            Already have an account? <span className="text-cerulean">Sign in</span>
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
 }

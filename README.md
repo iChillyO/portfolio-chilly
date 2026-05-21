@@ -22,19 +22,19 @@ A modern, full-stack personal portfolio designed to showcase digital artifacts, 
 
 ### Public Homepage
 A clean introduction showcasing my software engineering and multimedia background.
-![Homepage UI](./path/to/image_7d11ce.jpg)
+![Homepage UI](./screenshots/Screenshot 2026-05-21 133856.png)
 
 ### Admin Authentication
 Secure login portal to access the dashboard.
-![Login Screen](./path/to/image_7d11cc.png)
+![Login Screen](./screenshots/Screenshot 2026-05-21 133911.png)
 
 ### Dashboard Overview
 High-level system status, quick actions, database connection state, and project queue.
-![Admin Overview](./path/to/image_7d11b5.png)
+![Admin Overview](.screenshots/Screenshot 2026-05-21 133921.png)
 
 ### Profile Configuration
 Dynamic data editing to update site taglines, avatars, and experience cards instantly.
-![Profile Config](./path/to/image_7d11b1.png)
+![Profile Config](./screenshots/Screenshot 2026-05-21 133940.png)
 
 ## 💻 Getting Started
 

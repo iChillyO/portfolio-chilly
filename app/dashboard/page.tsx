@@ -700,6 +700,56 @@ export default function () {
                   </div>
                 </section>
 
+                {/* SKILL STATS (About Page Stats Bars) */}
+                <section>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div className="flex items-center gap-4 w-full">
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                      <h3 className="text-pearl font-semibold text-sm tracking-wide shrink-0">Stats Bars</h3>
+                      <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
+                    </div>
+                    <button onClick={addSkillStat} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Stat</button>
+                  </div>
+                  <p className="text-xs text-pearl/30 mb-4">These appear as progress bars in the &quot;Stats&quot; box on your About page (below Quick Info).</p>
+
+                  <div className="space-y-3">
+                    {(identity.skillStats || []).map((stat, idx) => (
+                      <div key={idx} className="bg-white/[0.02] border border-white/[0.06] p-4 rounded-xl hover:border-cerulean/20 transition-all flex flex-col sm:flex-row gap-3 items-start group">
+                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Label</label>
+                            <input value={stat.label} onChange={(e) => updateSkillStat(idx, 'label', e.target.value)} className="input-field text-xs" placeholder="e.g. Frontend" />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Value (e.g. 80%)</label>
+                            <input value={stat.value} onChange={(e) => updateSkillStat(idx, 'value', e.target.value)} className="input-field text-xs" placeholder="e.g. 80%" />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Color Class</label>
+                            <select value={stat.color} onChange={(e) => updateSkillStat(idx, 'color', e.target.value)} className="input-field text-xs appearance-none">
+                              <option value="bg-cyan-400">Cyan</option>
+                              <option value="bg-violet-500">Violet</option>
+                              <option value="bg-green-400">Green</option>
+                              <option value="bg-amber-400">Amber</option>
+                              <option value="bg-pink-400">Pink</option>
+                              <option value="bg-red-400">Red</option>
+                              <option value="bg-sky-400">Sky</option>
+                              <option value="bg-indigo-400">Indigo</option>
+                            </select>
+                          </div>
+                        </div>
+                        <button onClick={() => removeSkillStat(idx)} className="text-red-500/50 hover:text-red-400 pt-1 transition-colors self-end sm:self-start shrink-0"><FaTrash /></button>
+                      </div>
+                    ))}
+
+                    {(identity.skillStats || []).length === 0 && (
+                      <div className="text-center py-10 border border-dashed border-white/[0.06] rounded-xl">
+                        <p className="text-xs text-pearl/30">No stats configured. Add stats to display progress bars on the About page.</p>
+                      </div>
+                    )}
+                  </div>
+                </section>
+
                 {/* OPERATION STATUS */}
                 <section>
                   <div className="flex items-center gap-4 mb-8">

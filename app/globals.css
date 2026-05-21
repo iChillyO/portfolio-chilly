@@ -137,3 +137,13 @@ select option:hover {
     @apply pt-16 md:pt-20;
   }
 }
+
+
+/* --- SCROLLBAR HIDE (for mobile nav snap scroll) --- */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

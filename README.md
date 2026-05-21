@@ -1,49 +1,77 @@
-# 🚀 Chilly // Portfolio V1
+#  Sharaf Hazem | Personal Portfolio & Custom CMS
 
-![Project Banner](screenshots/home-preview.png)
+A modern, full-stack personal portfolio designed to showcase digital artifacts, software engineering projects, and motion graphics. Beyond the public-facing site, this project features a fully custom-built Admin Dashboard (CMS) for seamless, real-time content management.
 
-> **Status:** System Online 🟢
-> **Theme:** Cyberpunk / Deep Space / Glassmorphism
-> **Live Demo:** [https://portfolio-chilly.vercel.app](https://portfolio-chilly.vercel.app)
+## ✨ Features
 
-## 📄 Mission Briefing
+* **Dynamic Public Portfolio:** An immersive, futuristic UI designed to display projects, skills, and professional experience cleanly and interactively.
+* **Bespoke Admin Dashboard:** A secure, custom CMS to manage home page configurations, biographies, and experience cards on the fly without touching the codebase.
+* **Secure Authentication:** Protected admin routes with a clean, branded login interface.
+* **Live Database Integration:** Fully connected to MongoDB for real-time state management, data syncing, and work queue tracking.
+* **Media Management:** Integrated with Cloudinary for efficient handling and hosting of avatars and project assets.
 
-This is not just a static portfolio. It is a full-stack application built to manage my digital identity. It features a **custom Admin Dashboard** hidden behind a secure authentication system, allowing me to update projects, manage my "Experience Log", and change my bio without touching a single line of code.
+## 🛠️ Tech Stack
 
-Built with performance, security, and visual storytelling in mind.
+* **Framework:** Next.js 16
+* **Libraries:** React, TypeScript
+* **Database:** MongoDB
+* **Asset Management:** Cloudinary
+* **Styling:** Custom CSS / Utility Classes (Dark theme with neon accents)
 
-## 🛠️ Tech Stack & Artifacts
+## 📸 Screenshots
 
-| Core                                                                                       | Backend & Data                                                                       | Styling & UI                                                                                   |
-| :----------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
-| ![Next.js](https://img.shields.io/badge/Next.js_14-black?style=flat&logo=next.z)           | ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?style=flat&logo=mongodb) | ![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat&logo=tailwind-css) |
-| ![TypeScript](https://img.shields.io/badge/TypeScript-ES6-blue?style=flat&logo=typescript) | **NextAuth.js** (Security)                                                           | **Framer Motion** (Animations)                                                                 |
-| ![React](https://img.shields.io/badge/React-18-blue?style=flat&logo=react)                 | **Cloudinary** (Media CDN)                                                           | **React Icons**                                                                                |
+### Public Homepage
+A clean introduction showcasing my software engineering and multimedia background.
+![Homepage UI](./path/to/image_7d11ce.jpg)
 
-## ✨ Key Features
+### Admin Authentication
+Secure login portal to access the dashboard.
+![Login Screen](./path/to/image_7d11cc.png)
 
-### 🔐 System Locked (Admin Authentication)
+### Dashboard Overview
+High-level system status, quick actions, database connection state, and project queue.
+![Admin Overview](./path/to/image_7d11b5.png)
 
-Instead of a generic login page, the admin route (`/admin`) simulates a secure terminal.
+### Profile Configuration
+Dynamic data editing to update site taglines, avatars, and experience cards instantly.
+![Profile Config](./path/to/image_7d11b1.png)
 
-- **Credentials:** Custom credential provider.
-- **Security:** Protected routes via Next.js Middleware.
-- **Visuals:** "Access Denied" / "Access Granted" glitch animations.
+## 💻 Getting Started
 
-![Admin Dashboard](screenshots/admin-preview.png)
+To run this project locally, follow these steps:
 
-### 🎛️ The Dashboard (CMS)
+### Prerequisites
+Make sure you have Node.js installed and a MongoDB cluster ready. You will also need a Cloudinary account for image hosting.
 
-A fully functional Content Management System built from scratch.
+### Installation
 
-- **Identity Tab:** Update Bio, Avatar, and Social Links in real-time.
-- **Project Hub:** Add/Delete projects with rich data (Title, Tech Stack, Images).
-- **Experience Log:** Manage work history and skills cards.
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/yourusername/your-repo-name.git](https://github.com/yourusername/your-repo-name.git)
+   cd your-repo-name
+Install dependencies:
 
-### 🎨 Visual Engineering
+Bash
+npm install
+# or
+yarn install
+Set up environment variables:
+Create a .env.local file in the root directory and add the necessary keys:
 
-- **Glassmorphism:** Custom blur effects using Tailwind utilities.
-- **Vignette Overlay:** Custom CSS gradients for a "deep space" feel.
-- **Responsive:** Fully mobile-optimized "App-like" navigation.
+Code snippet
+MONGODB_URI=your_mongodb_connection_string
+CLOUDINARY_URL=your_cloudinary_url
+# Add your auth secrets and any other required variables
+Run the development server:
 
-git clone https://github.com/iChillyO/portfolio-chilly.git
+Bash
+npm run dev
+# or
+yarn dev
+Open the app:
+Navigate to http://localhost:3000 in your browser to view the site.
+
+🤝 Contact
+Sharaf Hazem Full-Stack Web Developer
+
+Portfolio Website

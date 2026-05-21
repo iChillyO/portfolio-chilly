@@ -26,7 +26,7 @@ A clean introduction showcasing my software engineering and multimedia backgroun
 
 ### Admin Authentication
 Secure login portal to access the dashboard.
-![Login Screen](./screenshots/Screenshot 2026-05-21 133911.png)
+![Login Screen] screenshots/Screenshot 2026-05-21 133911.png
 
 ### Dashboard Overview
 High-level system status, quick actions, database connection state, and project queue.

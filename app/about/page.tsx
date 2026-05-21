@@ -8,7 +8,7 @@ import {
 } from "react-icons/fa";
 import { ProfileData } from "@/types";
 
-// Icon map for the Quick Info box (must match dashboard editor options)
+// Icon map for the Quick Info box
 const quickInfoIconMap: Record<string, React.ReactNode> = {
   FaMapMarkerAlt: <FaMapMarkerAlt size={11} />, FaBriefcase: <FaBriefcase size={11} />,
   FaCalendarAlt: <FaCalendarAlt size={11} />, FaEnvelope: <FaEnvelope size={11} />,
@@ -29,17 +29,16 @@ export default function About() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchProfile() {
-      try {
-        const res = await fetch('/api/profile');
-        const contentType = res.headers.get("content-type");
-        if (!res.ok || !contentType || !contentType.includes("application/json")) throw new Error("Fetch failed");
-        const data = await res.json();
-        if (data.success) setProfile(data.data);
-      } catch (error) { console.error("Failed to fetch profile:", error); }
-      finally { setLoading(false); }
-    }
-    fetchProfile();
+    const controller = new AbortController();
+    fetch('/api/profile', { signal: controller.signal })
+      .then(res => {
+        if (!res.ok) throw new Error("Fetch failed");
+        return res.json();
+      })
+      .then(data => { if (data.success) setProfile(data.data); })
+      .catch(err => { if (err.name !== 'AbortError') console.error("Failed to fetch profile:", err); })
+      .finally(() => setLoading(false));
+    return () => controller.abort();
   }, []);
 
   if (loading) return <main className="min-h-screen bg-deep-bg flex items-center justify-center"><div className="w-10 h-10 border-2 border-cerulean/30 border-t-cerulean rounded-full animate-spin" /></main>;
@@ -57,7 +56,8 @@ export default function About() {
 
   return (
     <main className="min-h-screen bg-deep-bg font-sans select-none overflow-x-hidden relative page-top pb-12">
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-galaxy/30 rounded-full blur-[100px] pointer-events-none" />
+      {/* Decorative blur — hidden on mobile */}
+      <div className="deco-blur absolute top-0 right-0 w-[400px] h-[400px] bg-galaxy/30 rounded-full blur-[100px]" />
 
       <div className="max-w-5xl mx-auto section-padding relative z-10">
         {/* Header */}
@@ -73,7 +73,7 @@ export default function About() {
           {/* Left */}
           <div className="flex flex-col items-center lg:items-start gap-5">
             <div className="relative w-60 h-60 lg:w-full lg:h-72 rounded-xl overflow-hidden border border-white/[0.06] group">
-              <Image src={profile.aboutImage || "/images/about avatar.png"} alt="Profile" fill className="object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+              <Image src={profile.aboutImage || "/images/about avatar.png"} alt="Profile" fill sizes="(max-width: 1024px) 240px, 280px" className="object-cover object-top group-hover:scale-105 transition-transform duration-500" />
               <div className="absolute inset-0 bg-gradient-to-t from-deep-bg/70 via-transparent to-transparent" />
             </div>
 

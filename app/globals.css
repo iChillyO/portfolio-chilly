@@ -18,7 +18,11 @@ html, body {
   color: #F4F6F8;
   margin: 0;
   padding: 0;
-  scroll-behavior: smooth;
+}
+
+/* Only enable smooth scroll on devices that can handle it */
+@media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+  html { scroll-behavior: smooth; }
 }
 
 /* --- SELECTION --- */
@@ -27,23 +31,12 @@ html, body {
   color: #F4F6F8;
 }
 
-/* --- SCROLLBAR --- */
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-
-::-webkit-scrollbar-track {
-  background: #161C2C;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(92, 255, 155, 0.3);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(92, 255, 155, 0.6);
+/* --- SCROLLBAR (desktop only — mobile doesn't show these) --- */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #161C2C; }
+  ::-webkit-scrollbar-thumb { background: rgba(92, 255, 155, 0.3); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(92, 255, 155, 0.6); }
 }
 
 /* --- COMPONENT CLASSES --- */
@@ -61,21 +54,34 @@ html, body {
   background-clip: text;
 }
 
+/* Glass card — solid on mobile, blurred on desktop */
 .glass-card {
-  background: rgba(30, 59, 140, 0.25);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: rgba(30, 59, 140, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 1rem;
 }
 
+@media (min-width: 768px) {
+  .glass-card {
+    background: rgba(30, 59, 140, 0.25);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+}
+
 .glass-card-hover {
-  background: rgba(30, 59, 140, 0.25);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: rgba(30, 59, 140, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 1rem;
-  transition: all 0.3s ease;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .glass-card-hover {
+    background: rgba(30, 59, 140, 0.25);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
 }
 
 .glass-card-hover:hover {
@@ -127,6 +133,32 @@ select option:hover {
   color: #161C2C;
 }
 
+/* --- DECORATIVE BLURS: Hidden on mobile for performance --- */
+.deco-blur {
+  pointer-events: none;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .deco-blur {
+    display: block;
+  }
+}
+
+/* --- PAGE TRANSITION (replaces framer-motion) --- */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-transition {
+  animation: page-enter 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition { animation: none; }
+}
+
 /* --- UTILITY CLASSES --- */
 @layer utilities {
   .section-padding {
@@ -137,7 +169,6 @@ select option:hover {
     @apply pt-16 md:pt-20;
   }
 }
-
 
 /* --- SCROLLBAR HIDE (for mobile nav snap scroll) --- */
 .scrollbar-hide {

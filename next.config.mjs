@@ -1,13 +1,14 @@
 const nextConfig = {
-  // 1. This enables static export if you want to use drag-and-drop hosting later
-  // output: 'export', 
-
-  // 2. This allows images to load without a server
   images: {
-    unoptimized: true, 
+    // Let Vercel/Next.js optimize images (resize, webp conversion, caching)
+    // This dramatically improves load time on mobile devices
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+    ],
   },
-  
-  
 };
 
 export default nextConfig;

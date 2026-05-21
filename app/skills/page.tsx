@@ -13,7 +13,6 @@ import {
   SiDocker, SiGit, SiPython, SiNodedotjs, SiReact
 } from "react-icons/si";
 
-// --- ICON MAP: Maps string names from DB to actual React components ---
 const iconMap: Record<string, React.ReactNode> = {
   FaReact: <FaReact />, FaNodeJs: <FaNodeJs />, FaPython: <FaPython />,
   FaDocker: <FaDocker />, FaGitAlt: <FaGitAlt />, FaFigma: <FaFigma />,
@@ -48,20 +47,15 @@ export default function Skills() {
   const [active, setActive] = useState("all");
 
   useEffect(() => {
-    async function fetchSkills() {
-      try {
-        const res = await fetch("/api/skills");
-        const data = await res.json();
-        if (data.success) {
-          setCategories(data.data.filter((c: SkillCategoryData) => c.visible !== false));
-        }
-      } catch (err) {
-        console.error("Failed to load skills:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchSkills();
+    const controller = new AbortController();
+    fetch("/api/skills", { signal: controller.signal })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setCategories(data.data.filter((c: SkillCategoryData) => c.visible !== false));
+      })
+      .catch(err => { if (err.name !== 'AbortError') console.error("Failed to load skills:", err); })
+      .finally(() => setLoading(false));
+    return () => controller.abort();
   }, []);
 
   const filtered = active === "all"
@@ -78,7 +72,7 @@ export default function Skills() {
 
   return (
     <main className="min-h-screen bg-deep-bg font-sans select-none overflow-x-hidden relative text-pearl page-top pb-12">
-      <div className="absolute top-16 left-[-150px] w-[400px] h-[400px] bg-galaxy/30 rounded-full blur-[100px] pointer-events-none" />
+      <div className="deco-blur absolute top-16 left-[-150px] w-[400px] h-[400px] bg-galaxy/30 rounded-full blur-[100px]" />
       <div className="max-w-5xl mx-auto section-padding relative z-10">
 
         <div className="text-center mb-6">
@@ -93,10 +87,10 @@ export default function Skills() {
         <div className="flex flex-wrap justify-center gap-2 mb-8">
           <button
             onClick={() => setActive("all")}
-            className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
+            className={`px-4 py-2 rounded-full text-xs font-medium transition-colors ${
               active === "all"
                 ? "bg-cerulean text-deep-bg shadow-md shadow-cerulean/20"
-                : "bg-white/[0.04] text-pearl/50 border border-white/[0.06] hover:text-pearl"
+                : "bg-white/[0.04] text-pearl/50 border border-white/[0.06]"
             }`}
           >
             All
@@ -105,10 +99,10 @@ export default function Skills() {
             <button
               key={c._id || c.title}
               onClick={() => setActive(c.title.toLowerCase())}
-              className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
+              className={`px-4 py-2 rounded-full text-xs font-medium transition-colors ${
                 active === c.title.toLowerCase()
                   ? "bg-cerulean text-deep-bg shadow-md shadow-cerulean/20"
-                  : "bg-white/[0.04] text-pearl/50 border border-white/[0.06] hover:text-pearl"
+                  : "bg-white/[0.04] text-pearl/50 border border-white/[0.06]"
               }`}
             >
               {c.title}
@@ -119,7 +113,7 @@ export default function Skills() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {filtered.length > 0 ? (
             filtered.map(cat => (
-              <div key={cat._id || cat.title} className="glass-card p-5 hover:border-cerulean/20 transition-all">
+              <div key={cat._id || cat.title} className="glass-card p-5">
                 <div className="flex items-center gap-2.5 mb-1.5">
                   <div className={`text-lg ${cat.iconColor || "text-cerulean"}`}>
                     {getIcon(cat.icon)}
@@ -134,7 +128,7 @@ export default function Skills() {
                     .map(skill => (
                       <div
                         key={skill._id || skill.name}
-                        className="flex items-center justify-between p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.04] hover:border-cerulean/10 transition-all"
+                        className="flex items-center justify-between p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.04]"
                       >
                         <div className="flex items-center gap-2.5">
                           <span className={`text-base ${skill.color || "text-cerulean"}`}>

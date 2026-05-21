@@ -10,23 +10,22 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchProfile() {
-      try {
-        const res = await fetch('/api/profile');
-        const contentType = res.headers.get("content-type");
-        if (!res.ok || !contentType || !contentType.includes("application/json")) throw new Error("Fetch failed");
-        const data = await res.json();
-        if (data.success) setProfile(data.data);
-      } catch (error) { console.error("Failed to fetch profile:", error); }
-      finally { setLoading(false); }
-    }
-    fetchProfile();
+    const controller = new AbortController();
+    fetch('/api/profile', { signal: controller.signal })
+      .then(res => {
+        if (!res.ok) throw new Error("Fetch failed");
+        return res.json();
+      })
+      .then(data => { if (data.success) setProfile(data.data); })
+      .catch(err => { if (err.name !== 'AbortError') console.error("Failed to fetch profile:", err); })
+      .finally(() => setLoading(false));
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
-    return () => { document.documentElement.style.overflow = "auto"; document.body.style.overflow = "auto"; };
+    return () => { document.documentElement.style.overflow = ""; document.body.style.overflow = ""; };
   }, []);
 
   const getIcon = (p: string) => {
@@ -60,10 +59,10 @@ export default function Home() {
 
   return (
     <main className="h-[100dvh] w-full bg-deep-bg overflow-hidden relative font-sans select-none">
-      {/* BG */}
+      {/* BG — decorative blurs hidden on mobile via CSS class */}
       <div className="absolute inset-0 bg-grid-pattern bg-grid opacity-100 pointer-events-none" />
-      <div className="absolute top-[-15%] right-[-8%] w-[600px] h-[600px] bg-galaxy/40 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[-15%] left-[-8%] w-[400px] h-[400px] bg-lilac/8 rounded-full blur-[80px] pointer-events-none" />
+      <div className="deco-blur absolute top-[-15%] right-[-8%] w-[600px] h-[600px] bg-galaxy/40 rounded-full blur-[100px]" />
+      <div className="deco-blur absolute bottom-[-15%] left-[-8%] w-[400px] h-[400px] bg-lilac/8 rounded-full blur-[80px]" />
 
       {/* CONTENT */}
       <div className="relative z-10 h-full flex flex-col">
@@ -73,7 +72,7 @@ export default function Home() {
             {/* LEFT */}
             <div className="space-y-6 text-center lg:text-left">
               {/* Name */}
-              <div className="space-y-2 opacity-0 animate-reveal" style={{ animationDelay: '0.25s' }}>
+              <div className="space-y-2 opacity-0 animate-reveal" style={{ animationDelay: '0.15s' }}>
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1]">
                   <span className="text-pearl">{profile.alias.split(' ')[0]}</span>
                   {profile.alias.split(' ').length > 1 && (
@@ -85,25 +84,25 @@ export default function Home() {
               </div>
 
               {/* Bio */}
-              <p className="text-sm text-pearl/40 leading-relaxed max-w-md mx-auto lg:mx-0 opacity-0 animate-reveal" style={{ animationDelay: '0.4s' }}>
+              <p className="text-sm text-pearl/40 leading-relaxed max-w-md mx-auto lg:mx-0 opacity-0 animate-reveal" style={{ animationDelay: '0.3s' }}>
                 {profile.bioLong}
               </p>
 
               {/* CTAs */}
-              <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start opacity-0 animate-reveal" style={{ animationDelay: '0.55s' }}>
-                <Link href="/projects" className="group inline-flex items-center gap-2 px-5 py-2.5 bg-cerulean hover:bg-cerulean/90 text-deep-bg text-sm font-medium rounded-lg transition-all shadow-lg shadow-cerulean/20 hover:-translate-y-0.5">
-                  View Projects <FaArrowRight className="text-[10px] group-hover:translate-x-0.5 transition-transform" />
+              <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start opacity-0 animate-reveal" style={{ animationDelay: '0.4s' }}>
+                <Link href="/projects" className="group inline-flex items-center gap-2 px-5 py-2.5 bg-cerulean text-deep-bg text-sm font-medium rounded-lg shadow-lg shadow-cerulean/20">
+                  View Projects <FaArrowRight className="text-[10px]" />
                 </Link>
-                <Link href="/about" className="px-5 py-2.5 text-sm font-medium text-pearl/70 hover:text-pearl bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.06] rounded-lg transition-all hover:-translate-y-0.5">
+                <Link href="/about" className="px-5 py-2.5 text-sm font-medium text-pearl/70 bg-white/[0.04] border border-white/[0.06] rounded-lg">
                   Learn More
                 </Link>
               </div>
 
               {/* Socials */}
-              <div className="flex items-center gap-1.5 justify-center lg:justify-start opacity-0 animate-reveal" style={{ animationDelay: '0.7s' }}>
+              <div className="flex items-center gap-1.5 justify-center lg:justify-start opacity-0 animate-reveal" style={{ animationDelay: '0.5s' }}>
                 {profile.socialLinks && profile.socialLinks.length > 0 ? (
                   profile.socialLinks.map((link, idx) => (
-                    <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg text-pearl/40 hover:text-cerulean hover:bg-cerulean/10 transition-all">
+                    <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg text-pearl/40 hover:text-cerulean hover:bg-cerulean/10 transition-colors">
                       {getIcon(link.platform)}
                     </a>
                   ))
@@ -111,12 +110,12 @@ export default function Home() {
               </div>
             </div>
 
-            {/* RIGHT - AVATAR CARD */}
-            <div className="hidden lg:flex items-center justify-center relative opacity-0 animate-reveal" style={{ animationDelay: '0.3s' }}>
-              <div className="absolute w-[420px] h-[420px] rounded-full bg-gradient-to-br from-galaxy/60 via-transparent to-lilac/10 blur-sm" />
+            {/* RIGHT - AVATAR CARD (desktop only) */}
+            <div className="hidden lg:flex items-center justify-center relative opacity-0 animate-reveal" style={{ animationDelay: '0.2s' }}>
+              <div className="deco-blur absolute w-[420px] h-[420px] rounded-full bg-gradient-to-br from-galaxy/60 via-transparent to-lilac/10 blur-sm" />
               <div className="relative w-[360px] h-[460px] rounded-2xl overflow-hidden border border-white/[0.06] bg-gradient-to-b from-galaxy/60 to-deep-bg/80 shadow-2xl">
                 <div className="absolute inset-0">
-                  <Image src={profile.avatar || "/images/home avatar.png"} alt="Avatar" fill className="object-cover object-top" priority />
+                  <Image src={profile.avatar || "/images/home avatar.png"} alt="Avatar" fill sizes="360px" className="object-cover object-top" priority />
                   <div className="absolute inset-0 bg-gradient-to-t from-deep-bg via-deep-bg/30 to-transparent" />
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-5 space-y-2.5">
@@ -141,7 +140,7 @@ export default function Home() {
         </div>
 
         {/* Bottom */}
-        <div className="shrink-0 pb-4 flex items-center justify-between px-5 md:px-10 opacity-0 animate-reveal" style={{ animationDelay: '0.9s' }}>
+        <div className="shrink-0 pb-4 flex items-center justify-between px-5 md:px-10 opacity-0 animate-reveal" style={{ animationDelay: '0.6s' }}>
           <span className="text-[10px] text-pearl/30 font-mono">&copy; {new Date().getFullYear()} Sharaf Systems</span>
           <div className="flex items-center gap-1.5 text-[10px] text-pearl/30">
             <span className="hidden sm:inline">Scroll</span>

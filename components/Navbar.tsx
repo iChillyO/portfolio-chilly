@@ -9,8 +9,22 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [avatar, setAvatar] = useState<string>("/images/home avatar.png");
 
   useEffect(() => { setIsOpen(false); }, [pathname]);
+
+  useEffect(() => {
+    async function fetchAvatar() {
+      try {
+        const res = await fetch('/api/profile');
+        const contentType = res.headers.get("content-type");
+        if (!res.ok || !contentType || !contentType.includes("application/json")) return;
+        const data = await res.json();
+        if (data.success && data.data?.avatar) setAvatar(data.data.avatar);
+      } catch {}
+    }
+    fetchAvatar();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -102,7 +116,7 @@ export default function Navbar() {
             {/* Avatar card */}
             <div className="relative w-48 h-60 sm:w-56 sm:h-72 rounded-2xl overflow-hidden border border-white/[0.08] bg-gradient-to-b from-galaxy/40 to-deep-bg/80 shadow-2xl">
               <Image
-                src="/images/home avatar.png"
+                src={avatar}
                 alt="Avatar"
                 fill
                 className="object-cover object-top"
@@ -116,7 +130,7 @@ export default function Navbar() {
 
             {/* Name & tagline */}
             <div className="mt-5 text-center space-y-1.5">
-              <h2 className="text-2xl font-bold text-pearl tracking-tight">Chilly</h2>
+              <h2 className="text-2xl font-bold text-pearl tracking-tight">Sharaf Hazem</h2>
               <p className="text-xs text-pearl/40">Developer &middot; Designer &middot; Creator</p>
             </div>
 
@@ -179,8 +193,10 @@ export default function Navbar() {
             <div className="absolute bottom-[15%] right-[-10%] w-[200px] h-[200px] bg-galaxy/20 rounded-full blur-[60px] pointer-events-none" />
 
             <div className="text-center space-y-5">
-              <div className="w-14 h-14 mx-auto rounded-xl bg-cerulean/10 border border-cerulean/20 flex items-center justify-center">
-                <span className="text-cerulean text-xl">🚀</span>
+              {/* Glassy "Work" badge */}
+              <div className="w-24 h-12 mx-auto rounded-full bg-gradient-to-r from-amber-400/80 to-yellow-300/80 border border-white/20 shadow-lg shadow-amber-400/20 flex items-center justify-center gap-1.5 backdrop-blur-sm">
+                <svg className="w-4 h-4 text-white drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <span className="text-white text-sm font-bold tracking-wide drop-shadow-sm">Work</span>
               </div>
               <div className="space-y-2">
                 <h3 className="text-xl font-bold text-pearl">Ready to collaborate?</h3>

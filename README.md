@@ -26,15 +26,15 @@ A clean introduction showcasing my software engineering and multimedia backgroun
 
 ### Admin Authentication
 Secure login portal to access the dashboard.
-![Login Screen] screenshots/Screenshot 2026-05-21 133911.png
+![Login Screen](./screenshots/Screenshot%202026-05-21%20133911.png)
 
 ### Dashboard Overview
 High-level system status, quick actions, database connection state, and project queue.
-![Admin Overview](.screenshots/Screenshot 2026-05-21 133921.png)
+![Admin Overview](./screenshots/Screenshot%202026-05-21%20133921.png)
 
 ### Profile Configuration
 Dynamic data editing to update site taglines, avatars, and experience cards instantly.
-![Profile Config](./screenshots/Screenshot 2026-05-21 133940.png)
+![Profile Config](./screenshots/Screenshot%202026-05-21%20133940.png)
 
 ## 💻 Getting Started
 

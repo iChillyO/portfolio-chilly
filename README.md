@@ -22,7 +22,7 @@ A modern, full-stack personal portfolio designed to showcase digital artifacts, 
 
 ### Public Homepage
 A clean introduction showcasing my software engineering and multimedia background.
-![Homepage UI](./screenshots/Screenshot 2026-05-21 133856.png)
+![Admin Dashboard Overview](./screenshots/Screenshot%202026-05-21%20133856.png)
 
 ### Admin Authentication
 Secure login portal to access the dashboard.

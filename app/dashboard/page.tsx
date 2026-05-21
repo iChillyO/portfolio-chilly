@@ -1,19 +1,27 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
-import {
-  FaTrash, FaPlus, FaDatabase, FaSpinner, FaUserEdit, FaTags, FaListUl,
-  FaImages, FaSave, FaUpload, FaCaretDown, FaTerminal,
-  FaChevronDown, FaChevronRight, FaBriefcase, FaFileContract, FaShieldAlt
-} from "react-icons/fa";
-import { Project, ProfileData, ExperienceCard } from "@/types";
 import Auth from "@/components/dashboard/Auth";
-import Sidebar from "@/components/dashboard/Sidebar";
+import ConfirmModal from "@/components/dashboard/ConfirmModal";
 import Header from "@/components/dashboard/Header";
 import Overview from "@/components/dashboard/Overview";
-import ConfirmModal from "@/components/dashboard/ConfirmModal";
-import { FaTasks } from "react-icons/fa";
-import { useSession, signOut } from "next-auth/react";
+import Sidebar from "@/components/dashboard/Sidebar";
+import { ExperienceCard, ProfileData, Project } from "@/types";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import {
+  FaBriefcase,
+  FaCaretDown,
+  FaDatabase,
+  FaFileContract,
+  FaPlus,
+  FaShieldAlt,
+  FaSpinner,
+  FaTags,
+  FaTasks,
+  FaTrash,
+  FaUpload,
+  FaUserEdit
+} from "react-icons/fa";
 
 export default function () {
   // --- REFS ---

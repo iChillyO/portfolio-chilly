@@ -8,10 +8,13 @@ export default function WorkQueue() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
-      try { const res = await fetch('/api/profile'); const data = await res.json(); if (data.success && data.data.workQueue) setWorkQueue(data.data.workQueue); }
-      catch (error) { console.error(error); } finally { setIsLoading(false); }
-    })();
+    const controller = new AbortController();
+    fetch('/api/profile', { signal: controller.signal })
+      .then(res => res.json())
+      .then(data => { if (data.success && data.data.workQueue) setWorkQueue(data.data.workQueue); })
+      .catch(err => { if (err.name !== 'AbortError') console.error(err); })
+      .finally(() => setIsLoading(false));
+    return () => controller.abort();
   }, []);
 
   const statusConfig: Record<string, { color: string; bg: string; border: string; bar: string; icon: React.ReactNode }> = {
@@ -22,7 +25,7 @@ export default function WorkQueue() {
 
   return (
     <main className="min-h-screen bg-deep-bg font-sans select-none overflow-x-hidden relative text-pearl page-top pb-12">
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-galaxy/30 rounded-full blur-[100px] pointer-events-none" />
+      <div className="deco-blur absolute top-0 right-0 w-[400px] h-[400px] bg-galaxy/30 rounded-full blur-[100px]" />
       <div className="max-w-4xl mx-auto section-padding relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
           <div>
@@ -52,7 +55,7 @@ export default function WorkQueue() {
                 <div className="flex justify-center w-full md:w-auto"><span className={`px-3 py-1 rounded-full text-[10px] font-medium border ${cfg.bg} ${cfg.color} ${cfg.border}`}>{item.status}</span></div>
                 <div className="flex flex-col gap-1.5 w-full">
                   <div className="flex justify-between text-[10px] text-pearl/30"><span>Progress</span><span className="text-pearl font-medium">{item.progress}%</span></div>
-                  <div className="w-full h-1 bg-white/[0.04] rounded-full overflow-hidden"><div className={`h-full ${cfg.bar} rounded-full transition-all duration-700`} style={{ width: `${item.progress}%` }} /></div>
+                  <div className="w-full h-1 bg-white/[0.04] rounded-full overflow-hidden"><div className={`h-full ${cfg.bar} rounded-full`} style={{ width: `${item.progress}%` }} /></div>
                 </div>
               </div>
             );

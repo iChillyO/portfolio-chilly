@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { FaFileContract, FaShieldAlt, FaFingerprint } from "react-icons/fa";
+import { FaFileContract, FaFingerprint } from "react-icons/fa";
 import { ProtocolSection } from "@/types";
 
 interface ProtocolsData { title: string; version: string; sections: ProtocolSection[]; }
@@ -10,7 +10,13 @@ export default function ProtocolsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => { try { const res = await fetch('/api/profile'); const data = await res.json(); if (data.success) setProtocols(data.data.protocols); } catch (err) { console.error(err); } finally { setLoading(false); } })();
+    const controller = new AbortController();
+    fetch('/api/profile', { signal: controller.signal })
+      .then(res => res.json())
+      .then(data => { if (data.success) setProtocols(data.data.protocols); })
+      .catch(err => { if (err.name !== 'AbortError') console.error(err); })
+      .finally(() => setLoading(false));
+    return () => controller.abort();
   }, []);
 
   if (loading) return <main className="min-h-screen bg-deep-bg flex items-center justify-center"><div className="w-10 h-10 border-2 border-cerulean/30 border-t-cerulean rounded-full animate-spin" /></main>;
@@ -18,7 +24,7 @@ export default function ProtocolsPage() {
 
   return (
     <main className="min-h-screen bg-deep-bg font-sans select-none overflow-x-hidden relative pb-12 text-pearl page-top">
-      <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-galaxy/30 rounded-full blur-[80px] pointer-events-none" />
+      <div className="deco-blur absolute top-0 left-0 w-[300px] h-[300px] bg-galaxy/30 rounded-full blur-[80px]" />
       <div className="max-w-4xl mx-auto section-padding relative z-10">
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-8">
           <div>

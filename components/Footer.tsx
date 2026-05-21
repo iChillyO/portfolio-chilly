@@ -25,19 +25,17 @@ export default function Footer() {
   const year = new Date().getFullYear();
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
 
-  // Fetch dynamic social links from the same source the dashboard manages
   useEffect(() => {
-    fetch('/api/profile')
+    const controller = new AbortController();
+    fetch('/api/profile', { signal: controller.signal })
       .then(res => res.json())
       .then(data => {
-        if (data.success && data.data?.socialLinks) {
-          setSocialLinks(data.data.socialLinks);
-        }
+        if (data.success && data.data?.socialLinks) setSocialLinks(data.data.socialLinks);
       })
-      .catch(() => {/* silent fail - footer just shows nothing */});
+      .catch(() => {});
+    return () => controller.abort();
   }, []);
 
-  // Same links as the Navbar so everything is consistent
   const links = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
@@ -71,14 +69,7 @@ export default function Footer() {
             <div className="flex gap-2 flex-wrap">
               {socialLinks.length > 0 ? (
                 socialLinks.map((link, i) => (
-                  <a
-                    key={i}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={link.platform}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.03] border border-white/[0.05] text-pearl/40 hover:text-cerulean hover:border-cerulean/30 transition-all"
-                  >
+                  <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" title={link.platform} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.03] border border-white/[0.05] text-pearl/40 hover:text-cerulean transition-colors">
                     {getIcon(link.platform)}
                   </a>
                 ))

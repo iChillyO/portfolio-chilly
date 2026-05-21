@@ -9,8 +9,22 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [avatar, setAvatar] = useState<string>("/images/home avatar.png");
 
   useEffect(() => { setIsOpen(false); }, [pathname]);
+
+  useEffect(() => {
+    async function fetchAvatar() {
+      try {
+        const res = await fetch('/api/profile');
+        const contentType = res.headers.get("content-type");
+        if (!res.ok || !contentType || !contentType.includes("application/json")) return;
+        const data = await res.json();
+        if (data.success && data.data?.avatar) setAvatar(data.data.avatar);
+      } catch {}
+    }
+    fetchAvatar();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -102,7 +116,7 @@ export default function Navbar() {
             {/* Avatar card */}
             <div className="relative w-48 h-60 sm:w-56 sm:h-72 rounded-2xl overflow-hidden border border-white/[0.08] bg-gradient-to-b from-galaxy/40 to-deep-bg/80 shadow-2xl">
               <Image
-                src="/images/home avatar.png"
+                src={avatar}
                 alt="Avatar"
                 fill
                 className="object-cover object-top"

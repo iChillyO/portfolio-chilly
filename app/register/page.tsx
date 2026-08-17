@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FaUserPlus, FaLock, FaUser, FaSpinner, FaExclamationTriangle } from "react-icons/fa";
+import Image from "next/image";
+import { FaLock, FaUser, FaSpinner, FaExclamationTriangle } from "react-icons/fa";
 
 export default function Register() {
   const [formData, setFormData] = useState({ username: "", password: "", confirmPassword: "" });
@@ -48,9 +49,7 @@ export default function Register() {
 
       <div className="relative w-full max-w-sm bg-surface border border-white/[0.06] rounded-2xl p-7 shadow-2xl">
         <div className="flex justify-center mb-5">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cerulean to-lilac flex items-center justify-center shadow-lg shadow-cerulean/20">
-            <FaUserPlus className="text-white text-lg" />
-          </div>
+          <Image src="/logo.png" alt="Chilly" width={48} height={48} className="w-12 h-12 rounded-xl shadow-lg shadow-cerulean/20" priority />
         </div>
 
         <h1 className="text-lg font-bold text-center text-pearl mb-0.5">Create Account</h1>

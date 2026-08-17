@@ -55,9 +55,14 @@ export default function Navbar() {
 
         {/* LOGO */}
         <Link href="/" className="group flex items-center gap-2.5 relative z-[60]">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cerulean to-lilac flex items-center justify-center shadow-lg shadow-cerulean/20">
-            <span className="text-white font-bold text-xs">C</span>
-          </div>
+          <Image
+            src="/logo.png"
+            alt="Chilly"
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-lg"
+            priority
+          />
           <span className="hidden sm:block text-pearl font-display font-bold text-sm tracking-wider uppercase group-hover:text-cerulean transition-colors">
             Chilly
           </span>

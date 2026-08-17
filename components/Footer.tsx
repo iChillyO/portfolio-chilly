@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import {
   FaGithub, FaLinkedin, FaTwitter, FaDiscord, FaInstagram, FaYoutube,
@@ -53,7 +54,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cerulean to-lilac flex items-center justify-center"><span className="text-white font-bold text-[10px]">C</span></div>
+              <Image src="/logo.png" alt="Chilly" width={28} height={28} className="w-7 h-7 rounded-lg" />
               <span className="text-pearl font-display font-bold text-xs tracking-wider uppercase">Chilly</span>
             </div>
             <p className="text-xs text-pearl/30 leading-relaxed max-w-xs">Creative developer crafting digital experiences.</p>

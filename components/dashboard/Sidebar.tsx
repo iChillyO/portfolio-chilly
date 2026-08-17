@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { FaChartLine, FaUserEdit, FaExternalLinkAlt, FaImages, FaFileContract, FaTags, FaListUl, FaBars, FaTimes, FaCogs } from 'react-icons/fa';
 
@@ -19,7 +20,7 @@ export default function Sidebar({ activeTab, setActiveTab, alias, setIsAuthentic
       <aside className={`fixed lg:static inset-y-0 left-0 w-56 bg-surface border-r border-white/[0.04] flex flex-col h-full z-50 transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         <div className="p-4 border-b border-white/[0.04] shrink-0">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cerulean to-lilac flex items-center justify-center"><span className="text-white font-bold text-[10px]">C</span></div>
+            <Image src="/logo.png" alt="Chilly" width={28} height={28} className="w-7 h-7 rounded-lg" />
             <span className="text-pearl font-bold text-xs tracking-wide">Admin</span>
           </Link>
         </div>

@@ -11,6 +11,10 @@ const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-orbitron" });
 export const metadata: Metadata = {
   title: "Chilly | Creative Developer Portfolio",
   description: "Full-stack developer crafting modern digital experiences.",
+  icons: {
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: [{ url: "/logo.png", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

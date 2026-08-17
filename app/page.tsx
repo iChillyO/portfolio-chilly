@@ -2,101 +2,49 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FaDiscord, FaTwitter, FaGoogle, FaInstagram, FaGithub, FaLinkedin, FaYoutube, FaTwitch, FaExternalLinkAlt } from "react-icons/fa";
+import { FaDiscord, FaTwitter, FaGoogle, FaInstagram, FaGithub, FaLinkedin, FaYoutube, FaTwitch, FaExternalLinkAlt, FaArrowRight, FaArrowDown } from "react-icons/fa";
 import { ProfileData } from "@/types";
-
-// --- 1. DEFINITIONS ---
-
-const CornerBracket = ({ className, rotate = "0" }: { className?: string, rotate?: string }) => (
-  <svg
-    className={`${className} transition-all duration-500`}
-    style={{ transform: `rotate(${rotate}deg)` }}
-    width="50"
-    height="50"
-    viewBox="0 0 50 50"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M50 2H2V50" stroke="#22d3ee" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-const RevealText = ({
-  text,
-  className,
-  delay = 0,
-  speed = 0.1
-}: {
-  text: string,
-  className?: string,
-  delay?: number,
-  speed?: number
-}) => {
-  return (
-    <span className={`inline-block ${className}`}>
-      {text.split("").map((char, index) => (
-        <span
-          key={index}
-          className="opacity-0 animate-reveal inline-block"
-          style={{
-            animationDelay: `${delay + index * speed}s`,
-            minWidth: char === " " ? "0.3em" : "auto"
-          }}
-        >
-          {char}
-        </span>
-      ))}
-    </span>
-  );
-};
-
-// --- 2. MAIN COMPONENT ---
 
 export default function Home() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchProfile() {
-      try {
-        const res = await fetch('/api/profile');
-        const contentType = res.headers.get("content-type");
-        
-        if (!res.ok || !contentType || !contentType.includes("application/json")) {
-          const errorText = await res.text();
-          throw new Error(`Fetch failed with status ${res.status}: ${errorText.substring(0, 100)}`);
-        }
-        
-        const data = await res.json();
-        if (data.success) {
-          setProfile(data.data);
-        } else {
-          console.error("Profile API returned failure:", data.error);
-        }
-      } catch (error) {
-        console.error("Failed to fetch profile:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProfile();
+    const controller = new AbortController();
+    fetch('/api/profile', { signal: controller.signal })
+      .then(res => {
+        if (!res.ok) throw new Error("Fetch failed");
+        return res.json();
+      })
+      .then(data => { if (data.success) setProfile(data.data); })
+      .catch(err => { if (err.name !== 'AbortError') console.error("Failed to fetch profile:", err); })
+      .finally(() => setLoading(false));
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {
-    // Force body overflow hidden when on Home Page
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
-
-    return () => {
-      document.documentElement.style.overflow = "auto";
-      document.body.style.overflow = "auto";
-    };
+    return () => { document.documentElement.style.overflow = ""; document.body.style.overflow = ""; };
   }, []);
+
+  const getIcon = (p: string) => {
+    const l = p.toLowerCase();
+    if (l.includes("discord")) return <FaDiscord size={15} />;
+    if (l.includes("twitter") || l.includes("x")) return <FaTwitter size={15} />;
+    if (l.includes("instagram")) return <FaInstagram size={15} />;
+    if (l.includes("google") || l.includes("mail")) return <FaGoogle size={13} />;
+    if (l.includes("github")) return <FaGithub size={15} />;
+    if (l.includes("linkedin")) return <FaLinkedin size={15} />;
+    if (l.includes("youtube")) return <FaYoutube size={15} />;
+    if (l.includes("twitch")) return <FaTwitch size={15} />;
+    return <FaExternalLinkAlt size={13} />;
+  };
 
   if (loading) {
     return (
-      <main className="h-[100dvh] w-full bg-deep-bg flex items-center justify-center" suppressHydrationWarning={true}>
-        <div className="text-cyan-400 font-mono text-xl" suppressHydrationWarning={true}>Loading...</div>
+      <main className="h-[100dvh] w-full bg-deep-bg flex items-center justify-center">
+        <div className="w-10 h-10 border-2 border-cerulean/30 border-t-cerulean rounded-full animate-spin" />
       </main>
     );
   }
@@ -104,143 +52,102 @@ export default function Home() {
   if (!profile) {
     return (
       <main className="h-[100dvh] w-full bg-deep-bg flex items-center justify-center">
-        <div className="text-red-500 font-mono text-xl">Failed to load profile data.</div>
+        <div className="text-red-400 text-sm">Failed to load profile data.</div>
       </main>
     );
   }
 
   return (
-    <main className="h-[100dvh] w-full bg-deep-bg flex items-center justify-center p-4 md:p-8 font-sans select-none overflow-hidden relative" suppressHydrationWarning={true}>
+    <main className="h-[100dvh] w-full bg-deep-bg overflow-hidden relative font-sans select-none">
+      {/* BG — decorative blurs hidden on mobile via CSS class */}
+      <div className="absolute inset-0 bg-grid-pattern bg-grid opacity-100 pointer-events-none" />
+      <div className="deco-blur absolute top-[-15%] right-[-8%] w-[600px] h-[600px] bg-galaxy/40 rounded-full blur-[100px]" />
+      <div className="deco-blur absolute bottom-[-15%] left-[-8%] w-[400px] h-[400px] bg-lilac/8 rounded-full blur-[80px]" />
 
-      {/* THE MAIN CARD */}
-      <div className="relative w-full max-w-7xl min-h-[70vh] lg:h-[80vh] lg:max-h-[800px] flex bg-[#0a1128]/70 backdrop-blur-xl rounded-[20px] md:rounded-[40px] shadow-[0_0_80px_rgba(34,211,238,0.2)] z-20">
+      {/* CONTENT */}
+      <div className="relative z-10 h-full flex flex-col">
+        <div className="flex-1 flex items-center justify-center px-5 md:px-10 lg:px-16">
+          <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
-        {/* Border Glows */}
-        <div className="absolute inset-0 rounded-[20px] md:rounded-[40px] border border-cyan-500/20 pointer-events-none z-20"></div>
-
-        {/* --- CORNER BRACKETS --- */}
-        <div className="absolute -top-4 -right-4 z-30 hidden sm:block">
-          <CornerBracket rotate="0" />
-        </div>
-        <div className="absolute -bottom-4 -left-4 z-30 hidden sm:block">
-          <CornerBracket rotate="180" />
-        </div>
-
-        {/* --- BLUR SEAM --- */}
-        <div className="absolute top-0 left-[45%] h-full w-32 -ml-16 z-35 pointer-events-none hidden lg:block">
-          <div className="w-full h-full backdrop-blur-2xl [-webkit-mask-image:linear-gradient(to_right,transparent,black,transparent)]"></div>
-        </div>
-
-        {/* --- GRID LAYOUT --- */}
-        <div className="w-full h-full grid grid-cols-1 lg:grid-cols-[45%_55%]">
-
-          {/* --- LEFT COLUMN: Character --- */}
-          <div className="relative h-full w-full hidden lg:block">
-            <div className="absolute bottom-[-10%] left-[-20px] h-[115%] w-full flex items-end justify-center z-30 pointer-events-none">
-              <Image
-                src={profile.avatar || "/images/lucial-avatar1.png"}
-                alt="Avatar"
-                width={900}
-                height={1100}
-                className="object-contain h-full w-auto object-bottom drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)] pr-8"
-                priority
-              />
-            </div>
-          </div>
-
-          {/* --- RIGHT COLUMN: Content --- */}
-          <div className="relative z-40 h-full flex flex-col justify-center p-6 sm:p-10 lg:p-16 overflow-hidden">
-
-            {/* MOBILE BACKGROUND IMAGE */}
-            <div className="absolute inset-0 lg:hidden z-0 pointer-events-none opacity-20 select-none">
-              <Image
-                src={profile.avatar || "/images/lucial-avatar1.png"}
-                alt="Background Avatar"
-                fill
-                className="object-cover object-top"
-                priority
-              />
-            </div>
-
-            <div className="relative z-10 w-full">
-
-              {/* Header Text */}
-              <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
-                <div className="flex items-center gap-3">
-                  <div className="h-[1px] w-8 md:w-12 bg-cyan-400 shadow-[0_0_10px_#22d3ee]"></div>
-                  <h3 className="text-cyan-400 text-[10px] md:text-sm font-bold tracking-[0.2em] uppercase">
-                    <RevealText text="Welcome to my portfolio" speed={0.05} />
-                  </h3>
-                </div>
-
-                <div className="relative w-fit">
-                  <h1 className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-black text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] tracking-tighter uppercase italic leading-[1.1] pr-2 pb-2">
-                    <RevealText text={profile.alias} delay={1.2} speed={0.15} />
-                  </h1>
-                  <h1 className="absolute top-1 left-1 text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-black text-cyan-500/20 tracking-tighter uppercase italic leading-[1.1] -z-10 blur-sm opacity-0 animate-reveal" style={{ animationDelay: '2s' }}>
-                    {profile.alias}
-                  </h1>
-                </div>
-
-                <h2 className="text-lg md:text-2xl text-blue-100 font-light tracking-widest uppercase opacity-0 animate-reveal" style={{ animationDelay: '2.5s' }}>
-                  {profile.designation}
-                </h2>
+            {/* LEFT */}
+            <div className="space-y-6 text-center lg:text-left">
+              {/* Name */}
+              <div className="space-y-2 opacity-0 animate-reveal" style={{ animationDelay: '0.15s' }}>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1]">
+                  <span className="text-pearl">{profile.alias.split(' ')[0]}</span>
+                  {profile.alias.split(' ').length > 1 && (
+                    <><br /><span className="text-gradient-primary">{profile.alias.split(' ').slice(1).join(' ')}</span></>
+                  )}
+                  {profile.alias.split(' ').length === 1 && <span className="text-cerulean">.</span>}
+                </h1>
+                <p className="text-base md:text-lg text-pearl/50 font-light">{profile.designation}</p>
               </div>
 
-              <p className="text-blue-200/80 text-sm md:text-lg leading-relaxed max-w-lg mb-8 md:mb-10 opacity-0 animate-reveal" style={{ animationDelay: '2.8s' }}>
+              {/* Bio */}
+              <p className="text-sm text-pearl/40 leading-relaxed max-w-md mx-auto lg:mx-0 opacity-0 animate-reveal" style={{ animationDelay: '0.3s' }}>
                 {profile.bioLong}
               </p>
 
-              {/* --- CONTACT ME SECTION --- */}
-              <div className="opacity-0 animate-reveal" style={{ animationDelay: '3.2s' }}>
-                <p className="text-[10px] md:text-xs text-blue-400/50 uppercase tracking-widest mb-4">Contact Me</p>
-
-                <div className="flex items-center gap-3 flex-wrap">
-                  {/* DYNAMIC SOCIAL LINKS */}
-                  {profile.socialLinks && profile.socialLinks.length > 0 ? (
-                    profile.socialLinks.map((link, idx) => {
-                      const getIcon = (p: string) => {
-                        const lower = p.toLowerCase();
-                        if (lower.includes("discord")) return <FaDiscord size={18} />;
-                        if (lower.includes("twitter") || lower.includes("x")) return <FaTwitter size={18} />;
-                        if (lower.includes("instagram")) return <FaInstagram size={18} />;
-                        if (lower.includes("google") || lower.includes("mail")) return <FaGoogle size={16} />;
-                        if (lower.includes("github")) return <FaGithub size={18} />;
-                        if (lower.includes("linkedin")) return <FaLinkedin size={18} />;
-                        if (lower.includes("youtube")) return <FaYoutube size={18} />;
-                        if (lower.includes("twitch")) return <FaTwitch size={18} />;
-                        return <FaExternalLinkAlt size={16} />;
-                      };
-
-                      return (
-                        <a
-                          key={idx}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-black/40 border border-white/5 rounded-xl text-gray-400 hover:text-cyan-400 hover:border-cyan-500/50 hover:bg-cyan-900/20 hover:scale-110 transition-all duration-300 shadow-lg"
-                        >
-                          {getIcon(link.platform)}
-                        </a>
-                      );
-                    })
-                  ) : (
-                    <div className="text-xs text-gray-600">No uplink signals detected.</div>
-                  )}
-                </div>
+              {/* CTAs */}
+              <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start opacity-0 animate-reveal" style={{ animationDelay: '0.4s' }}>
+                <Link href="/projects" className="group inline-flex items-center gap-2 px-5 py-2.5 bg-cerulean text-deep-bg text-sm font-medium rounded-lg shadow-lg shadow-cerulean/20">
+                  View Projects <FaArrowRight className="text-[10px]" />
+                </Link>
+                <Link href="/about" className="px-5 py-2.5 text-sm font-medium text-pearl/70 bg-white/[0.04] border border-white/[0.06] rounded-lg">
+                  Learn More
+                </Link>
               </div>
 
+              {/* Socials */}
+              <div className="flex items-center gap-1.5 justify-center lg:justify-start opacity-0 animate-reveal" style={{ animationDelay: '0.5s' }}>
+                {profile.socialLinks && profile.socialLinks.length > 0 ? (
+                  profile.socialLinks.map((link, idx) => (
+                    <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg text-pearl/40 hover:text-cerulean hover:bg-cerulean/10 transition-colors">
+                      {getIcon(link.platform)}
+                    </a>
+                  ))
+                ) : <span className="text-[11px] text-pearl/30">No links configured.</span>}
+              </div>
+            </div>
+
+            {/* RIGHT - AVATAR CARD (desktop only) */}
+            <div className="hidden lg:flex items-center justify-center relative opacity-0 animate-reveal" style={{ animationDelay: '0.2s' }}>
+              <div className="deco-blur absolute w-[420px] h-[420px] rounded-full bg-gradient-to-br from-galaxy/60 via-transparent to-lilac/10 blur-sm" />
+              <div className="relative w-[360px] h-[460px] rounded-2xl overflow-hidden border border-white/[0.06] bg-gradient-to-b from-galaxy/60 to-deep-bg/80 shadow-2xl">
+                <div className="absolute inset-0">
+                  <Image src={profile.avatar || "/images/home avatar.png"} alt="Avatar" fill sizes="360px" className="object-cover object-top" priority />
+                  <div className="absolute inset-0 bg-gradient-to-t from-deep-bg via-deep-bg/30 to-transparent" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-5 space-y-2.5">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-cerulean rounded-full" />
+                    <span className="text-[11px] text-pearl/50">{profile.designation}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(profile.skillStats || []).slice(0, 3).map((stat, idx) => (
+                      <div key={idx} className="px-2.5 py-1 rounded-md bg-white/[0.05] border border-white/[0.06] text-[10px] text-pearl/70">
+                        {stat.label} <span className="text-cerulean ml-0.5">{stat.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Corner accents */}
+                <div className="absolute top-3 right-3 w-6 h-6 border-t border-r border-gold/40 rounded-tr-md" />
+                <div className="absolute bottom-3 left-3 w-6 h-6 border-b border-l border-gold/40 rounded-bl-md" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* INTEGRATED FOOTER */}
-      <div className="absolute bottom-6 w-full text-center z-30 opacity-0 animate-reveal" style={{ animationDelay: '3.5s' }}>
-        <p className="text-[10px] md:text-xs text-blue-200/40 font-mono tracking-widest uppercase mb-1">Terms of Use</p>
-        <p className="text-[10px] md:text-xs text-blue-200/20 font-mono tracking-widest uppercase">© 2025 Sharaf SYSTEMS. ALL RIGHTS RESERVED</p>
+        {/* Bottom */}
+        <div className="shrink-0 pb-4 flex items-center justify-between px-5 md:px-10 opacity-0 animate-reveal" style={{ animationDelay: '0.6s' }}>
+          <span className="text-[10px] text-pearl/30 font-mono">&copy; {new Date().getFullYear()} Sharaf Systems</span>
+          <div className="flex items-center gap-1.5 text-[10px] text-pearl/30">
+            <span className="hidden sm:inline">Scroll</span>
+            <FaArrowDown className="text-cerulean/50 animate-bounce text-[8px]" />
+          </div>
+        </div>
       </div>
-
     </main>
   );
 }

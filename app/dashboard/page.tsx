@@ -4,6 +4,7 @@ import ConfirmModal from "@/components/dashboard/ConfirmModal";
 import Header from "@/components/dashboard/Header";
 import Overview from "@/components/dashboard/Overview";
 import Sidebar from "@/components/dashboard/Sidebar";
+import SkillsManager from "@/components/dashboard/SkillsManager";
 import { ExperienceCard, ProfileData, Project } from "@/types";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -30,9 +31,6 @@ export default function () {
   const projectImageInputRef = useRef<HTMLInputElement>(null);
 
   // --- STATE ---
-
-  // --- STATE ---
-
   const [activeTab, setActiveTab] = useState("identity");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -44,8 +42,6 @@ export default function () {
 
   // DATA STATE
   const [projects, setProjects] = useState<Project[]>([]);
-  // ... (rest of state vars omitted for brevity if unchanged, but need to be careful with replace_file_content context match)
-  // To avoid context errors, I will match exactly what was there.
 
   const [identity, setIdentity] = useState<ProfileData>({
     alias: "Chilly",
@@ -67,6 +63,7 @@ export default function () {
     workQueue: [],
     socialLinks: [],
     skillStats: [],
+    quickInfo: [],
     lastSync: new Date().toISOString()
   });
 
@@ -114,7 +111,8 @@ export default function () {
           ...data.data,
           experienceLog: data.data.experienceLog || [],
           skillStats: data.data.skillStats || [],
-          socialLinks: data.data.socialLinks || []
+          socialLinks: data.data.socialLinks || [],
+          quickInfo: data.data.quickInfo || []
         };
         setIdentity(safeData);
       }
@@ -128,8 +126,6 @@ export default function () {
       setSyncMessage({ message: "", type: "" });
     }, 3000);
   };
-
-  // ... (keeping other handlers same until we reach project handler)
 
   const handleEditProject = (project: Project) => {
     setEditProjectId(project._id);
@@ -158,8 +154,6 @@ export default function () {
       clientName: "", timeline: "", roleStack: "", coreChallenge: "", technicalSolution: ""
     });
   };
-
-  // ... (rest of simple handlers omitted for now, will target specifically handleAddProject next)
 
   const handleSaveIdentity = async () => {
     setSaving(true);
@@ -198,7 +192,6 @@ export default function () {
     showSyncMessage("UPLOADING...", "success");
 
     try {
-      // 1. Get a signature for the upload
       const timestamp = Math.round(new Date().getTime() / 1000);
       const paramsToSign = { timestamp };
 
@@ -212,17 +205,12 @@ export default function () {
         throw new Error("Failed to get signature.");
       }
 
-      // 2. Prepare FormData for Cloudinary
       const formData = new FormData();
       formData.append("file", file);
-      formData.append(
-        "api_key",
-        process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY!
-      );
+      formData.append("api_key", process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY!);
       formData.append("timestamp", String(timestamp));
       formData.append("signature", signData.signature);
 
-      // 3. Upload directly to Cloudinary
       const uploadUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`;
 
       const uploadRes = await fetch(uploadUrl, {
@@ -233,14 +221,12 @@ export default function () {
       const uploadData = await uploadRes.json();
 
       if (uploadData.secure_url) {
-        // 4. Update state with the new URL via callback
         onUploadComplete(uploadData.secure_url);
         showSyncMessage("UPLOAD COMPLETE", "success");
       } else {
         console.error("Cloudinary upload failed. Response:", uploadData);
         throw new Error(
-          `Cloudinary upload failed: ${uploadData.error?.message || "Unknown error"
-          }`
+          `Cloudinary upload failed: ${uploadData.error?.message || "Unknown error"}`
         );
       }
     } catch (err) {
@@ -354,7 +340,7 @@ export default function () {
   const addSkillStat = () => {
     setIdentity({
       ...identity,
-      skillStats: [...(identity.skillStats || []), { label: "NEW PARAMETER", value: "50%", color: "bg-cyan-400" }]
+      skillStats: [...(identity.skillStats || []), { label: "NEW PARAMETER", value: "50%", color: "bg-violet-500" }]
     });
   };
 
@@ -388,6 +374,26 @@ export default function () {
     const newLinks = [...(identity.socialLinks || [])];
     newLinks[index] = { ...newLinks[index], [field]: value };
     setIdentity({ ...identity, socialLinks: newLinks });
+  };
+
+  // Quick Info Handlers (About Page)
+  const addQuickInfo = () => {
+    setIdentity({
+      ...identity,
+      quickInfo: [...(identity.quickInfo || []), { icon: "FaMapMarkerAlt", iconColor: "text-cerulean", text: "New info", order: (identity.quickInfo || []).length }]
+    });
+  };
+
+  const removeQuickInfo = (index: number) => {
+    const newItems = [...(identity.quickInfo || [])];
+    newItems.splice(index, 1);
+    setIdentity({ ...identity, quickInfo: newItems });
+  };
+
+  const updateQuickInfo = (index: number, field: 'icon' | 'iconColor' | 'text', value: string) => {
+    const newItems = [...(identity.quickInfo || [])];
+    newItems[index] = { ...newItems[index], [field]: value };
+    setIdentity({ ...identity, quickInfo: newItems });
   };
 
   // Project Handlers
@@ -429,7 +435,7 @@ export default function () {
         if (isEdit) {
           setProjects(projects.map(p => p._id === editProjectId ? data.data : p));
           showSyncMessage("MISSION UPDATE COMPLETE", "success");
-          handleCancelEdit(); // Reset form
+          handleCancelEdit();
         } else {
           setProjects([data.data, ...projects]);
           setFormData({
@@ -467,9 +473,9 @@ export default function () {
   // --- Conditional Rendering for Auth ---
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#050b14] font-mono text-cyan-400" suppressHydrationWarning={true}>
-        <FaSpinner className="animate-spin text-5xl text-cyan-500" />
-        <p className="ml-4 text-white uppercase tracking-widest">LOADING SYSTEM DATA...</p>
+      <div className="flex items-center justify-center min-h-screen bg-deep-bg font-sans text-pearl" suppressHydrationWarning={true}>
+        <FaSpinner className="animate-spin text-5xl text-cerulean" />
+        <p className="ml-4 text-pearl tracking-wide">Loading system data...</p>
       </div>
     );
   }
@@ -478,9 +484,9 @@ export default function () {
     return <Auth />;
   }
 
-  // --- 🖥️ DASHBOARD LAYOUT ---
+  // --- DASHBOARD LAYOUT ---
   return (
-    <div className="flex h-screen bg-[#050b14] font-mono text-cyan-400 selection:bg-cyan-500 selection:text-black overflow-hidden relative" suppressHydrationWarning={true}>
+    <div className="flex h-screen bg-deep-bg font-sans text-pearl overflow-hidden" suppressHydrationWarning={true}>
 
       <Sidebar
         activeTab={activeTab}
@@ -489,8 +495,8 @@ export default function () {
         setIsAuthenticated={signOut}
       />
 
-      {/* MAIN CONTENT (SCROLLABLE INDEPENDENTLY) */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-black relative">
+      {/* MAIN CONTENT */}
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         <Header
           activeTab={activeTab}
           saving={saving}
@@ -499,119 +505,52 @@ export default function () {
           syncMessage={syncMessage}
         />
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 lg:p-12">
-          <div className="max-w-6xl mx-auto pb-24">
+        <div className="flex-1 overflow-y-auto p-6 md:p-8">
+          <div className="max-w-5xl mx-auto pb-24">
 
-            {/* === 📊 VIEW: OVERVIEW === */}
+
+            {/* === VIEW: OVERVIEW === */}
             {activeTab === 'overview' && (
               <Overview identity={identity} setActiveTab={setActiveTab} />
             )}
 
-            {/* === 👤 VIEW: IDENTITY === */}
+            {/* === VIEW: IDENTITY === */}
             {activeTab === 'identity' && (
               <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-16">
                 {/* MISSION OPERATOR IDENTITY (About Page) */}
                 <section>
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
-                    <h3 className="text-white font-bold uppercase tracking-[0.2em] text-sm">Mission Operator Identity</h3>
-                    <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                    <h3 className="text-pearl font-semibold text-sm tracking-wide">Profile Identity</h3>
+                    <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
                     {/* Name & Title */}
-                    <div className="space-y-8">
-                      <div className="space-y-4">
-                        <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Operator Name (Alias)</label>
-                        <input value={identity.alias} onChange={(e) => setIdentity({ ...identity, alias: e.target.value })} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none transition-colors" placeholder="e.g. LUCY" />
+                    <div className="space-y-6">
+                      <div className="space-y-3">
+                        <label className="text-xs text-pearl/40 font-medium ml-1">Name / Alias</label>
+                        <input value={identity.alias} onChange={(e) => setIdentity({ ...identity, alias: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" placeholder="e.g. Chilly" />
                       </div>
-                      <div className="space-y-4">
-                        <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Mission Title (Designation)</label>
-                        <input value={identity.designation} onChange={(e) => setIdentity({ ...identity, designation: e.target.value })} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none transition-colors" placeholder="e.g. FULL-STACK OPERATIVE" />
+                      <div className="space-y-3">
+                        <label className="text-xs text-pearl/40 font-medium ml-1">Designation / Title</label>
+                        <input value={identity.designation} onChange={(e) => setIdentity({ ...identity, designation: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" placeholder="e.g. Full-Stack Developer" />
                       </div>
                     </div>
 
                     {/* Photo Upload */}
                     <div className="flex flex-col sm:flex-row gap-6 items-start">
-                      <div className="flex-1 space-y-4 w-full">
-                        <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Identity Photo (About Page)</label>
+                      <div className="flex-1 space-y-3 w-full">
+                        <label className="text-xs text-pearl/40 font-medium ml-1">About Page Photo</label>
                         <input type="file" ref={aboutImageInputRef} onChange={(e) => handleFileChange(e, (url) => setIdentity(prev => ({ ...prev, aboutImage: url })))} className="hidden" accept="image/*" />
-                        <div className="flex gap-3 h-14">
-                          <input value={identity.aboutImage} onChange={(e) => setIdentity({ ...identity, aboutImage: e.target.value })} className="flex-1 bg-transparent border border-cyan-500/30 px-5 text-gray-400 text-xs font-mono focus:border-cyan-400 outline-none transition-colors min-w-0" />
-                          <button onClick={() => handleUploadClick(aboutImageInputRef)} className="border border-cyan-500/30 px-5 hover:bg-cyan-500/10 text-cyan-400 transition-colors h-full flex items-center justify-center shrink-0"><FaUpload /></button>
+                        <div className="flex gap-3">
+                          <input value={identity.aboutImage} onChange={(e) => setIdentity({ ...identity, aboutImage: e.target.value })} className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors min-w-0" />
+                          <button onClick={() => handleUploadClick(aboutImageInputRef)} className="bg-white/[0.03] border border-white/[0.08] px-4 rounded-lg hover:bg-cerulean/20 text-cerulean transition-colors flex items-center justify-center shrink-0"><FaUpload /></button>
                         </div>
                       </div>
-                      <div className="w-24 h-24 bg-black/40 border border-cyan-500/20 shrink-0 overflow-hidden relative sm:mt-8 mx-auto sm:mx-0 rounded-lg">
-                        {identity.aboutImage ? <img src={identity.aboutImage} className="w-full h-full object-cover" alt="About" /> : <div className="flex items-center justify-center h-full text-xs text-gray-700 font-bold">NO IMG</div>}
+                      <div className="w-20 h-20 bg-white/[0.02] border border-white/[0.06] shrink-0 overflow-hidden relative sm:mt-7 mx-auto sm:mx-0 rounded-xl">
+                        {identity.aboutImage ? <img src={identity.aboutImage} className="w-full h-full object-cover" alt="About" /> : <div className="flex items-center justify-center h-full text-xs text-slate-700 font-medium">No img</div>}
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Skills Bars */}
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center mb-4">
-                      <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Skill Parameters (About Bars)</label>
-                      <button onClick={addSkillStat} className="text-[10px] bg-cyan-500/20 hover:bg-cyan-500 text-cyan-400 hover:text-black px-4 py-2 rounded uppercase tracking-widest transition-all font-bold flex gap-2 items-center"><FaPlus /> Add Parameter</button>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {(identity.skillStats || []).map((stat, idx) => (
-                        <div key={idx} className="bg-black/30 border border-cyan-500/20 p-4 rounded flex gap-4 items-center group hover:border-cyan-500/50 transition-all">
-                          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Skill Name</label>
-                              <input value={stat.label} onChange={(e) => updateSkillStat(idx, 'label', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" placeholder="Frontend" />
-                            </div>
-                            <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Percent (%)</label>
-                              <input value={stat.value} onChange={(e) => updateSkillStat(idx, 'value', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" placeholder="95%" />
-                            </div>
-                            <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Color (Select)</label>
-                              <div className="relative">
-                                <select value={stat.color} onChange={(e) => updateSkillStat(idx, 'color', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none appearance-none cursor-pointer">
-                                  <optgroup label="Monochrome">
-                                    <option value="bg-gray-500">Gray 500</option>
-                                    <option value="bg-slate-500">Slate 500</option>
-                                    <option value="bg-zinc-500">Zinc 500</option>
-                                  </optgroup>
-                                  <optgroup label="Warm Colors">
-                                    <option value="bg-red-500">Red 500</option>
-                                    <option value="bg-orange-500">Orange 500</option>
-                                    <option value="bg-amber-500">Amber 500</option>
-                                    <option value="bg-yellow-400">Yellow 400</option>
-                                    <option value="bg-yellow-500">Yellow 500</option>
-                                  </optgroup>
-                                  <optgroup label="Nature Colors">
-                                    <option value="bg-lime-500">Lime 500</option>
-                                    <option value="bg-green-500">Green 500</option>
-                                    <option value="bg-emerald-500">Emerald 500</option>
-                                    <option value="bg-teal-500">Teal 500</option>
-                                  </optgroup>
-                                  <optgroup label="Cool Colors">
-                                    <option value="bg-cyan-400">Cyan 400 (Default)</option>
-                                    <option value="bg-cyan-500">Cyan 500</option>
-                                    <option value="bg-sky-500">Sky 500</option>
-                                    <option value="bg-blue-500">Blue 500</option>
-                                    <option value="bg-blue-600">Blue 600</option>
-                                    <option value="bg-blue-700">Blue 700</option>
-                                    <option value="bg-indigo-500">Indigo 500</option>
-                                  </optgroup>
-                                  <optgroup label="Mystic Colors">
-                                    <option value="bg-violet-500">Violet 500</option>
-                                    <option value="bg-purple-500">Purple 500</option>
-                                    <option value="bg-fuchsia-500">Fuchsia 500</option>
-                                    <option value="bg-pink-500">Pink 500</option>
-                                    <option value="bg-rose-500">Rose 500</option>
-                                  </optgroup>
-                                </select>
-                                <FaCaretDown className="absolute right-2 top-3 text-gray-500 pointer-events-none text-xs" />
-                              </div>
-                            </div>
-                          </div>
-                          <button onClick={() => removeSkillStat(idx)} className="text-red-500/50 hover:text-red-500 transition-colors shrink-0"><FaTrash /></button>
-                        </div>
-                      ))}
                     </div>
                   </div>
                 </section>
@@ -619,107 +558,228 @@ export default function () {
                 {/* PUBLIC UPLINK CONFIGURATION (Home Page) */}
                 <section>
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
-                    <h3 className="text-white font-bold uppercase tracking-[0.2em] text-sm">Public Uplink Configuration</h3>
-                    <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                    <h3 className="text-pearl font-semibold text-sm tracking-wide">Home Page Configuration</h3>
+                    <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Avatar Upload */}
                     <div className="flex flex-col sm:flex-row gap-6 items-start">
-                      <div className="flex-1 space-y-4 w-full">
-                        <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Home Page Avatar</label>
+                      <div className="flex-1 space-y-3 w-full">
+                        <label className="text-xs text-pearl/40 font-medium ml-1">Home Avatar</label>
                         <input type="file" ref={avatarInputRef} onChange={(e) => handleFileChange(e, (url) => setIdentity(prev => ({ ...prev, avatar: url })))} className="hidden" accept="image/*" />
-                        <div className="flex gap-3 h-14">
-                          <input value={identity.avatar} onChange={(e) => setIdentity({ ...identity, avatar: e.target.value })} className="flex-1 bg-transparent border border-cyan-500/30 px-5 text-gray-400 text-xs font-mono focus:border-cyan-400 outline-none transition-colors min-w-0" />
-                          <button onClick={() => handleUploadClick(avatarInputRef)} className="border border-cyan-500/30 px-5 hover:bg-cyan-500/10 text-cyan-400 transition-colors h-full flex items-center justify-center shrink-0"><FaUpload /></button>
+                        <div className="flex gap-3">
+                          <input value={identity.avatar} onChange={(e) => setIdentity({ ...identity, avatar: e.target.value })} className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors min-w-0" />
+                          <button onClick={() => handleUploadClick(avatarInputRef)} className="bg-white/[0.03] border border-white/[0.08] px-4 rounded-lg hover:bg-cerulean/20 text-cerulean transition-colors flex items-center justify-center shrink-0"><FaUpload /></button>
                         </div>
                       </div>
-                      <div className="w-24 h-24 bg-black/40 border border-cyan-500/20 shrink-0 overflow-hidden relative sm:mt-8 mx-auto sm:mx-0 rounded-lg">
-                        {identity.avatar ? <img src={identity.avatar} className="w-full h-full object-cover" alt="Avatar" /> : <div className="flex items-center justify-center h-full text-xs text-gray-700 font-bold">NO IMG</div>}
+                      <div className="w-20 h-20 bg-white/[0.02] border border-white/[0.06] shrink-0 overflow-hidden relative sm:mt-7 mx-auto sm:mx-0 rounded-xl">
+                        {identity.avatar ? <img src={identity.avatar} className="w-full h-full object-cover" alt="Avatar" /> : <div className="flex items-center justify-center h-full text-xs text-slate-700 font-medium">No img</div>}
                       </div>
                     </div>
 
                     {/* Tagline & Bio */}
                     <div className="space-y-6">
-                      <div className="space-y-4">
-                        <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Landing Tagline</label>
-                        <input value={identity.tagline} onChange={(e) => setIdentity({ ...identity, tagline: e.target.value })} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none transition-colors" />
+                      <div className="space-y-3">
+                        <label className="text-xs text-pearl/40 font-medium ml-1">Landing Tagline</label>
+                        <input value={identity.tagline} onChange={(e) => setIdentity({ ...identity, tagline: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
                       </div>
-                      <div className="space-y-4">
-                        <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Home Page Bio</label>
-                        <textarea value={identity.bioLong} onChange={(e) => setIdentity({ ...identity, bioLong: e.target.value })} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none h-32 transition-colors leading-relaxed" />
+                      <div className="space-y-3">
+                        <label className="text-xs text-pearl/40 font-medium ml-1">Home Page Bio</label>
+                        <textarea value={identity.bioLong} onChange={(e) => setIdentity({ ...identity, bioLong: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors h-32 leading-relaxed" />
                       </div>
                     </div>
                   </div>
                 </section>
 
-                {/* NEURAL BIOGRAPHY */}
+                {/* BIOGRAPHY */}
                 <section>
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
-                    <h3 className="text-white font-bold uppercase tracking-[0.2em] text-sm">Neural Biography</h3>
-                    <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                    <h3 className="text-pearl font-semibold text-sm tracking-wide">Biography & Experience</h3>
+                    <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
 
-                  <div className="space-y-4 mb-12">
-                    <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Mission Briefing (About Page Desc)</label>
-                    <textarea value={identity.missionBriefing} onChange={(e) => setIdentity({ ...identity, missionBriefing: e.target.value })} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none h-40 transition-colors leading-relaxed" />
+                  <div className="space-y-3 mb-12">
+                    <label className="text-xs text-pearl/40 font-medium ml-1">About Page Description</label>
+                    <textarea value={identity.missionBriefing} onChange={(e) => setIdentity({ ...identity, missionBriefing: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors h-40 leading-relaxed" />
                   </div>
 
                   <div className="space-y-4">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                      <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Experience Log Cards</label>
-                      <button onClick={addExperience} className="text-[10px] bg-cyan-500/20 hover:bg-cyan-500 text-cyan-400 hover:text-black px-4 py-2 rounded uppercase tracking-widest transition-all font-bold flex gap-2 items-center"><FaPlus /> Add Card</button>
+                      <label className="text-xs text-pearl/40 font-medium ml-1">Experience Cards</label>
+                      <button onClick={addExperience} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Card</button>
                     </div>
 
                     <div className="grid grid-cols-1 gap-4">
                       {identity.experienceLog.map((card, idx) => (
-                        <div key={idx} className="bg-black/30 border border-cyan-500/20 p-6 rounded flex flex-col sm:flex-row gap-4 items-start group hover:border-cyan-500/50 transition-all">
-                          <div className="text-2xl text-gray-600 pt-1 shrink-0"><FaBriefcase /></div>
+                        <div key={idx} className="bg-white/[0.02] border border-white/[0.06] p-5 rounded-xl hover:border-cerulean/20 transition-all flex flex-col sm:flex-row gap-4 items-start group">
+                          <div className="text-2xl text-slate-600 pt-1 shrink-0"><FaBriefcase /></div>
                           <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
                             <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Title / Name</label>
-                              <input value={card.title} onChange={(e) => updateExperience(idx, 'title', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
+                              <label className="text-[10px] text-pearl/30 block mb-1">Title / Name</label>
+                              <input value={card.title} onChange={(e) => updateExperience(idx, 'title', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
                             </div>
                             <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Type (Work/Edu)</label>
-                              <input value={card.type} onChange={(e) => updateExperience(idx, 'type', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
+                              <label className="text-[10px] text-pearl/30 block mb-1">Type (Work/Edu)</label>
+                              <input value={card.type} onChange={(e) => updateExperience(idx, 'type', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
                             </div>
                             <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Description</label>
-                              <input value={card.desc} onChange={(e) => updateExperience(idx, 'desc', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
+                              <label className="text-[10px] text-pearl/30 block mb-1">Description</label>
+                              <input value={card.desc} onChange={(e) => updateExperience(idx, 'desc', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
                             </div>
                           </div>
-                          <button onClick={() => removeExperience(idx)} className="text-red-500/50 hover:text-red-500 pt-1 transition-colors self-end sm:self-start"><FaTrash /></button>
+                          <button onClick={() => removeExperience(idx)} className="text-red-500/50 hover:text-red-400 pt-1 transition-colors self-end sm:self-start"><FaTrash /></button>
                         </div>
                       ))}
                     </div>
                   </div>
                 </section>
 
-                {/* SECTION 4: OPERATION STATUS */}
+                {/* QUICK INFO BOX (About Page) */}
+                <section>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div className="flex items-center gap-4 w-full">
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                      <h3 className="text-pearl font-semibold text-sm tracking-wide shrink-0">Quick Info Box</h3>
+                      <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
+                    </div>
+                    <button onClick={addQuickInfo} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Item</button>
+                  </div>
+                  <p className="text-xs text-pearl/30 mb-4">Items shown in the &quot;Quick Info&quot; box on your About page. Each item has an icon, color, and text.</p>
+
+                  <div className="space-y-3">
+                    {(identity.quickInfo || []).map((item, idx) => (
+                      <div key={idx} className="bg-white/[0.02] border border-white/[0.06] p-4 rounded-xl hover:border-cerulean/20 transition-all flex flex-col sm:flex-row gap-3 items-start group">
+                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Icon</label>
+                            <select value={item.icon} onChange={(e) => updateQuickInfo(idx, 'icon', e.target.value)} className="input-field text-xs appearance-none">
+                              <option value="FaMapMarkerAlt">FaMapMarkerAlt (location)</option>
+                              <option value="FaBriefcase">FaBriefcase (work)</option>
+                              <option value="FaCalendarAlt">FaCalendarAlt (calendar)</option>
+                              <option value="FaEnvelope">FaEnvelope (email)</option>
+                              <option value="FaPhone">FaPhone (phone)</option>
+                              <option value="FaGlobe">FaGlobe (web)</option>
+                              <option value="FaUser">FaUser (person)</option>
+                              <option value="FaBirthdayCake">FaBirthdayCake (age)</option>
+                              <option value="FaGraduationCap">FaGraduationCap (education)</option>
+                              <option value="FaLanguage">FaLanguage (language)</option>
+                              <option value="FaCode">FaCode (code)</option>
+                              <option value="FaHeart">FaHeart (interests)</option>
+                              <option value="FaStar">FaStar (highlight)</option>
+                              <option value="FaShieldAlt">FaShieldAlt (status)</option>
+                              <option value="FaRocket">FaRocket (rocket)</option>
+                              <option value="FaClock">FaClock (clock)</option>
+                              <option value="FaLink">FaLink (link)</option>
+                              <option value="FaUniversity">FaUniversity (university)</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Icon Color</label>
+                            <select value={item.iconColor} onChange={(e) => updateQuickInfo(idx, 'iconColor', e.target.value)} className="input-field text-xs appearance-none">
+                              <option value="text-cerulean">Mint</option>
+                              <option value="text-gold">Gold</option>
+                              <option value="text-lilac">Royal Blue</option>
+                              <option value="text-pearl">Pearl</option>
+                              <option value="text-green-400">Green</option>
+                              <option value="text-red-400">Red</option>
+                              <option value="text-amber-400">Amber</option>
+                              <option value="text-pink-400">Pink</option>
+                              <option value="text-sky-400">Sky</option>
+                              <option value="text-purple-400">Purple</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Text</label>
+                            <input value={item.text} onChange={(e) => updateQuickInfo(idx, 'text', e.target.value)} className="input-field text-xs" placeholder="e.g. Earth-616" />
+                          </div>
+                        </div>
+                        <button onClick={() => removeQuickInfo(idx)} className="text-red-500/50 hover:text-red-400 pt-1 transition-colors self-end sm:self-start shrink-0"><FaTrash /></button>
+                      </div>
+                    ))}
+
+                    {(identity.quickInfo || []).length === 0 && (
+                      <div className="text-center py-10 border border-dashed border-white/[0.06] rounded-xl">
+                        <p className="text-xs text-pearl/30">No items configured. The About page will show default location, role, and availability.</p>
+                      </div>
+                    )}
+                  </div>
+                </section>
+
+                {/* SKILL STATS (About Page Stats Bars) */}
+                <section>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div className="flex items-center gap-4 w-full">
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                      <h3 className="text-pearl font-semibold text-sm tracking-wide shrink-0">Stats Bars</h3>
+                      <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
+                    </div>
+                    <button onClick={addSkillStat} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Stat</button>
+                  </div>
+                  <p className="text-xs text-pearl/30 mb-4">These appear as progress bars in the &quot;Stats&quot; box on your About page (below Quick Info).</p>
+
+                  <div className="space-y-3">
+                    {(identity.skillStats || []).map((stat, idx) => (
+                      <div key={idx} className="bg-white/[0.02] border border-white/[0.06] p-4 rounded-xl hover:border-cerulean/20 transition-all flex flex-col sm:flex-row gap-3 items-start group">
+                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Label</label>
+                            <input value={stat.label} onChange={(e) => updateSkillStat(idx, 'label', e.target.value)} className="input-field text-xs" placeholder="e.g. Frontend" />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Value (e.g. 80%)</label>
+                            <input value={stat.value} onChange={(e) => updateSkillStat(idx, 'value', e.target.value)} className="input-field text-xs" placeholder="e.g. 80%" />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Color Class</label>
+                            <select value={stat.color} onChange={(e) => updateSkillStat(idx, 'color', e.target.value)} className="input-field text-xs appearance-none">
+                              <option value="bg-cyan-400">Cyan</option>
+                              <option value="bg-violet-500">Violet</option>
+                              <option value="bg-green-400">Green</option>
+                              <option value="bg-amber-400">Amber</option>
+                              <option value="bg-pink-400">Pink</option>
+                              <option value="bg-red-400">Red</option>
+                              <option value="bg-sky-400">Sky</option>
+                              <option value="bg-indigo-400">Indigo</option>
+                            </select>
+                          </div>
+                        </div>
+                        <button onClick={() => removeSkillStat(idx)} className="text-red-500/50 hover:text-red-400 pt-1 transition-colors self-end sm:self-start shrink-0"><FaTrash /></button>
+                      </div>
+                    ))}
+
+                    {(identity.skillStats || []).length === 0 && (
+                      <div className="text-center py-10 border border-dashed border-white/[0.06] rounded-xl">
+                        <p className="text-xs text-pearl/30">No stats configured. Add stats to display progress bars on the About page.</p>
+                      </div>
+                    )}
+                  </div>
+                </section>
+
+                {/* OPERATION STATUS */}
                 <section>
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
-                    <h3 className="text-white font-bold uppercase tracking-[0.2em] text-sm">Operation Status</h3>
-                    <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                    <h3 className="text-pearl font-semibold text-sm tracking-wide">Availability Status</h3>
+                    <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="space-y-4">
-                      <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Current Operational Mode</label>
+                    <div className="space-y-3">
+                      <label className="text-xs text-pearl/40 font-medium ml-1">Current Status</label>
                       <div className="relative">
-                        <select value={identity.statusMode} onChange={(e) => setIdentity({ ...identity, statusMode: e.target.value })} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none appearance-none cursor-pointer">
-                          <option value="OPEN">OPEN (OPERATIONAL)</option>
-                          <option value="CLOSED">CLOSED (MAINTENANCE)</option>
+                        <select value={identity.statusMode} onChange={(e) => setIdentity({ ...identity, statusMode: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl focus:border-cerulean/50 focus:outline-none transition-colors appearance-none cursor-pointer">
+                          <option value="OPEN">OPEN (Available)</option>
+                          <option value="CLOSED">CLOSED (Unavailable)</option>
                         </select>
-                        <FaCaretDown className="absolute right-6 top-6 text-cyan-500 pointer-events-none" />
+                        <FaCaretDown className="absolute right-4 top-4 text-pearl/30 pointer-events-none" />
                       </div>
                     </div>
-                    <div className="space-y-4">
-                      <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Terminal Status Output (Read Only)</label>
-                      <div className="w-full bg-black/40 border border-cyan-500/10 p-5 text-gray-500 font-mono text-sm border-dashed">
-                        {identity.statusMode === 'OPEN' ? "SYSTEM ONLINE // ACCESS GRANTED" : "SYSTEM LOCKED // MAINTENANCE MODE ACTIVE"}
+                    <div className="space-y-3">
+                      <label className="text-xs text-pearl/40 font-medium ml-1">Status Display</label>
+                      <div className="w-full bg-white/[0.02] border border-white/[0.06] rounded-lg px-4 py-3 text-sm text-pearl/30 border-dashed">
+                        {identity.statusMode === 'OPEN' ? "Available for work" : "Currently unavailable"}
                       </div>
                     </div>
                   </div>
@@ -727,55 +787,56 @@ export default function () {
               </div>
             )}
 
-            {/* === 🔗 VIEW: SOCIAL LINKS === */}
+
+            {/* === VIEW: SOCIAL LINKS === */}
             {activeTab === 'social-links' && (
               <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-12">
                 <section>
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
                     <div className="flex items-center gap-4 w-full">
-                      <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
-                      <h3 className="text-white font-bold uppercase tracking-[0.2em] text-sm shrink-0">Social Uplinks</h3>
-                      <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                      <h3 className="text-pearl font-semibold text-sm tracking-wide shrink-0">Social Links</h3>
+                      <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                     </div>
                     <button 
                       onClick={addSocialLink} 
-                      className="text-[10px] bg-cyan-500/20 hover:bg-cyan-500 text-cyan-400 hover:text-black px-4 py-2 rounded uppercase tracking-widest transition-all font-bold flex gap-2 items-center shrink-0"
+                      className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"
                     >
-                      <FaPlus /> Initialize Uplink
+                      <FaPlus /> Add Link
                     </button>
                   </div>
 
                   <div className="space-y-4">
                     {(identity.socialLinks || []).map((link, idx) => (
-                      <div key={idx} className="bg-black/30 border border-cyan-500/20 p-6 rounded flex flex-col md:flex-row gap-6 items-start group hover:border-cyan-500/50 transition-all">
-                        <div className="text-2xl text-gray-600 pt-1 shrink-0"><FaShieldAlt /></div>
+                      <div key={idx} className="bg-white/[0.02] border border-white/[0.06] p-5 rounded-xl hover:border-cerulean/20 transition-all flex flex-col md:flex-row gap-6 items-start group">
+                        <div className="text-2xl text-slate-600 pt-1 shrink-0"><FaShieldAlt /></div>
                         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                           <div>
-                            <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Platform Name</label>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Platform Name</label>
                             <input 
                               value={link.platform} 
                               onChange={(e) => updateSocialLink(idx, 'platform', e.target.value)} 
-                              className="w-full bg-black/50 border border-white/10 p-3 text-white text-xs rounded focus:border-cyan-500 outline-none" 
+                              className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" 
                               placeholder="e.g. Twitter"
                             />
                           </div>
                           <div>
-                            <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">URL Endpoint</label>
+                            <label className="text-[10px] text-pearl/30 block mb-1">URL</label>
                             <input 
                               value={link.url} 
                               onChange={(e) => updateSocialLink(idx, 'url', e.target.value)} 
-                              className="w-full bg-black/50 border border-white/10 p-3 text-cyan-400 text-xs rounded focus:border-cyan-500 outline-none font-mono" 
+                              className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" 
                               placeholder="https://..."
                             />
                           </div>
                         </div>
-                        <button onClick={() => removeSocialLink(idx)} className="text-red-500/50 hover:text-red-500 pt-1 transition-colors self-end md:self-start"><FaTrash /></button>
+                        <button onClick={() => removeSocialLink(idx)} className="text-red-500/50 hover:text-red-400 pt-1 transition-colors self-end md:self-start"><FaTrash /></button>
                       </div>
                     ))}
 
                     {(identity.socialLinks || []).length === 0 && (
-                      <div className="text-center py-20 border border-dashed border-cyan-500/10 rounded-xl opacity-30">
-                        <p className="text-xs uppercase tracking-[0.3em]">No active uplinks detected</p>
+                      <div className="text-center py-20 border border-dashed border-white/[0.06] rounded-xl opacity-40">
+                        <p className="text-sm text-pearl/30">No social links added yet</p>
                       </div>
                     )}
                   </div>
@@ -783,23 +844,31 @@ export default function () {
               </div>
             )}
 
-            {/* === 📜 VIEW: PROTOCOLS === */}
+            {/* === VIEW: SKILLS === */}
+            {activeTab === 'skills' && (
+              <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                <SkillsManager />
+              </div>
+            )}
+
+
+            {/* === VIEW: PROTOCOLS === */}
             {activeTab === 'protocols' && (
               <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-16">
                 <section>
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
-                    <h3 className="text-white font-bold uppercase tracking-[0.2em] text-sm">Page Settings</h3>
-                    <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                    <h3 className="text-pearl font-semibold text-sm tracking-wide">Page Settings</h3>
+                    <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                    <div className="space-y-4">
-                      <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Page Title</label>
-                      <input value={identity.protocols.title} onChange={(e) => setIdentity({ ...identity, protocols: { ...identity.protocols, title: e.target.value } })} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none transition-colors" />
+                    <div className="space-y-3">
+                      <label className="text-xs text-pearl/40 font-medium ml-1">Page Title</label>
+                      <input value={identity.protocols.title} onChange={(e) => setIdentity({ ...identity, protocols: { ...identity.protocols, title: e.target.value } })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
                     </div>
-                    <div className="space-y-4">
-                      <label className="text-[10px] text-cyan-600 font-bold uppercase tracking-[0.25em] ml-1">Version</label>
-                      <input value={identity.protocols.version} onChange={(e) => setIdentity({ ...identity, protocols: { ...identity.protocols, version: e.target.value } })} className="w-full bg-transparent border border-cyan-500/30 p-5 text-cyan-400 font-mono text-sm focus:border-cyan-400 outline-none transition-colors" />
+                    <div className="space-y-3">
+                      <label className="text-xs text-pearl/40 font-medium ml-1">Version</label>
+                      <input value={identity.protocols.version} onChange={(e) => setIdentity({ ...identity, protocols: { ...identity.protocols, version: e.target.value } })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
                     </div>
                   </div>
                 </section>
@@ -807,28 +876,28 @@ export default function () {
                 <section>
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
                     <div className="flex items-center gap-4 w-full">
-                      <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
-                      <h3 className="text-white font-bold uppercase tracking-[0.2em] text-sm shrink-0">Content Sections</h3>
-                      <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                      <h3 className="text-pearl font-semibold text-sm tracking-wide shrink-0">Content Sections</h3>
+                      <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                     </div>
-                    <button onClick={addProtocolSection} className="text-[10px] bg-cyan-500/20 hover:bg-cyan-500 text-cyan-400 hover:text-black px-4 py-2 rounded uppercase tracking-widest transition-all font-bold flex gap-2 items-center shrink-0"><FaPlus /> Add Section</button>
+                    <button onClick={addProtocolSection} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Section</button>
                   </div>
 
                   <div className="space-y-4">
                     {identity.protocols.sections.map((section, idx) => (
-                      <div key={idx} className="bg-black/30 border border-cyan-500/20 p-6 rounded flex flex-col sm:flex-row gap-6 items-start group hover:border-cyan-500/50 transition-all">
-                        <div className="text-2xl text-gray-600 pt-1 shrink-0"><FaFileContract /></div>
+                      <div key={idx} className="bg-white/[0.02] border border-white/[0.06] p-5 rounded-xl hover:border-cerulean/20 transition-all flex flex-col sm:flex-row gap-6 items-start group">
+                        <div className="text-2xl text-slate-600 pt-1 shrink-0"><FaFileContract /></div>
                         <div className="flex-1 space-y-4 w-full">
                           <div>
-                            <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Section Title</label>
-                            <input value={section.title} onChange={(e) => updateProtocolSection(idx, 'title', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
+                            <label className="text-[10px] text-pearl/30 block mb-1">Section Title</label>
+                            <input value={section.title} onChange={(e) => updateProtocolSection(idx, 'title', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
                           </div>
                           <div>
-                            <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Content</label>
-                            <textarea value={section.content} onChange={(e) => updateProtocolSection(idx, 'content', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none h-24 leading-relaxed" />
+                            <label className="text-[10px] text-pearl/30 block mb-1">Content</label>
+                            <textarea value={section.content} onChange={(e) => updateProtocolSection(idx, 'content', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors h-24 leading-relaxed" />
                           </div>
                         </div>
-                        <button onClick={() => removeProtocolSection(idx)} className="text-red-500/50 hover:text-red-500 pt-1 transition-colors self-end sm:self-start"><FaTrash /></button>
+                        <button onClick={() => removeProtocolSection(idx)} className="text-red-500/50 hover:text-red-400 pt-1 transition-colors self-end sm:self-start"><FaTrash /></button>
                       </div>
                     ))}
                   </div>
@@ -836,181 +905,178 @@ export default function () {
               </div>
             )}
 
-            {/* === 💰 VIEW: PRICING === */}
-            {
-              activeTab === 'pricing' && (
-                <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-16 pb-24">
-                  <section>
-                    <div className="flex justify-between items-center mb-8">
-                      <div className="flex items-center gap-4 w-full">
-                        <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
-                        <h3 className="text-white font-bold uppercase tracking-[0.2em] text-sm">Pricing Tiers</h3>
-                        <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
-                      </div>
-                      <button onClick={addPricingPlan} className="text-xs bg-cyan-500/20 hover:bg-cyan-500 text-cyan-400 hover:text-black px-4 py-2 rounded uppercase tracking-widest transition-all font-bold flex gap-2 items-center"><FaPlus /> Add Plan</button>
+            {/* === VIEW: PRICING === */}
+            {activeTab === 'pricing' && (
+              <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-16 pb-24">
+                <section>
+                  <div className="flex justify-between items-center mb-8">
+                    <div className="flex items-center gap-4 w-full">
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                      <h3 className="text-pearl font-semibold text-sm tracking-wide">Pricing Tiers</h3>
+                      <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                     </div>
+                    <button onClick={addPricingPlan} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Plan</button>
+                  </div>
 
-                    <div className="space-y-8">
-                      {identity.pricing.map((plan, idx) => (
-                        <div key={idx} className="bg-black/30 border border-cyan-500/20 p-6 rounded flex gap-6 items-start group hover:border-cyan-500/50 transition-all">
-                          <div className="text-2xl text-gray-600 pt-2"><FaTags /></div>
-                          <div className="flex-1 space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                              <div>
-                                <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Plan Name</label>
-                                <input value={plan.name} onChange={(e) => updatePricingPlan(idx, 'name', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
-                              </div>
-                              <div>
-                                <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Price</label>
-                                <input value={plan.price} onChange={(e) => updatePricingPlan(idx, 'price', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
-                              </div>
-                              <div>
-                                <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Level</label>
-                                <input value={plan.level} onChange={(e) => updatePricingPlan(idx, 'level', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
-                              </div>
+                  <div className="space-y-8">
+                    {identity.pricing.map((plan, idx) => (
+                      <div key={idx} className="bg-white/[0.02] border border-white/[0.06] p-5 rounded-xl hover:border-cerulean/20 transition-all flex gap-6 items-start group">
+                        <div className="text-2xl text-slate-600 pt-2"><FaTags /></div>
+                        <div className="flex-1 space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                              <label className="text-[10px] text-pearl/30 block mb-1">Plan Name</label>
+                              <input value={plan.name} onChange={(e) => updatePricingPlan(idx, 'name', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
                             </div>
                             <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Features</label>
-                              <div className="space-y-2">
-                                {plan.features.map((feature, featureIdx) => (
-                                  <div key={featureIdx} className="flex items-center gap-2">
-                                    <input value={feature} onChange={(e) => updatePricingPlanFeature(idx, featureIdx, e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
-                                    <button onClick={() => removePricingPlanFeature(idx, featureIdx)} className="text-red-500/50 hover:text-red-500 transition-colors"><FaTrash /></button>
-                                  </div>
-                                ))}
-                                <button onClick={() => addPricingPlanFeature(idx)} className="text-xs text-cyan-400 hover:text-white transition-colors">+ Add Feature</button>
-                              </div>
+                              <label className="text-[10px] text-pearl/30 block mb-1">Price</label>
+                              <input value={plan.price} onChange={(e) => updatePricingPlan(idx, 'price', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
+                            </div>
+                            <div>
+                              <label className="text-[10px] text-pearl/30 block mb-1">Level</label>
+                              <input value={plan.level} onChange={(e) => updatePricingPlan(idx, 'level', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
                             </div>
                           </div>
-                          <button onClick={() => removePricingPlan(idx)} className="text-red-500/50 hover:text-red-500 pt-2 transition-colors"><FaTrash /></button>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                </div>
-              )
-            }
-
-            {/* === 🛠️ VIEW: WORK QUEUE === */}
-            {
-              activeTab === 'workQueue' && (
-                <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-16 pb-24">
-                  <section>
-                    <div className="flex justify-between items-center mb-8">
-                      <div className="flex items-center gap-4 w-full">
-                        <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
-                        <h3 className="text-white font-bold uppercase tracking-[0.2em] text-sm">Work Queue Items</h3>
-                        <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
-                      </div>
-                      <button onClick={addWorkQueueItem} className="text-xs bg-cyan-500/20 hover:bg-cyan-500 text-cyan-400 hover:text-black px-4 py-2 rounded uppercase tracking-widest transition-all font-bold flex gap-2 items-center"><FaPlus /> Add Item</button>
-                    </div>
-
-                    <div className="space-y-4">
-                      {identity.workQueue.map((item, idx) => (
-                        <div key={idx} className="bg-black/30 border border-cyan-500/20 p-6 rounded flex gap-6 items-start group hover:border-cyan-500/50 transition-all">
-                          <div className="text-2xl text-gray-600 pt-2"><FaTasks /></div>
-                          <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-4">
-                            <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">ID</label>
-                              <input value={item.id} onChange={(e) => updateWorkQueueItem(idx, 'id', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
-                            </div>
-                            <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Project</label>
-                              <input value={item.project} onChange={(e) => updateWorkQueueItem(idx, 'project', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
-                            </div>
-                            <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Status</label>
-                              <input value={item.status} onChange={(e) => updateWorkQueueItem(idx, 'status', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
-                            </div>
-                            <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Progress</label>
-                              <input
-                                type="number"
-                                value={isNaN(item.progress) ? 0 : item.progress}
-                                onChange={(e) => {
-                                  const val = parseInt(e.target.value);
-                                  updateWorkQueueItem(idx, 'progress', isNaN(val) ? 0 : val);
-                                }}
-                                className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Type</label>
-                              <input value={item.type} onChange={(e) => updateWorkQueueItem(idx, 'type', e.target.value)} className="w-full bg-black/50 border border-white/10 p-2 text-white text-xs rounded focus:border-cyan-500 outline-none" />
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Features</label>
+                            <div className="space-y-2">
+                              {plan.features.map((feature, featureIdx) => (
+                                <div key={featureIdx} className="flex items-center gap-2">
+                                  <input value={feature} onChange={(e) => updatePricingPlanFeature(idx, featureIdx, e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
+                                  <button onClick={() => removePricingPlanFeature(idx, featureIdx)} className="text-red-500/50 hover:text-red-400 transition-colors"><FaTrash /></button>
+                                </div>
+                              ))}
+                              <button onClick={() => addPricingPlanFeature(idx)} className="text-xs text-cerulean hover:text-pearl transition-colors">+ Add Feature</button>
                             </div>
                           </div>
-                          <button onClick={() => removeWorkQueueItem(idx)} className="text-red-500/50 hover:text-red-500 pt-2 transition-colors"><FaTrash /></button>
                         </div>
-                      ))}
+                        <button onClick={() => removePricingPlan(idx)} className="text-red-500/50 hover:text-red-400 pt-2 transition-colors"><FaTrash /></button>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+            )}
+
+
+            {/* === VIEW: WORK QUEUE === */}
+            {activeTab === 'workQueue' && (
+              <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-16 pb-24">
+                <section>
+                  <div className="flex justify-between items-center mb-8">
+                    <div className="flex items-center gap-4 w-full">
+                      <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                      <h3 className="text-pearl font-semibold text-sm tracking-wide">Work Queue Items</h3>
+                      <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                     </div>
-                  </section>
-                </div>
-              )
-            }
+                    <button onClick={addWorkQueueItem} className="text-xs bg-cerulean hover:bg-cerulean/90 text-deep-bg px-4 py-2 rounded-lg font-medium flex gap-2 items-center transition-all"><FaPlus /> Add Item</button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {identity.workQueue.map((item, idx) => (
+                      <div key={idx} className="bg-white/[0.02] border border-white/[0.06] p-5 rounded-xl hover:border-cerulean/20 transition-all flex gap-6 items-start group">
+                        <div className="text-2xl text-slate-600 pt-2"><FaTasks /></div>
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-4">
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">ID</label>
+                            <input value={item.id} onChange={(e) => updateWorkQueueItem(idx, 'id', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Project</label>
+                            <input value={item.project} onChange={(e) => updateWorkQueueItem(idx, 'project', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Status</label>
+                            <input value={item.status} onChange={(e) => updateWorkQueueItem(idx, 'status', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Progress</label>
+                            <input
+                              type="number"
+                              value={isNaN(item.progress) ? 0 : item.progress}
+                              onChange={(e) => {
+                                const val = parseInt(e.target.value);
+                                updateWorkQueueItem(idx, 'progress', isNaN(val) ? 0 : val);
+                              }}
+                              className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-pearl/30 block mb-1">Type</label>
+                            <input value={item.type} onChange={(e) => updateWorkQueueItem(idx, 'type', e.target.value)} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
+                          </div>
+                        </div>
+                        <button onClick={() => removeWorkQueueItem(idx)} className="text-red-500/50 hover:text-red-400 pt-2 transition-colors"><FaTrash /></button>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+            )}
 
 
-            {/* === 📁 VIEW: PROJECTS === */}
+            {/* === VIEW: PROJECTS === */}
             {activeTab === 'projects' && (
               <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <div className="bg-[#0a1128]/80 backdrop-blur border border-cyan-500/30 p-6 sm:p-8 rounded-xl h-fit" id="project-form">
-                  <div className="flex items-center gap-4 mb-8 text-white">
-                    <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
-                    <h2 className="text-white font-bold uppercase tracking-[0.2em] text-sm flex items-center gap-3">
-                      {editProjectId ? <><FaUserEdit className="text-yellow-500" /> Update Mission Specs</> : <><FaPlus className="text-cyan-500" /> Initialize Mission</>}
+                <div className="bg-white/[0.02] border border-white/[0.06] p-6 sm:p-8 rounded-xl h-fit" id="project-form">
+                  <div className="flex items-center gap-4 mb-8 text-pearl">
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                    <h2 className="text-pearl font-semibold text-sm tracking-wide flex items-center gap-3">
+                      {editProjectId ? <><FaUserEdit className="text-yellow-500" /> Update Project</> : <><FaPlus className="text-cerulean" /> New Project</>}
                     </h2>
-                    <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
+                    <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
 
                   {editProjectId && (
-                    <div className="mb-4 bg-yellow-500/10 border border-yellow-500/30 p-4 rounded text-yellow-200 text-xs flex justify-between items-center">
-                      <span>EDITING ACTIVE: {formData.title}</span>
-                      <button onClick={handleCancelEdit} className="text-white hover:text-yellow-500 underline uppercase tracking-widest font-bold">Cancel</button>
+                    <div className="mb-4 bg-yellow-500/10 border border-yellow-500/30 p-4 rounded-lg text-yellow-200 text-xs flex justify-between items-center">
+                      <span>Editing: {formData.title}</span>
+                      <button onClick={handleCancelEdit} className="text-pearl hover:text-yellow-500 underline font-medium">Cancel</button>
                     </div>
                   )}
 
-                  <form onSubmit={handleAddProject} className="space-y-6">
+                  <form onSubmit={handleAddProject} className="space-y-5">
                     <div>
-                      <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Title</label>
-                      <input value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white focus:border-cyan-400 outline-none" required />
+                      <label className="text-xs text-pearl/40 font-medium mb-2 block">Title</label>
+                      <input value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" required />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Category</label>
-                        <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none">
+                        <label className="text-xs text-pearl/40 font-medium mb-2 block">Category</label>
+                        <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl focus:border-cerulean/50 focus:outline-none transition-colors">
                           <option>Web Dev</option><option>Mobile</option><option>Design</option>
                         </select>
                       </div>
                       <div>
-                        <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Tech Stack</label>
-                        <input value={formData.tech} onChange={e => setFormData({ ...formData, tech: e.target.value })} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none" placeholder="React, Next" />
+                        <label className="text-xs text-pearl/40 font-medium mb-2 block">Tech Stack</label>
+                        <input value={formData.tech} onChange={e => setFormData({ ...formData, tech: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" placeholder="React, Next" />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Client</label>
-                        <input value={formData.clientName} onChange={e => setFormData({ ...formData, clientName: e.target.value })} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none" placeholder="Client Co." />
+                        <label className="text-xs text-pearl/40 font-medium mb-2 block">Client</label>
+                        <input value={formData.clientName} onChange={e => setFormData({ ...formData, clientName: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" placeholder="Client Co." />
                       </div>
                       <div>
-                        <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Timeline</label>
-                        <input value={formData.timeline} onChange={e => setFormData({ ...formData, timeline: e.target.value })} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none" placeholder="Jan - Mar 2024" />
+                        <label className="text-xs text-pearl/40 font-medium mb-2 block">Timeline</label>
+                        <input value={formData.timeline} onChange={e => setFormData({ ...formData, timeline: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" placeholder="Jan - Mar 2024" />
                       </div>
                     </div>
                     <div>
-                      <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Role / Stack Description</label>
-                      <input value={formData.roleStack} onChange={e => setFormData({ ...formData, roleStack: e.target.value })} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none" placeholder="Lead Developer - Full Stack" />
+                      <label className="text-xs text-pearl/40 font-medium mb-2 block">Role / Stack Description</label>
+                      <input value={formData.roleStack} onChange={e => setFormData({ ...formData, roleStack: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" placeholder="Lead Developer - Full Stack" />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Github Link</label>
-                        <input value={formData.github} onChange={e => setFormData({ ...formData, github: e.target.value })} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none" />
+                        <label className="text-xs text-pearl/40 font-medium mb-2 block">Github Link</label>
+                        <input value={formData.github} onChange={e => setFormData({ ...formData, github: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
                       </div>
                       <div>
-                        <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Demo Link</label>
-                        <input value={formData.demo} onChange={e => setFormData({ ...formData, demo: e.target.value })} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none" />
+                        <label className="text-xs text-pearl/40 font-medium mb-2 block">Demo Link</label>
+                        <input value={formData.demo} onChange={e => setFormData({ ...formData, demo: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors" />
                       </div>
                     </div>
                     <div>
-                      <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Project Images</label>
+                      <label className="text-xs text-pearl/40 font-medium mb-2 block">Project Images</label>
                       <input
                         type="file"
                         ref={projectImageInputRef}
@@ -1021,20 +1087,20 @@ export default function () {
                       <button
                         type="button"
                         onClick={() => handleUploadClick(projectImageInputRef)}
-                        className="w-full border border-cyan-900 border-dashed py-4 hover:bg-cyan-500/10 text-cyan-400 transition-colors flex items-center justify-center gap-2 rounded mb-4"
+                        className="w-full border border-white/[0.08] border-dashed py-4 hover:bg-cerulean/10 text-cerulean transition-colors flex items-center justify-center gap-2 rounded-lg mb-4"
                       >
-                        <FaUpload /> Upload Asset
+                        <FaUpload /> Upload Image
                       </button>
 
                       {formData.images.length > 0 && (
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
                           {formData.images.map((img, idx) => (
-                            <div key={idx} className="relative aspect-video group border border-cyan-900 rounded overflow-hidden">
+                            <div key={idx} className="relative aspect-video group border border-white/[0.06] rounded-lg overflow-hidden">
                               <img src={img} className="w-full h-full object-cover" alt="Asset" />
                               <button
                                 type="button"
                                 onClick={() => setFormData(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }))}
-                                className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute top-1 right-1 bg-red-500 text-pearl p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                               >
                                 <FaTrash size={10} />
                               </button>
@@ -1044,37 +1110,37 @@ export default function () {
                       )}
                     </div>
                     <div>
-                      <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Description</label>
-                      <textarea value={formData.desc} onChange={e => setFormData({ ...formData, desc: e.target.value })} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none h-20" />
+                      <label className="text-xs text-pearl/40 font-medium mb-2 block">Description</label>
+                      <textarea value={formData.desc} onChange={e => setFormData({ ...formData, desc: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors h-20" />
                     </div>
                     <div>
-                      <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Core Challenge</label>
-                      <textarea value={formData.coreChallenge} onChange={e => setFormData({ ...formData, coreChallenge: e.target.value })} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none h-20" />
+                      <label className="text-xs text-pearl/40 font-medium mb-2 block">Core Challenge</label>
+                      <textarea value={formData.coreChallenge} onChange={e => setFormData({ ...formData, coreChallenge: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors h-20" />
                     </div>
                     <div>
-                      <label className="text-[10px] text-cyan-500 uppercase tracking-widest mb-2 block">Technical Solution</label>
-                      <textarea value={formData.technicalSolution} onChange={e => setFormData({ ...formData, technicalSolution: e.target.value })} className="w-full bg-black/50 border border-cyan-900 rounded p-3 text-white outline-none h-20" />
+                      <label className="text-xs text-pearl/40 font-medium mb-2 block">Technical Solution</label>
+                      <textarea value={formData.technicalSolution} onChange={e => setFormData({ ...formData, technicalSolution: e.target.value })} className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-pearl placeholder-pearl/25 focus:border-cerulean/50 focus:outline-none transition-colors h-20" />
                     </div>
-                    <button type="submit" className={`w-full font-bold py-4 rounded uppercase tracking-widest transition-all ${editProjectId ? "bg-yellow-600 hover:bg-yellow-500 text-black" : "bg-cyan-600 hover:bg-cyan-500 text-black"}`}>
-                      {editProjectId ? "Establish Update" : "Deploy Mission"}
+                    <button type="submit" className={`w-full font-semibold py-3 rounded-lg transition-all ${editProjectId ? "bg-yellow-600 hover:bg-yellow-500 text-black" : "bg-cerulean hover:bg-cerulean/90 text-deep-bg"}`}>
+                      {editProjectId ? "Update Project" : "Create Project"}
                     </button>
                   </form>
                 </div>
 
-                <div className="bg-[#0a1128]/80 backdrop-blur border border-cyan-500/30 p-6 sm:p-8 rounded-xl h-[600px] overflow-y-auto custom-scrollbar">
+                <div className="bg-white/[0.02] border border-white/[0.06] p-6 sm:p-8 rounded-xl h-[600px] overflow-y-auto">
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-1 h-6 bg-cyan-500 rounded-full"></div>
-                    <h2 className="text-white font-bold uppercase tracking-[0.2em] text-sm flex items-center gap-3">
-                      <FaDatabase className="text-cyan-500" /> Live Archives
+                    <div className="w-1 h-6 bg-cerulean rounded-full"></div>
+                    <h2 className="text-pearl font-semibold text-sm tracking-wide flex items-center gap-3">
+                      <FaDatabase className="text-cerulean" /> Existing Projects
                     </h2>
-                    <div className="h-[1px] flex-1 bg-cyan-500/10"></div>
+                    <div className="h-[1px] flex-1 bg-white/[0.06]"></div>
                   </div>
                   <ul className="space-y-4">
                     {projects.map(p => (
-                      <li key={p._id} className="flex justify-between items-center border border-white/5 p-4 rounded bg-black/20 hover:bg-cyan-500/10 transition-colors group">
+                      <li key={p._id} className="flex justify-between items-center bg-white/[0.02] border border-white/[0.06] p-4 rounded-xl hover:border-cerulean/20 transition-all group">
                         <div className="min-w-0">
-                          <div className="font-bold text-white text-base sm:text-lg truncate">{p.title}</div>
-                          <div className="text-[10px] sm:text-xs text-cyan-500 mt-1 uppercase tracking-widest">{p.category}</div>
+                          <div className="font-semibold text-pearl text-base truncate">{p.title}</div>
+                          <div className="text-xs text-cerulean mt-1">{p.category}</div>
                         </div>
                         <div className="flex gap-2 shrink-0">
                           <button onClick={() => handleEditProject(p)} className="text-yellow-500 opacity-50 group-hover:opacity-100 hover:scale-110 transition-all p-2"><FaUserEdit /></button>
@@ -1088,17 +1154,17 @@ export default function () {
             )}
 
           </div>
-        </div >
-      </main >
+        </div>
+      </main>
 
       {/* CONFIRMATION MODAL */}
-      < ConfirmModal
+      <ConfirmModal
         isOpen={modalState.isOpen}
         onClose={() => setModalState({ ...modalState, isOpen: false })}
         onConfirm={modalState.onConfirm}
         message={modalState.message}
       />
 
-    </div >
+    </div>
   );
 }

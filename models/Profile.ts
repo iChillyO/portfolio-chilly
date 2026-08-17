@@ -43,6 +43,14 @@ const SkillStatSchema = new Schema({
   color: { type: String, default: "bg-cyan-400" }
 });
 
+// Sub-schema for Quick Info items (About Page Quick Info box)
+const QuickInfoSchema = new Schema({
+  icon: { type: String, default: "FaMapMarkerAlt" }, // Icon name string
+  iconColor: { type: String, default: "text-cerulean" }, // Tailwind color class
+  text: { type: String, default: "" },
+  order: { type: Number, default: 0 },
+});
+
 const ProfileSchema = new Schema({
   // 1. Profile Core (Home Page)
   alias: { type: String, default: "Chilly" },
@@ -81,7 +89,10 @@ const ProfileSchema = new Schema({
   // 9. About Page Stats
   skillStats: [SkillStatSchema],
 
-  // 10. System
+  // 10. About Page Quick Info Box
+  quickInfo: [QuickInfoSchema],
+
+  // 11. System
   lastSync: { type: Date, default: Date.now }
 });
 

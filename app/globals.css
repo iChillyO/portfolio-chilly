@@ -2,39 +2,179 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- CYBER SCROLLBAR (Glowing Cyan) --- */
-/* --- THE FIX: FORCE DARK BACKGROUND --- */
-html,
-body {
-    background-color: #020617;
-    /* Very dark blue/black to match your theme */
-    color: white;
-    margin: 0;
-    padding: 0;
+/* --- ROOT VARIABLES (Mint / Royal Blue / Slate Palette) --- */
+:root {
+  --color-deep: 22 28 44;          /* #161C2C */
+  --color-surface: 30 37 56;       /* #1E2538 */
+  --color-royal: 30 59 140;        /* #1E3B8C */
+  --color-mint: 92 255 155;        /* #5CFF9B */
+  --color-gold: 212 182 121;       /* #D4B679 */
+  --color-pearl: 244 246 248;      /* #F4F6F8 */
 }
 
-/* Width of the scrollbar */
-::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+/* --- BASE STYLES --- */
+html, body {
+  background-color: #161C2C;
+  color: #F4F6F8;
+  margin: 0;
+  padding: 0;
 }
 
-/* The background track (invisible) */
-::-webkit-scrollbar-track {
-    background: #020617;
+/* Only enable smooth scroll on devices that can handle it */
+@media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+  html { scroll-behavior: smooth; }
 }
 
-/* The moving part (The Thumb) */
-::-webkit-scrollbar-thumb {
-    background: rgba(34, 211, 238, 0.4);
-    /* Cyan-400 */
-    border-radius: 10px;
-    border: 1px solid rgba(34, 211, 238, 0.2);
+/* --- SELECTION --- */
+::selection {
+  background-color: rgba(92, 255, 155, 0.3);
+  color: #F4F6F8;
 }
 
-/* Glow effect when you hover over it */
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(34, 211, 238, 0.9);
-    /* Bright Cyan */
-    box-shadow: 0 0 15px rgba(34, 211, 238, 1);
+/* --- SCROLLBAR (desktop only — mobile doesn't show these) --- */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #161C2C; }
+  ::-webkit-scrollbar-thumb { background: rgba(92, 255, 155, 0.3); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(92, 255, 155, 0.6); }
+}
+
+/* --- COMPONENT CLASSES --- */
+.text-gradient-primary {
+  background: linear-gradient(to right, #5CFF9B, #D4B679, #5CFF9B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(to right, #D4B679, #fde047, #D4B679);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass card — solid on mobile, blurred on desktop */
+.glass-card {
+  background: rgba(30, 59, 140, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
+}
+
+@media (min-width: 768px) {
+  .glass-card {
+    background: rgba(30, 59, 140, 0.25);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+}
+
+.glass-card-hover {
+  background: rgba(30, 59, 140, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .glass-card-hover {
+    background: rgba(30, 59, 140, 0.25);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+}
+
+.glass-card-hover:hover {
+  border-color: rgba(92, 255, 155, 0.3);
+  background: rgba(30, 59, 140, 0.4);
+}
+
+.input-field {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  color: #F4F6F8;
+  transition: border-color 0.2s ease;
+}
+
+.input-field::placeholder {
+  color: rgba(244, 246, 248, 0.3);
+}
+
+.input-field:focus {
+  border-color: rgba(92, 255, 155, 0.5);
+  outline: none;
+}
+
+/* --- THEMED SELECT DROPDOWNS --- */
+select.input-field,
+select {
+  color: #F4F6F8;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+select option,
+select optgroup {
+  background-color: #1E2538;
+  color: #F4F6F8;
+}
+
+select optgroup {
+  color: rgba(92, 255, 155, 0.9);
+  font-weight: 600;
+}
+
+select option:checked,
+select option:hover {
+  background-color: #5CFF9B;
+  color: #161C2C;
+}
+
+/* --- DECORATIVE BLURS: Hidden on mobile for performance --- */
+.deco-blur {
+  pointer-events: none;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .deco-blur {
+    display: block;
+  }
+}
+
+/* --- PAGE TRANSITION (replaces framer-motion) --- */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-transition {
+  animation: page-enter 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition { animation: none; }
+}
+
+/* --- UTILITY CLASSES --- */
+@layer utilities {
+  .section-padding {
+    @apply px-4 sm:px-6 md:px-10 lg:px-14;
+  }
+
+  .page-top {
+    @apply pt-16 md:pt-20;
+  }
+}
+
+/* --- SCROLLBAR HIDE (for mobile nav snap scroll) --- */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { FaTasks, FaClock, FaCheckCircle, FaSpinner } from "react-icons/fa";
+import { FaClock, FaCheckCircle, FaSpinner } from "react-icons/fa";
 import { WorkQueueItem } from "@/types";
 
 export default function WorkQueue() {
@@ -8,140 +8,60 @@ export default function WorkQueue() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchWorkQueue() {
-      try {
-        const res = await fetch('/api/profile'); // The workQueue is part of the profile
-        const contentType = res.headers.get("content-type");
-        
-        if (!res.ok || !contentType || !contentType.includes("application/json")) {
-          const errorText = await res.text();
-          throw new Error(`Fetch failed with status ${res.status}: ${errorText.substring(0, 100)}`);
-        }
-        
-        const data = await res.json();
-        if (data.success && data.data.workQueue) {
-          setWorkQueue(data.data.workQueue);
-        } else {
-          console.error("Work Queue fetch failure:", data.error);
-        }
-      } catch (error) {
-        console.error("Failed to load work queue:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchWorkQueue();
+    const controller = new AbortController();
+    fetch('/api/profile', { signal: controller.signal })
+      .then(res => res.json())
+      .then(data => { if (data.success && data.data.workQueue) setWorkQueue(data.data.workQueue); })
+      .catch(err => { if (err.name !== 'AbortError') console.error(err); })
+      .finally(() => setIsLoading(false));
+    return () => controller.abort();
   }, []);
 
+  const statusConfig: Record<string, { color: string; bg: string; border: string; bar: string; icon: React.ReactNode }> = {
+    Processing: { color: "text-cerulean", bg: "bg-cerulean/10", border: "border-cerulean/20", bar: "bg-cerulean", icon: <FaSpinner className="animate-spin" /> },
+    Completed: { color: "text-green-400", bg: "bg-green-500/10", border: "border-green-500/20", bar: "bg-green-500", icon: <FaCheckCircle /> },
+    Queued: { color: "text-pearl/40", bg: "bg-white/[0.04]", border: "border-white/[0.06]", bar: "bg-pearl/20", icon: <FaClock /> },
+  };
+
   return (
-    <main className="min-h-screen w-full bg-deep-bg font-sans select-none flex flex-col items-center overflow-x-hidden relative text-white">
-
-
-      {/* --- HEADER --- */}
-      <div className="max-w-7xl w-full relative z-20 shrink-0 px-4 md:px-12 mt-24 md:mt-32 mb-8 flex flex-col md:flex-row justify-between items-center md:items-end gap-6 text-center md:text-left">
-        <div>
-          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase italic mb-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-            Work <span className="text-cyan-500">Queue</span>
-          </h1>
-          <div className="flex items-center justify-center md:justify-start gap-2 text-blue-200/60 font-mono text-[10px] md:text-xs uppercase tracking-widest">
-            <span className="animate-pulse text-green-400">●</span> System Status: Online
+    <main className="min-h-screen bg-deep-bg font-sans select-none overflow-x-hidden relative text-pearl page-top pb-12">
+      <div className="deco-blur absolute top-0 right-0 w-[400px] h-[400px] bg-galaxy/30 rounded-full blur-[100px]" />
+      <div className="max-w-4xl mx-auto section-padding relative z-10">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-pearl">Work <span className="text-gradient-primary">Queue</span></h1>
+          </div>
+          <div className="glass-card px-4 py-2.5 flex items-center gap-2.5">
+            <div><div className="text-[10px] text-pearl/40">Availability</div><div className="text-cerulean font-medium text-xs">Open for Commissions</div></div>
+            <div className="w-2.5 h-2.5 bg-cerulean rounded-full shadow-[0_0_8px_rgba(92,255,155,0.5)] animate-pulse" />
           </div>
         </div>
 
-        {/* Status Card */}
-        <div className="bg-[#0a1128]/80 backdrop-blur-md border border-cyan-500/30 px-6 py-3 rounded-xl flex items-center gap-4 shadow-[0_0_20px_rgba(34,211,238,0.1)]">
-          <div className="text-right">
-            <div className="text-[10px] md:text-xs text-blue-200 uppercase tracking-widest">Availability</div>
-            <div className="text-cyan-400 font-bold text-xs md:text-sm">OPEN FOR COMMISSIONS</div>
-          </div>
-          <div className="w-3 h-3 bg-cyan-400 rounded-full shadow-[0_0_10px_#22d3ee] animate-pulse"></div>
+        <div className="hidden md:grid grid-cols-[2fr_1fr_1.5fr] gap-4 px-5 py-2 text-[10px] uppercase tracking-widest text-pearl/30 font-medium">
+          <span>Project</span><span className="text-center">Status</span><span className="text-right">Progress</span>
+        </div>
+
+        <div className="space-y-3 mt-2">
+          {isLoading ? <div className="flex items-center justify-center h-32"><div className="w-10 h-10 border-2 border-cerulean/30 border-t-cerulean rounded-full animate-spin" /></div>
+          : workQueue.length === 0 ? <div className="text-center py-16 text-pearl/30">No items in the queue.</div>
+          : workQueue.map((item, idx) => {
+            const cfg = statusConfig[item.status] || statusConfig.Queued;
+            return (
+              <div key={idx} className="glass-card-hover p-4 flex flex-col md:grid md:grid-cols-[2fr_1fr_1.5fr] items-center gap-3">
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${cfg.bg} ${cfg.color} border ${cfg.border}`}>{cfg.icon}</div>
+                  <div className="min-w-0"><div className="text-pearl font-medium text-sm truncate">{item.project}</div><div className="text-[10px] text-pearl/30 font-mono">{item.type} &bull; {item.id}</div></div>
+                </div>
+                <div className="flex justify-center w-full md:w-auto"><span className={`px-3 py-1 rounded-full text-[10px] font-medium border ${cfg.bg} ${cfg.color} ${cfg.border}`}>{item.status}</span></div>
+                <div className="flex flex-col gap-1.5 w-full">
+                  <div className="flex justify-between text-[10px] text-pearl/30"><span>Progress</span><span className="text-pearl font-medium">{item.progress}%</span></div>
+                  <div className="w-full h-1 bg-white/[0.04] rounded-full overflow-hidden"><div className={`h-full ${cfg.bar} rounded-full`} style={{ width: `${item.progress}%` }} /></div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
-
-      {/* --- MAIN CONTENT --- */}
-      <div className="w-full max-w-7xl px-4 md:px-12 pb-12 z-20">
-        <div className="pt-4 pb-12 md:pb-24">
-
-          {/* THE QUEUE (Visual List) - Now Full Width */}
-          <div className="space-y-6">
-            <h3 className="text-white font-bold uppercase tracking-widest text-xs md:text-sm flex items-center gap-2 border-b border-white/10 pb-4">
-              <FaTasks className="text-cyan-500" /> Current Operations
-            </h3>
-
-            {/* Header Row for Table-like feel */}
-            <div className="hidden md:grid grid-cols-[2fr_1fr_1.5fr] gap-4 px-6 py-2 text-[10px] uppercase tracking-[0.2em] text-cyan-500/70 font-mono">
-              <span>Project</span>
-              <span className="text-center">Status</span>
-              <span className="text-right">Progress</span>
-            </div>
-
-            {/* Queue List */}
-            <div className="space-y-3">
-              {isLoading ? (
-                <div className="flex flex-col items-center justify-center h-40 w-full text-cyan-500 gap-4">
-                  <FaSpinner className="animate-spin text-3xl" />
-                  <span className="font-mono tracking-widest text-xs animate-pulse">LOADING QUEUE...</span>
-                </div>
-              ) : workQueue.map((item, idx) => (
-                <div key={idx} className="group bg-black/20 border border-white/10 p-4 md:p-6 rounded-2xl flex flex-col md:grid md:grid-cols-[2fr_1fr_1.5fr] items-center gap-4 hover:border-cyan-500/30 transition-all duration-300 hover:bg-cyan-500/[0.02] relative overflow-hidden">
-
-                  {/* Glowing line on hover */}
-                  <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-                  {/* PROJECT Name & Icon */}
-                  <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className={`
-                      w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0
-                      ${item.status === "Processing" ? "bg-cyan-500/10 text-cyan-400 animate-pulse border border-cyan-500/20" :
-                        item.status === "Completed" ? "bg-green-500/10 text-green-400 border border-green-500/20" :
-                          "bg-slate-800/50 text-slate-500 border border-slate-700/50"}
-                    `}>
-                      {item.status === "Processing" ? <FaSpinner className="animate-spin" /> :
-                        item.status === "Completed" ? <FaCheckCircle /> : <FaClock />}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-white font-bold text-sm md:text-base truncate uppercase tracking-tight">
-                        {item.project}
-                      </div>
-                      <div className="text-[9px] font-mono text-cyan-500/50 uppercase tracking-widest mt-0.5">
-                        {item.type} // {item.id}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* STATUS Badge */}
-                  <div className="flex justify-center w-full md:w-auto">
-                    <div className={`
-                      px-4 py-1.5 rounded-full text-[10px] font-mono font-black uppercase tracking-widest border
-                      ${item.status === "Processing" ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/30 shadow-[0_0_15px_rgba(34,211,238,0.1)]" :
-                        item.status === "Completed" ? "bg-green-500/10 text-green-400 border-green-500/30" :
-                          "bg-slate-800/20 text-slate-500 border-slate-800/50"}
-                    `}>
-                      {item.status}
-                    </div>
-                  </div>
-
-                  {/* PROGRESS Bar & Percentage */}
-                  <div className="flex flex-col gap-2 w-full">
-                    <div className="flex justify-between items-center text-[10px] font-mono text-cyan-500/70 uppercase tracking-widest">
-                      <span>Sync Progress</span>
-                      <span className="text-white font-bold">{item.progress}%</span>
-                    </div>
-                    <div className="w-full h-1.5 bg-slate-800/50 rounded-full overflow-hidden border border-white/5">
-                      <div
-                        className={`h-full ${item.status === "Completed" ? "bg-green-500" : "bg-cyan-500"} shadow-[0_0_15px_currentColor] transition-all duration-1000 ease-out`}
-                        style={{ width: `${item.progress}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
-      </div>
-
     </main>
   );
 }

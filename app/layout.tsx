@@ -12,8 +12,12 @@ export const metadata: Metadata = {
   title: "Chilly | Creative Developer Portfolio",
   description: "Full-stack developer crafting modern digital experiences.",
   icons: {
-    icon: [{ url: "/logo.png", type: "image/png" }],
-    apple: [{ url: "/logo.png", type: "image/png" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/logo.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/logo.png",
   },
 };
 
